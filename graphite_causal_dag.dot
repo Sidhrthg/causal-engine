@@ -1,0 +1,20 @@
+strict digraph {
+ExportPolicy;
+TradeValue;
+GlobalDemand;
+Demand;
+Capacity;
+Supply;
+Shortage;
+Price;
+Inventory;
+ExportPolicy -> TradeValue;
+ExportPolicy -> Supply;
+TradeValue -> Inventory;
+GlobalDemand -> Demand;
+Demand -> Shortage;
+Capacity -> Supply;
+Supply -> Shortage;
+Shortage -> Price;
+Inventory -> Supply;
+}

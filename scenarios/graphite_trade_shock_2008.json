@@ -1,0 +1,16 @@
+{
+  "name": "graphite_trade_shock_2008",
+  "graph": "graphite_world_usa",
+  "shocks": [
+    {
+      "type": "export_restriction",
+      "start_year": 2008,
+      "end_year": 2008,
+      "magnitude": 0.30,
+      "material": "graphite_natural",
+      "from_entity": "country:World",
+      "to_entity": "country:USA"
+    }
+  ]
+}
+

@@ -1,0 +1,9 @@
+digraph sensor_reliability {
+    rankdir=LR;
+
+    MaterialType -> Drift;
+    Temperature -> Drift;
+
+    Drift -> Failure;
+    CalibrationInterval -> Failure;
+}

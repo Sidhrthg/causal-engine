@@ -1,0 +1,341 @@
+{
+  "name": "simulate_policy",
+  "description": "Simulates the effects of policy interventions on causal models using counterfactual analysis. This skill loads a dataset and DAG, applies an intervention to a specified node, and estimates the counterfactual outcomes comparing baseline and intervened scenarios. It uses DoWhy for causal modeling and estimates outcomes under intervention.",
+  "version": "1.0.0",
+  "skill_id": "simulate_policy_skill",
+  
+  "inputs": {
+    "dataset_path": {
+      "type": "string",
+      "description": "Path to the dataset file. Supports CSV, Parquet, and JSON formats. Path can be relative to project root or absolute.",
+      "required": true,
+      "example": "data/experiment_data.csv"
+    },
+    "treatment": {
+      "type": "string",
+      "description": "Name of the treatment variable in the dataset. This is used for building the causal model.",
+      "required": true,
+      "example": "treatment"
+    },
+    "outcome": {
+      "type": "string",
+      "description": "Name of the outcome variable in the dataset. This is the variable whose counterfactual value we want to estimate under intervention.",
+      "required": true,
+      "example": "outcome"
+    },
+    "controls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of control/covariate variable names to adjust for in the causal model.",
+      "required": true,
+      "minItems": 0,
+      "example": ["age", "gender", "income"]
+    },
+    "dag_path": {
+      "type": "string",
+      "description": "Path to the DAG file in DOT format. The DAG specifies the causal structure and is used for building the causal model. Path can be relative to project root or absolute.",
+      "required": true,
+      "example": "dag_registry/sensor_reliability.dot"
+    },
+    "node": {
+      "type": "string",
+      "description": "Name of the node/variable to intervene on. This is the variable that will be set to the specified value in the intervention scenario.",
+      "required": true,
+      "example": "Maintenance"
+    },
+    "value": {
+      "type": "number",
+      "description": "Value to set for the intervention. Can be a float, int, or string depending on the variable type. For 'do' interventions, this is the exact value the variable is set to.",
+      "required": true,
+      "example": 1.0
+    },
+    "num_samples": {
+      "type": "integer",
+      "description": "Number of samples to generate for the simulation. Used for generating raw_samples output. Default is 1000.",
+      "required": false,
+      "default": 1000,
+      "minimum": 1,
+      "example": 1000
+    }
+  },
+  
+  "outputs": {
+    "outcomes": {
+      "type": "object",
+      "description": "Dictionary of outcome metrics comparing baseline and intervened scenarios",
+      "properties": {
+        "baseline_mean": {
+          "type": "number",
+          "description": "Mean outcome value in the baseline (non-intervened) scenario"
+        },
+        "baseline_std": {
+          "type": "number",
+          "description": "Standard deviation of outcome in the baseline scenario"
+        },
+        "intervened_mean": {
+          "type": "number",
+          "description": "Mean outcome value in the intervened scenario"
+        },
+        "intervened_std": {
+          "type": "number",
+          "description": "Standard deviation of outcome in the intervened scenario"
+        },
+        "difference": {
+          "type": "number",
+          "description": "Difference between intervened_mean and baseline_mean"
+        },
+        "percent_change": {
+          "type": "number",
+          "description": "Percent change from baseline to intervened scenario ((difference / baseline_mean) * 100)"
+        },
+        "baseline_ate": {
+          "type": "number",
+          "description": "Average Treatment Effect estimate in the baseline scenario"
+        },
+        "baseline_ate_ci_lower": {
+          "type": "number",
+          "description": "Lower bound of ATE confidence interval in baseline scenario"
+        },
+        "baseline_ate_ci_upper": {
+          "type": "number",
+          "description": "Upper bound of ATE confidence interval in baseline scenario"
+        }
+      },
+      "example": {
+        "baseline_mean": 0.65,
+        "baseline_std": 0.15,
+        "intervened_mean": 0.85,
+        "intervened_std": 0.12,
+        "difference": 0.20,
+        "percent_change": 30.77,
+        "baseline_ate": 0.523,
+        "baseline_ate_ci_lower": 0.412,
+        "baseline_ate_ci_upper": 0.634
+      }
+    },
+    "simulation_metadata": {
+      "type": "object",
+      "description": "Additional metadata about the simulation",
+      "properties": {
+        "intervention_node": {
+          "type": "string",
+          "description": "Name of the node that was intervened on"
+        },
+        "intervention_value": {
+          "type": "number",
+          "description": "Value that was set for the intervention"
+        },
+        "treatment": {
+          "type": "string",
+          "description": "Treatment variable name"
+        },
+        "outcome": {
+          "type": "string",
+          "description": "Outcome variable name"
+        },
+        "num_controls": {
+          "type": "integer",
+          "description": "Number of control variables used"
+        },
+        "sample_size": {
+          "type": "integer",
+          "description": "Number of observations in the dataset"
+        },
+        "num_samples": {
+          "type": "integer",
+          "description": "Number of simulation samples generated"
+        },
+        "simulation_method": {
+          "type": "string",
+          "description": "Method used for simulation (e.g., 'simple_data_overwrite')"
+        }
+      }
+    }
+  },
+  
+  "implementation": {
+    "entrypoint": "python -m src.scripts.simulate_policy",
+    "module": "src.simulate",
+    "function": "simulate_from_dag_path",
+    "description": "This skill conceptually calls simulate_from_dag_path() from src/simulate.py. The actual implementation would be in a script at src/scripts/simulate_policy.py that uses src/simulate.py utilities.",
+    "arguments_mapping": {
+      "df": {
+        "source": "load_dataset(inputs.dataset_path)",
+        "description": "Loads the dataset from dataset_path using src.ingest.load_dataset()"
+      },
+      "treatment": {
+        "source": "inputs.treatment",
+        "description": "Maps directly to the treatment parameter"
+      },
+      "outcome": {
+        "source": "inputs.outcome",
+        "description": "Maps directly to the outcome parameter"
+      },
+      "controls": {
+        "source": "inputs.controls",
+        "description": "Maps directly to the controls parameter"
+      },
+      "dag_path": {
+        "source": "inputs.dag_path",
+        "description": "Maps directly to the dag_path parameter"
+      },
+      "intervention": {
+        "source": "Intervention(node=inputs.node, value=inputs.value)",
+        "description": "Creates an Intervention object from node and value inputs"
+      },
+      "num_samples": {
+        "source": "inputs.num_samples",
+        "description": "Maps to num_samples parameter (defaults to 1000 if not provided)",
+        "optional": true
+      }
+    },
+    "dependencies": [
+      "src.ingest.load_dataset",
+      "src.simulate.simulate_from_dag_path",
+      "src.simulate.Intervention",
+      "src.scm.causal_model_from_dag",
+      "src.scm.load_dag_dot",
+      "src.estimate.estimate_ate_drl"
+    ],
+    "simulation_method": "Simple data overwrite approach (intervention node set to specified value, then outcome re-estimated)",
+    "note": "TODO: Future versions will support true structural equation modeling, Monte Carlo over parameter posteriors, and temporal simulations"
+  },
+  
+  "examples": [
+    {
+      "name": "Intervene on maintenance to improve reliability",
+      "input": {
+        "dataset_path": "data/sensor_data.csv",
+        "treatment": "MaterialType",
+        "outcome": "Failure",
+        "controls": ["Temperature", "Humidity"],
+        "dag_path": "dag_registry/sensor_reliability.dot",
+        "node": "Maintenance",
+        "value": 1.0,
+        "num_samples": 1000
+      },
+      "output": {
+        "outcomes": {
+          "baseline_mean": 0.65,
+          "baseline_std": 0.15,
+          "intervened_mean": 0.85,
+          "intervened_std": 0.12,
+          "difference": 0.20,
+          "percent_change": 30.77,
+          "baseline_ate": 0.523,
+          "baseline_ate_ci_lower": 0.412,
+          "baseline_ate_ci_upper": 0.634
+        },
+        "simulation_metadata": {
+          "intervention_node": "Maintenance",
+          "intervention_value": 1.0,
+          "treatment": "MaterialType",
+          "outcome": "Failure",
+          "num_controls": 2,
+          "sample_size": 1000,
+          "num_samples": 1000,
+          "simulation_method": "simple_data_overwrite"
+        }
+      }
+    },
+    {
+      "name": "Intervene on treatment variable",
+      "input": {
+        "dataset_path": "data/experiment_data.csv",
+        "treatment": "treatment",
+        "outcome": "outcome",
+        "controls": ["age", "gender"],
+        "dag_path": "dag_registry/sensor_reliability.dot",
+        "node": "treatment",
+        "value": 1,
+        "num_samples": 500
+      },
+      "output": {
+        "outcomes": {
+          "baseline_mean": 0.45,
+          "baseline_std": 0.18,
+          "intervened_mean": 0.68,
+          "intervened_std": 0.14,
+          "difference": 0.23,
+          "percent_change": 51.11,
+          "baseline_ate": 0.523,
+          "baseline_ate_ci_lower": 0.412,
+          "baseline_ate_ci_upper": 0.634
+        },
+        "simulation_metadata": {
+          "intervention_node": "treatment",
+          "intervention_value": 1,
+          "treatment": "treatment",
+          "outcome": "outcome",
+          "num_controls": 2,
+          "sample_size": 1000,
+          "num_samples": 500,
+          "simulation_method": "simple_data_overwrite"
+        }
+      }
+    },
+    {
+      "name": "Intervene on continuous variable",
+      "input": {
+        "dataset_path": "data/dose_response.csv",
+        "treatment": "dose",
+        "outcome": "response",
+        "controls": ["weight", "age"],
+        "dag_path": "dag_registry/site_uptime.dot",
+        "node": "ServerLoad",
+        "value": 0.8,
+        "num_samples": 2000
+      },
+      "output": {
+        "outcomes": {
+          "baseline_mean": 0.72,
+          "baseline_std": 0.22,
+          "intervened_mean": 0.88,
+          "intervened_std": 0.19,
+          "difference": 0.16,
+          "percent_change": 22.22,
+          "baseline_ate": 0.156,
+          "baseline_ate_ci_lower": 0.098,
+          "baseline_ate_ci_upper": 0.214
+        },
+        "simulation_metadata": {
+          "intervention_node": "ServerLoad",
+          "intervention_value": 0.8,
+          "treatment": "dose",
+          "outcome": "response",
+          "num_controls": 2,
+          "sample_size": 500,
+          "num_samples": 2000,
+          "simulation_method": "simple_data_overwrite"
+        }
+      }
+    }
+  ],
+  
+  "error_handling": {
+    "file_not_found": {
+      "status_code": 404,
+      "description": "Returned when dataset_path or dag_path cannot be found"
+    },
+    "validation_error": {
+      "status_code": 400,
+      "description": "Returned when required columns are missing from the dataset, intervention node doesn't exist, or validation fails"
+    },
+    "simulation_error": {
+      "status_code": 500,
+      "description": "Returned when the simulation process fails (e.g., model building errors, estimation failures)"
+    }
+  },
+  
+  "notes": [
+    "This skill simulates counterfactual outcomes by applying interventions to causal models.",
+    "The current implementation uses a simple data overwrite approach: the intervention node is set to the specified value, and outcomes are re-estimated.",
+    "Future versions will support more sophisticated simulation methods including structural equation modeling and Monte Carlo sampling.",
+    "The intervention can be applied to any node in the DAG, not just the treatment variable.",
+    "Both baseline and intervened scenarios are estimated, allowing for direct comparison of counterfactual outcomes.",
+    "The skill uses DoWhy for causal model building and estimation for outcome prediction.",
+    "This is a placeholder manifest for future integration with Claude Skills system."
+  ]
+}

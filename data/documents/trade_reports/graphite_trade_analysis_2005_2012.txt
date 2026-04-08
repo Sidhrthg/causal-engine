@@ -1,0 +1,23 @@
+Graphite Trade Patterns 2005-2012
+
+This analysis examines U.S. graphite import trends during a period of significant 
+market evolution. Key findings:
+
+Baseline Period (2005-2007):
+- Average annual imports: $34 million USD
+- Primary suppliers: China (72%), Mexico (12%), Canada (8%)
+- Stable pricing with low volatility
+
+Disruption Period (2008-2010):
+- 2008: Sharp increase to $53M (46% above baseline) due to industrial demand
+- 2009: Decline to $32M following financial crisis demand destruction
+- 2010: Recovery to $57M amid China export policy changes
+
+Post-Shock Period (2011-2012):
+- Sustained higher trade values ($87M in 2011)
+- Supply chain diversification efforts
+- Emergence of synthetic graphite alternatives
+
+The data suggests that graphite markets exhibit significant responsiveness to 
+both demand shocks (financial crisis) and supply shocks (export restrictions), 
+with adjustment periods of 2-3 years for new supply capacity.

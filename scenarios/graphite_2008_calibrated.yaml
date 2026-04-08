@@ -1,0 +1,66 @@
+name: graphite_2008_calibrated
+commodity: graphite
+baseline:
+  K0: 108.695652
+  I0: 20.0
+  D0: 100.0
+  P0: 1.0
+  P_ref: 1.0
+
+time:
+  start_year: 2000
+  end_year: 2011
+  dt: 1.0
+
+shocks:
+  - type: demand_surge
+    start_year: 2008
+    end_year: 2008
+    magnitude: 0.46
+
+  - type: macro_demand_shock
+    start_year: 2009
+    end_year: 2009
+    magnitude: -0.40
+    demand_destruction: 0.40
+
+  - type: policy_shock
+    start_year: 2010
+    end_year: 2011
+    magnitude: 0.35
+    quota_reduction: 0.35
+
+parameters:
+  eta_D: -0.8          # UPDATED: Was -0.25, now -0.8 (from RAG)
+  eta_K: 0.4
+  tau_K: 5.0           # UPDATED: Was 3.0, now 5.0 (from RAG: 4-6 years)
+  alpha_P: 3.0         # UPDATED: Was 0.8, now 3.0 (from RAG: 2.5-4.0)
+  beta_u: 0.1
+  lambda_cover: 0.6
+  cover_star: 0.2
+  u0: 0.92
+  u_max: 1.0
+  u_min: 0.7
+  retire_rate: 0.0
+  sigma_P: 0.0
+  eps: 1e-9
+  demand_growth:
+    type: constant
+    g: 1.0
+
+policy:
+  subsidy: 0.0
+  stockpile_release: 0.0
+  efficiency: 0.0
+  substitution: 0.0
+
+outputs:
+  out_dir: runs
+  save_csv: true
+  metrics:
+    - total_shortage
+    - peak_shortage
+    - avg_price
+    - final_inventory_cover
+
+seed: 123

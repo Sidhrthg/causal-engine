@@ -1,0 +1,238 @@
+{
+  "name": "build_dag",
+  "description": "Builds and validates a Directed Acyclic Graph (DAG) from causal relationships and writes it to the DAG registry. This skill takes a specification of nodes and edges, validates that it forms a valid DAG (no cycles), and saves it to dag_registry/ in both DOT and JSON formats.",
+  "version": "1.0.0",
+  "skill_id": "build_dag_skill",
+  
+  "inputs": {
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of node names in the DAG. Each node represents a variable in the causal model.",
+      "required": true,
+      "example": ["Temperature", "Humidity", "SensorReading", "Reliability", "Maintenance"]
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 2,
+        "maxItems": 2
+      },
+      "description": "List of directed edges as [source, target] pairs. Each edge represents a causal relationship from source to target.",
+      "required": true,
+      "example": [
+        ["Temperature", "SensorReading"],
+        ["Humidity", "SensorReading"],
+        ["SensorReading", "Reliability"],
+        ["Maintenance", "Reliability"]
+      ]
+    },
+    "graph_id": {
+      "type": "string",
+      "description": "Unique identifier for the DAG. Used as the base filename (without extension) in dag_registry/.",
+      "required": true,
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "example": "sensor_reliability"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Optional metadata about the DAG (description, author, creation date, etc.). Stored in the JSON file.",
+      "required": false,
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of what this DAG represents"
+        },
+        "author": {
+          "type": "string",
+          "description": "Name or identifier of the person/system that created this DAG"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of when the DAG was created"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Optional tags for categorizing the DAG"
+        }
+      },
+      "example": {
+        "description": "Causal model for sensor reliability analysis",
+        "author": "causal-engine",
+        "created_at": "2024-01-15T10:30:00Z",
+        "tags": ["sensors", "reliability", "manufacturing"]
+      }
+    }
+  },
+  
+  "outputs": {
+    "graph_id": {
+      "type": "string",
+      "description": "The identifier of the created DAG (same as input graph_id)"
+    },
+    "validation_status": {
+      "type": "string",
+      "description": "Validation result. 'valid' if the graph is a valid DAG, otherwise contains an error message describing why validation failed (e.g., 'cycle detected', 'invalid edge', 'missing node').",
+      "enum": ["valid", "invalid"]
+    },
+    "validation_message": {
+      "type": "string",
+      "description": "Detailed validation message. Empty string if valid, error description if invalid."
+    },
+    "file_paths": {
+      "type": "object",
+      "description": "Paths to the created DOT and JSON files relative to the project root",
+      "properties": {
+        "dot": {
+          "type": "string",
+          "description": "Path to the DOT format file",
+          "example": "dag_registry/sensor_reliability.dot"
+        },
+        "json": {
+          "type": "string",
+          "description": "Path to the JSON format file (NetworkX node-link format)",
+          "example": "dag_registry/sensor_reliability.json"
+        }
+      }
+    },
+    "graph_stats": {
+      "type": "object",
+      "description": "Statistics about the created graph",
+      "properties": {
+        "num_nodes": {
+          "type": "integer",
+          "description": "Number of nodes in the DAG"
+        },
+        "num_edges": {
+          "type": "integer",
+          "description": "Number of edges in the DAG"
+        }
+      }
+    }
+  },
+  
+  "implementation": {
+    "entrypoint": "python -m src.scripts.build_dag",
+    "module": "src.scm",
+    "description": "This skill conceptually calls functions from src/scm.py for DAG validation and creation. The actual implementation would be in a script at src/scripts/build_dag.py that uses src/scm.py utilities.",
+    "arguments_mapping": {
+      "nodes": {
+        "source": "inputs.nodes",
+        "description": "Maps to the nodes parameter"
+      },
+      "edges": {
+        "source": "inputs.edges",
+        "description": "Maps to the edges parameter"
+      },
+      "graph_id": {
+        "source": "inputs.graph_id",
+        "description": "Maps to the graph_id parameter for file naming"
+      },
+      "metadata": {
+        "source": "inputs.metadata",
+        "description": "Maps to optional metadata parameter",
+        "optional": true
+      }
+    },
+    "validation_function": "src.utils.data_validation.validate_dag_structure",
+    "output_registry_path": "dag_registry/"
+  },
+  
+  "examples": [
+    {
+      "name": "Simple sensor reliability DAG",
+      "input": {
+        "nodes": ["Temperature", "SensorReading", "Reliability"],
+        "edges": [
+          ["Temperature", "SensorReading"],
+          ["SensorReading", "Reliability"]
+        ],
+        "graph_id": "simple_sensor",
+        "metadata": {
+          "description": "Simple causal model for sensor reliability",
+          "author": "user",
+          "tags": ["sensors"]
+        }
+      },
+      "output": {
+        "graph_id": "simple_sensor",
+        "validation_status": "valid",
+        "validation_message": "",
+        "file_paths": {
+          "dot": "dag_registry/simple_sensor.dot",
+          "json": "dag_registry/simple_sensor.json"
+        },
+        "graph_stats": {
+          "num_nodes": 3,
+          "num_edges": 2
+        }
+      }
+    },
+    {
+      "name": "Complex sensor reliability DAG",
+      "input": {
+        "nodes": ["Temperature", "Humidity", "SensorReading", "Reliability", "Maintenance"],
+        "edges": [
+          ["Temperature", "SensorReading"],
+          ["Humidity", "SensorReading"],
+          ["SensorReading", "Reliability"],
+          ["Maintenance", "Reliability"]
+        ],
+        "graph_id": "sensor_reliability"
+      },
+      "output": {
+        "graph_id": "sensor_reliability",
+        "validation_status": "valid",
+        "validation_message": "",
+        "file_paths": {
+          "dot": "dag_registry/sensor_reliability.dot",
+          "json": "dag_registry/sensor_reliability.json"
+        },
+        "graph_stats": {
+          "num_nodes": 5,
+          "num_edges": 4
+        }
+      }
+    },
+    {
+      "name": "Invalid DAG with cycle",
+      "input": {
+        "nodes": ["A", "B", "C"],
+        "edges": [
+          ["A", "B"],
+          ["B", "C"],
+          ["C", "A"]
+        ],
+        "graph_id": "cyclic_graph"
+      },
+      "output": {
+        "graph_id": "cyclic_graph",
+        "validation_status": "invalid",
+        "validation_message": "Graph contains cycles and is not a valid DAG",
+        "file_paths": {
+          "dot": null,
+          "json": null
+        },
+        "graph_stats": null
+      }
+    }
+  ],
+  
+  "notes": [
+    "This skill validates that the graph is acyclic before saving.",
+    "Both DOT and JSON formats are created for compatibility with different tools.",
+    "The JSON format follows NetworkX node-link structure for programmatic loading.",
+    "If validation fails, no files are created and an error is returned.",
+    "This is a placeholder manifest for future integration with Claude Skills system."
+  ]
+}

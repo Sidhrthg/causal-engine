@@ -1,0 +1,99 @@
+{
+  "nodes": [
+    "China implementing export quotas on rare earth elements and other critical minerals, including graphite",
+    "China implementing export restrictions on critical minerals including graphite",
+    "demand shocks (financial crisis)",
+    "environmental compliance standards raised for mining operations",
+    "export quotas reduced by 30-40% compared to 2009 levels",
+    "growing dependence on imports from China and other suppliers",
+    "licensing requirements tightened for mineral exports",
+    "limited domestic production capacity",
+    "natural graphite imports to the United States increased significantly in 2008",
+    "significant market responsiveness in graphite markets",
+    "strong industrial demand from steel and automotive sectors",
+    "supply shocks (export restrictions)"
+  ],
+  "edges": [
+    {
+      "from": "demand shocks (financial crisis)",
+      "to": "significant market responsiveness in graphite markets",
+      "mechanism": "market adjustment to changed demand conditions",
+      "confidence": "MEDIUM",
+      "source": "trade_reports/graphite_trade_analysis_2005_2012.txt",
+      "evidence": "The data suggests that graphite markets exhibit significant responsiveness to both demand shocks (financial crisis) and supply shocks (export restrictions)",
+      "validated": true
+    },
+    {
+      "from": "supply shocks (export restrictions)",
+      "to": "significant market responsiveness in graphite markets",
+      "mechanism": "market adjustment to constrained supply conditions",
+      "confidence": "MEDIUM",
+      "source": "trade_reports/graphite_trade_analysis_2005_2012.txt",
+      "evidence": "The data suggests that graphite markets exhibit significant responsiveness to both demand shocks (financial crisis) and supply shocks (export restrictions)",
+      "validated": true
+    },
+    {
+      "from": "China implementing export quotas on rare earth elements and other critical minerals, including graphite",
+      "to": "export quotas reduced by 30-40% compared to 2009 levels",
+      "mechanism": "direct policy implementation setting quantitative limits on exports",
+      "confidence": "HIGH",
+      "source": "policy/china_export_policy_2010.txt",
+      "evidence": "In 2010, China implemented significant export quotas on rare earth elements and other critical minerals, including graphite. Key policy measures included: - Export quotas reduced by 30-40% compared to 2009 levels",
+      "validated": true
+    },
+    {
+      "from": "China implementing export restrictions on critical minerals including graphite",
+      "to": "licensing requirements tightened for mineral exports",
+      "mechanism": "policy implementation establishing stricter administrative controls on export permissions",
+      "confidence": "HIGH",
+      "source": "policy/china_export_policy_2010.txt",
+      "evidence": "In 2010, China implemented significant export quotas on rare earth elements and other critical minerals, including graphite. Key policy measures included: - Licensing requirements tightened for mineral exports",
+      "validated": true
+    },
+    {
+      "from": "China implementing export restrictions on critical minerals including graphite",
+      "to": "environmental compliance standards raised for mining operations",
+      "mechanism": "policy implementation establishing higher regulatory requirements for mining activities",
+      "confidence": "HIGH",
+      "source": "policy/china_export_policy_2010.txt",
+      "evidence": "In 2010, China implemented significant export quotas on rare earth elements and other critical minerals, including graphite. Key policy measures included: - Environmental compliance standards raised for mining operations",
+      "validated": true
+    },
+    {
+      "from": "strong industrial demand from steel and automotive sectors",
+      "to": "natural graphite imports to the United States increased significantly in 2008",
+      "mechanism": "increased demand from key industrial sectors drives higher import volumes to meet consumption needs",
+      "confidence": "HIGH",
+      "source": "usgs/graphite_2008_summary.txt",
+      "evidence": "Natural graphite imports to the United States increased significantly in 2008, reaching approximately 53 million USD, up from a baseline of 32-37 million USD in prior years. This increase was driven by several factors: 1. Strong industrial demand from steel and automotive sectors",
+      "validated": true
+    },
+    {
+      "from": "limited domestic production capacity",
+      "to": "natural graphite imports to the United States increased significantly in 2008",
+      "mechanism": "insufficient domestic supply capacity forces reliance on foreign sources to meet demand",
+      "confidence": "HIGH",
+      "source": "usgs/graphite_2008_summary.txt",
+      "evidence": "Natural graphite imports to the United States increased significantly in 2008, reaching approximately 53 million USD, up from a baseline of 32-37 million USD in prior years. This increase was driven by several factors: 2. Limited domestic production capacity",
+      "validated": true
+    },
+    {
+      "from": "growing dependence on imports from China and other suppliers",
+      "to": "natural graphite imports to the United States increased significantly in 2008",
+      "mechanism": "increased reliance on foreign suppliers directly translates to higher import volumes",
+      "confidence": "HIGH",
+      "source": "usgs/graphite_2008_summary.txt",
+      "evidence": "Natural graphite imports to the United States increased significantly in 2008, reaching approximately 53 million USD, up from a baseline of 32-37 million USD in prior years. This increase was driven by several factors: 3. Growing dependence on imports from China and other suppliers",
+      "validated": true
+    }
+  ],
+  "metadata": {
+    "total_edges": 8,
+    "validated_edges": 8,
+    "sources": [
+      "policy/china_export_policy_2010.txt",
+      "usgs/graphite_2008_summary.txt",
+      "trade_reports/graphite_trade_analysis_2005_2012.txt"
+    ]
+  }
+}

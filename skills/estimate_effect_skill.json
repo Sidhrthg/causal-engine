@@ -1,0 +1,247 @@
+{
+  "name": "estimate_effect",
+  "description": "Estimates causal effects (Average Treatment Effect, ATE) from observational data using DoWhy and EconML. This skill loads a dataset and DAG, builds a causal model, identifies the effect using the backdoor criterion, and estimates the ATE using a DRLearner estimator with bootstrap confidence intervals.",
+  "version": "1.0.0",
+  "skill_id": "estimate_effect_skill",
+  
+  "inputs": {
+    "dataset_path": {
+      "type": "string",
+      "description": "Path to the dataset file. Supports CSV, Parquet, and JSON formats. Path can be relative to project root or absolute.",
+      "required": true,
+      "example": "data/experiment_data.csv"
+    },
+    "treatment": {
+      "type": "string",
+      "description": "Name of the treatment variable in the dataset. This is the variable whose causal effect on the outcome we want to estimate.",
+      "required": true,
+      "example": "treatment"
+    },
+    "outcome": {
+      "type": "string",
+      "description": "Name of the outcome variable in the dataset. This is the variable we want to measure the effect on.",
+      "required": true,
+      "example": "outcome"
+    },
+    "controls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of control/covariate variable names to adjust for. These are confounding variables that need to be controlled for in the causal analysis.",
+      "required": true,
+      "minItems": 0,
+      "example": ["age", "gender", "income"]
+    },
+    "dag_path": {
+      "type": "string",
+      "description": "Path to the DAG file in DOT format. The DAG specifies the causal structure and is used for effect identification. Path can be relative to project root or absolute.",
+      "required": true,
+      "example": "dag_registry/sensor_reliability.dot"
+    }
+  },
+  
+  "outputs": {
+    "ate": {
+      "type": "number",
+      "description": "Average Treatment Effect estimate. This is the average causal effect of the treatment on the outcome across all units in the population.",
+      "example": 0.523
+    },
+    "ate_ci": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2,
+      "description": "Confidence interval for the ATE as [lower_bound, upper_bound]. Typically a 95% confidence interval computed via bootstrap resampling.",
+      "example": [0.412, 0.634]
+    },
+    "method": {
+      "type": "string",
+      "description": "Estimation method used. Currently 'dr_learner' (Double Robust Learner from EconML).",
+      "example": "dr_learner"
+    },
+    "model_summary": {
+      "type": "string",
+      "description": "Human-readable summary of the estimation model, including treatment type, outcome, number of controls, and sample size.",
+      "example": "DRLearner with RandomForest models. Treatment: treatment (binary), Outcome: outcome, Controls: 3 variables. Sample size: 1000"
+    },
+    "estimation_metadata": {
+      "type": "object",
+      "description": "Additional metadata about the estimation process",
+      "properties": {
+        "sample_size": {
+          "type": "integer",
+          "description": "Number of observations in the dataset"
+        },
+        "treatment_type": {
+          "type": "string",
+          "enum": ["binary", "continuous"],
+          "description": "Type of treatment variable (binary or continuous)"
+        },
+        "num_controls": {
+          "type": "integer",
+          "description": "Number of control variables used"
+        },
+        "bootstrap_samples": {
+          "type": "integer",
+          "description": "Number of bootstrap resamples used for confidence interval"
+        }
+      }
+    }
+  },
+  
+  "implementation": {
+    "entrypoint": "python -m src.scripts.estimate_effect",
+    "module": "src.estimate",
+    "function": "estimate_from_dag_path",
+    "description": "This skill conceptually calls estimate_from_dag_path() from src/estimate.py. The actual implementation would be in a script at src/scripts/estimate_effect.py that uses src/estimate.py utilities.",
+    "arguments_mapping": {
+      "df": {
+        "source": "load_dataset(inputs.dataset_path)",
+        "description": "Loads the dataset from dataset_path using src.ingest.load_dataset()"
+      },
+      "treatment": {
+        "source": "inputs.treatment",
+        "description": "Maps directly to the treatment parameter"
+      },
+      "outcome": {
+        "source": "inputs.outcome",
+        "description": "Maps directly to the outcome parameter"
+      },
+      "controls": {
+        "source": "inputs.controls",
+        "description": "Maps directly to the controls parameter"
+      },
+      "dag_path": {
+        "source": "inputs.dag_path",
+        "description": "Maps directly to the dag_path parameter"
+      }
+    },
+    "dependencies": [
+      "src.ingest.load_dataset",
+      "src.estimate.estimate_from_dag_path",
+      "src.scm.causal_model_from_dag",
+      "src.scm.load_dag_dot"
+    ],
+    "estimation_method": "DRLearner (Double Robust Learner from EconML)",
+    "identification_method": "DoWhy default ID algorithm (backdoor criterion)"
+  },
+  
+  "examples": [
+    {
+      "name": "Simple treatment effect estimation",
+      "input": {
+        "dataset_path": "data/experiment_data.csv",
+        "treatment": "treatment",
+        "outcome": "outcome",
+        "controls": ["age", "gender"],
+        "dag_path": "dag_registry/sensor_reliability.dot"
+      },
+      "output": {
+        "ate": 0.523,
+        "ate_ci": [0.412, 0.634],
+        "method": "dr_learner",
+        "model_summary": "DRLearner with RandomForest models. Treatment: treatment (binary), Outcome: outcome, Controls: 2 variables. Sample size: 1000",
+        "estimation_metadata": {
+          "sample_size": 1000,
+          "treatment_type": "binary",
+          "num_controls": 2,
+          "bootstrap_samples": 200
+        }
+      }
+    },
+    {
+      "name": "Estimation with multiple controls",
+      "input": {
+        "dataset_path": "data/observational_study.parquet",
+        "treatment": "intervention",
+        "outcome": "health_score",
+        "controls": ["age", "gender", "income", "education", "baseline_health"],
+        "dag_path": "dag_registry/site_uptime.dot"
+      },
+      "output": {
+        "ate": 2.341,
+        "ate_ci": [1.892, 2.790],
+        "method": "dr_learner",
+        "model_summary": "DRLearner with RandomForest models. Treatment: intervention (binary), Outcome: health_score, Controls: 5 variables. Sample size: 2500",
+        "estimation_metadata": {
+          "sample_size": 2500,
+          "treatment_type": "binary",
+          "num_controls": 5,
+          "bootstrap_samples": 200
+        }
+      }
+    },
+    {
+      "name": "Estimation with continuous treatment",
+      "input": {
+        "dataset_path": "data/dose_response.csv",
+        "treatment": "dose",
+        "outcome": "response",
+        "controls": ["weight", "age"],
+        "dag_path": "dag_registry/sensor_reliability.dot"
+      },
+      "output": {
+        "ate": 0.156,
+        "ate_ci": [0.098, 0.214],
+        "method": "dr_learner",
+        "model_summary": "DRLearner with RandomForest models. Treatment: dose (continuous), Outcome: response, Controls: 2 variables. Sample size: 500",
+        "estimation_metadata": {
+          "sample_size": 500,
+          "treatment_type": "continuous",
+          "num_controls": 2,
+          "bootstrap_samples": 200
+        }
+      }
+    },
+    {
+      "name": "Estimation with no controls",
+      "input": {
+        "dataset_path": "data/rct_data.csv",
+        "treatment": "treatment",
+        "outcome": "outcome",
+        "controls": [],
+        "dag_path": "dag_registry/sensor_reliability.dot"
+      },
+      "output": {
+        "ate": 0.678,
+        "ate_ci": [0.545, 0.811],
+        "method": "dr_learner",
+        "model_summary": "DRLearner with RandomForest models. Treatment: treatment (binary), Outcome: outcome, Controls: 0 variables. Sample size: 800",
+        "estimation_metadata": {
+          "sample_size": 800,
+          "treatment_type": "binary",
+          "num_controls": 0,
+          "bootstrap_samples": 200
+        }
+      }
+    }
+  ],
+  
+  "error_handling": {
+    "file_not_found": {
+      "status_code": 404,
+      "description": "Returned when dataset_path or dag_path cannot be found"
+    },
+    "validation_error": {
+      "status_code": 400,
+      "description": "Returned when required columns are missing from the dataset or validation fails"
+    },
+    "estimation_error": {
+      "status_code": 500,
+      "description": "Returned when the estimation process fails (e.g., model fitting errors, identification failures)"
+    }
+  },
+  
+  "notes": [
+    "This skill uses DoWhy for causal identification and EconML's DRLearner for estimation.",
+    "The DRLearner uses RandomForest models for both outcome and treatment modeling.",
+    "Confidence intervals are computed using bootstrap resampling (200 samples by default).",
+    "The DAG is used for effect identification via the backdoor criterion.",
+    "Both binary and continuous treatments are supported.",
+    "The skill automatically detects whether the treatment is binary or continuous.",
+    "This is a placeholder manifest for future integration with Claude Skills system."
+  ]
+}

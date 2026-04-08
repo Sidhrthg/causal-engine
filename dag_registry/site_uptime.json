@@ -1,0 +1,18 @@
+{
+  "directed": true,
+  "graph": {},
+  "nodes": [
+    {"id": "ServerLoad"},
+    {"id": "NetworkLatency"},
+    {"id": "ResponseTime"},
+    {"id": "Uptime"},
+    {"id": "Monitoring"}
+  ],
+  "links": [
+    {"source": "ServerLoad", "target": "ResponseTime"},
+    {"source": "NetworkLatency", "target": "ResponseTime"},
+    {"source": "ResponseTime", "target": "Uptime"},
+    {"source": "Monitoring", "target": "Uptime"}
+  ]
+}
+

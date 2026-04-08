@@ -1,0 +1,65 @@
+name: graphite_trade_shock_2008
+commodity: graphite
+seed: 123
+
+time:
+  start_year: 2000
+  end_year: 2011
+  dt: 1.0
+
+baseline:
+  P_ref: 1.0
+  P0: 1.0
+  K0: 108.695652
+  I0: 20.0
+  D0: 100.0
+
+parameters:
+  eps: 1e-9
+
+  # utilization
+  u0: 0.92
+  beta_u: 0.10
+  u_min: 0.70
+  u_max: 1.00
+
+  # capacity dynamics
+  tau_K: 3.0
+  eta_K: 0.40
+  retire_rate: 0.0
+
+  # demand
+  eta_D: -0.25
+  demand_growth:
+    type: constant
+    g: 1.0
+
+  # price dynamics
+  alpha_P: 0.80
+  cover_star: 0.20
+  lambda_cover: 0.60
+  sigma_P: 0.00
+
+policy:
+  substitution: 0.0
+  efficiency: 0.0
+  subsidy: 0.0
+  stockpile_release: 0.0
+
+shocks:
+  - type: export_restriction
+    start_year: 2008
+    end_year: 2008
+    magnitude: 0.30
+
+outputs:
+  out_dir: runs
+  save_csv: true
+  metrics:
+    - total_shortage
+    - peak_shortage
+    - avg_price
+    - final_inventory_cover
+    - shock_window_total_shortage
+    - post_shock_total_shortage
+

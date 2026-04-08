@@ -1,0 +1,18 @@
+{
+  "directed": true,
+  "graph": {},
+  "nodes": [
+    {"id": "Temperature"},
+    {"id": "Humidity"},
+    {"id": "SensorReading"},
+    {"id": "Reliability"},
+    {"id": "Maintenance"}
+  ],
+  "links": [
+    {"source": "Temperature", "target": "SensorReading"},
+    {"source": "Humidity", "target": "SensorReading"},
+    {"source": "SensorReading", "target": "Reliability"},
+    {"source": "Maintenance", "target": "Reliability"}
+  ]
+}
+

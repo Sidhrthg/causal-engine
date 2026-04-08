@@ -1,0 +1,48 @@
+baseline:
+  D0: 100.0
+  I0: 20.0
+  K0: 108.695652
+  P0: 1.0
+  P_ref: 1.0
+commodity: graphite
+name: china_graphite_export_restriction_40pct_2025
+outputs:
+  metrics:
+  - total_shortage
+  - peak_shortage
+  - avg_price
+  - final_inventory_cover
+  out_dir: runs
+  save_csv: true
+parameters:
+  alpha_P: 0.8
+  beta_u: 0.1
+  cover_star: 0.2
+  demand_growth:
+    g: 1.0
+    type: constant
+  eps: 1e-9
+  eta_D: -0.25
+  eta_K: 0.4
+  lambda_cover: 0.6
+  retire_rate: 0.0
+  sigma_P: 0.0
+  tau_K: 3.0
+  u0: 0.92
+  u_max: 1.0
+  u_min: 0.7
+policy:
+  efficiency: 0.0
+  stockpile_release: 0.0
+  subsidy: 0.0
+  substitution: 0.0
+seed: 123
+shocks:
+- end_year: 2025
+  magnitude: 0.4
+  start_year: 2025
+  type: export_restriction
+time:
+  dt: 1.0
+  end_year: 2035
+  start_year: 2024

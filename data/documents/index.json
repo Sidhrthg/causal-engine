@@ -1,0 +1,881 @@
+{
+  "chunks": [
+    {
+      "text": "Graphite Market Summary 2008\n\nNatural graphite imports to the United States increased significantly in 2008, \nreaching approximately 53 million USD, up from a baseline of 32-37 million USD \nin prior years. This increase was driven by several factors:\n\n1. Strong industrial demand from steel and automotive sectors\n2. Limited domestic production capacity\n3. Growing dependence on imports from China and other suppliers",
+      "metadata": {
+        "source_file": "usgs/graphite_2008_summary.txt",
+        "category": "usgs",
+        "filename": "graphite_2008_summary.txt",
+        "year": 2008,
+        "chunk_index": 0
+      },
+      "chunk_id": "e5e376dc3beefff7"
+    },
+    {
+      "text": "1. Strong industrial demand from steel and automotive sectors\n2. Limited domestic production capacity\n3. Growing dependence on imports from China and other suppliers\n\nChina remained the dominant supplier, accounting for over 70% of U.S. natural \ngraphite imports. Alternative suppliers included Mexico, Canada, and Madagascar.\n\nPrice volatility was observed in Q3 2008, with spot prices increasing 25-40% \nabove 2007 levels due to supply chain constraints and export quota discussions \nin China.",
+      "metadata": {
+        "source_file": "usgs/graphite_2008_summary.txt",
+        "category": "usgs",
+        "filename": "graphite_2008_summary.txt",
+        "year": 2008,
+        "chunk_index": 1
+      },
+      "chunk_id": "857ec08b0727b157"
+    },
+    {
+      "text": "Price volatility was observed in Q3 2008, with spot prices increasing 25-40% \nabove 2007 levels due to supply chain constraints and export quota discussions \nin China.\n\nThe financial crisis in late 2008 led to demand destruction in Q4, with some \nrecovery expected in subsequent years pending economic stabilization.",
+      "metadata": {
+        "source_file": "usgs/graphite_2008_summary.txt",
+        "category": "usgs",
+        "filename": "graphite_2008_summary.txt",
+        "year": 2008,
+        "chunk_index": 2
+      },
+      "chunk_id": "ab3fd777c5c2a34b"
+    },
+    {
+      "text": "Graphite Trade Patterns 2005-2012\n\nThis analysis examines U.S. graphite import trends during a period of significant \nmarket evolution. Key findings:\n\nBaseline Period (2005-2007):\n- Average annual imports: $34 million USD\n- Primary suppliers: China (72%), Mexico (12%), Canada (8%)\n- Stable pricing with low volatility",
+      "metadata": {
+        "source_file": "trade_reports/graphite_trade_analysis_2005_2012.txt",
+        "category": "trade_reports",
+        "filename": "graphite_trade_analysis_2005_2012.txt",
+        "year": 2005,
+        "chunk_index": 0
+      },
+      "chunk_id": "7e35d90621c1d9d3"
+    },
+    {
+      "text": "Baseline Period (2005-2007):\n- Average annual imports: $34 million USD\n- Primary suppliers: China (72%), Mexico (12%), Canada (8%)\n- Stable pricing with low volatility\n\nDisruption Period (2008-2010):\n- 2008: Sharp increase to $53M (46% above baseline) due to industrial demand\n- 2009: Decline to $32M following financial crisis demand destruction\n- 2010: Recovery to $57M amid China export policy changes",
+      "metadata": {
+        "source_file": "trade_reports/graphite_trade_analysis_2005_2012.txt",
+        "category": "trade_reports",
+        "filename": "graphite_trade_analysis_2005_2012.txt",
+        "year": 2005,
+        "chunk_index": 1
+      },
+      "chunk_id": "2ee63d2b8569a879"
+    },
+    {
+      "text": "Disruption Period (2008-2010):\n- 2008: Sharp increase to $53M (46% above baseline) due to industrial demand\n- 2009: Decline to $32M following financial crisis demand destruction\n- 2010: Recovery to $57M amid China export policy changes\n\nPost-Shock Period (2011-2012):\n- Sustained higher trade values ($87M in 2011)\n- Supply chain diversification efforts\n- Emergence of synthetic graphite alternatives",
+      "metadata": {
+        "source_file": "trade_reports/graphite_trade_analysis_2005_2012.txt",
+        "category": "trade_reports",
+        "filename": "graphite_trade_analysis_2005_2012.txt",
+        "year": 2005,
+        "chunk_index": 2
+      },
+      "chunk_id": "467427ebb193f192"
+    },
+    {
+      "text": "Post-Shock Period (2011-2012):\n- Sustained higher trade values ($87M in 2011)\n- Supply chain diversification efforts\n- Emergence of synthetic graphite alternatives\n\nThe data suggests that graphite markets exhibit significant responsiveness to \nboth demand shocks (financial crisis) and supply shocks (export restrictions), \nwith adjustment periods of 2-3 years for new supply capacity.",
+      "metadata": {
+        "source_file": "trade_reports/graphite_trade_analysis_2005_2012.txt",
+        "category": "trade_reports",
+        "filename": "graphite_trade_analysis_2005_2012.txt",
+        "year": 2005,
+        "chunk_index": 3
+      },
+      "chunk_id": "17d205d21ba9f2e7"
+    },
+    {
+      "text": "China Export Restrictions on Critical Minerals (2010)\n\nIn 2010, China implemented significant export quotas on rare earth elements \nand other critical minerals, including graphite. Key policy measures included:\n\n- Export quotas reduced by 30-40% compared to 2009 levels\n- Licensing requirements tightened for mineral exports\n- Environmental compliance standards raised for mining operations",
+      "metadata": {
+        "source_file": "policy/china_export_policy_2010.txt",
+        "category": "policy",
+        "filename": "china_export_policy_2010.txt",
+        "year": 2010,
+        "chunk_index": 0
+      },
+      "chunk_id": "046a29b7b07e22cb"
+    },
+    {
+      "text": "- Export quotas reduced by 30-40% compared to 2009 levels\n- Licensing requirements tightened for mineral exports\n- Environmental compliance standards raised for mining operations\n\nThese restrictions were justified on environmental protection grounds but had \nsignificant impacts on global supply chains. Major importing countries including \nthe United States, Japan, and EU members faced supply disruptions.",
+      "metadata": {
+        "source_file": "policy/china_export_policy_2010.txt",
+        "category": "policy",
+        "filename": "china_export_policy_2010.txt",
+        "year": 2010,
+        "chunk_index": 1
+      },
+      "chunk_id": "381281683e9dca00"
+    },
+    {
+      "text": "These restrictions were justified on environmental protection grounds but had \nsignificant impacts on global supply chains. Major importing countries including \nthe United States, Japan, and EU members faced supply disruptions.\n\nMarket response included:\n- Price increases of 300-500% for certain rare earth elements\n- Acceleration of alternative supplier development (Australia, U.S., Canada)\n- Increased recycling and substitution efforts\n- Strategic stockpile discussions in importing nations",
+      "metadata": {
+        "source_file": "policy/china_export_policy_2010.txt",
+        "category": "policy",
+        "filename": "china_export_policy_2010.txt",
+        "year": 2010,
+        "chunk_index": 2
+      },
+      "chunk_id": "4280711568b482a0"
+    },
+    {
+      "text": "Market response included:\n- Price increases of 300-500% for certain rare earth elements\n- Acceleration of alternative supplier development (Australia, U.S., Canada)\n- Increased recycling and substitution efforts\n- Strategic stockpile discussions in importing nations\n\nThe 2010 restrictions highlighted vulnerabilities in concentrated supply chains \nand prompted policy reviews regarding critical mineral dependencies.",
+      "metadata": {
+        "source_file": "policy/china_export_policy_2010.txt",
+        "category": "policy",
+        "filename": "china_export_policy_2010.txt",
+        "year": 2010,
+        "chunk_index": 3
+      },
+      "chunk_id": "661381376dc944e0"
+    }
+  ],
+  "keywords": {
+    "strong": [
+      0,
+      1
+    ],
+    "driven": [
+      0
+    ],
+    "years": [
+      0,
+      2,
+      6
+    ],
+    "production": [
+      0,
+      1
+    ],
+    "industrial": [
+      0,
+      1,
+      4,
+      5
+    ],
+    "from": [
+      0,
+      1
+    ],
+    "other": [
+      0,
+      1,
+      7
+    ],
+    "growing": [
+      0,
+      1
+    ],
+    "increased": [
+      0,
+      9,
+      10
+    ],
+    "domestic": [
+      0,
+      1
+    ],
+    "limited": [
+      0,
+      1
+    ],
+    "market": [
+      0,
+      3,
+      9,
+      10
+    ],
+    "steel": [
+      0,
+      1
+    ],
+    "usd": [
+      0,
+      3,
+      4
+    ],
+    "several": [
+      0
+    ],
+    "baseline": [
+      0,
+      3,
+      4,
+      5
+    ],
+    "significantly": [
+      0
+    ],
+    "reaching": [
+      0
+    ],
+    "automotive": [
+      0,
+      1
+    ],
+    "demand": [
+      0,
+      1,
+      2,
+      4,
+      5,
+      6
+    ],
+    "this": [
+      0,
+      3
+    ],
+    "sectors": [
+      0,
+      1
+    ],
+    "graphite": [
+      0,
+      1,
+      3,
+      5,
+      6,
+      7
+    ],
+    "suppliers": [
+      0,
+      1,
+      3,
+      4
+    ],
+    "million": [
+      0,
+      3,
+      4
+    ],
+    "united": [
+      0,
+      8,
+      9
+    ],
+    "prior": [
+      0
+    ],
+    "states": [
+      0,
+      8,
+      9
+    ],
+    "china": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7
+    ],
+    "approximately": [
+      0
+    ],
+    "imports": [
+      0,
+      1,
+      3,
+      4
+    ],
+    "dependence": [
+      0,
+      1
+    ],
+    "capacity": [
+      0,
+      1,
+      6
+    ],
+    "summary": [
+      0
+    ],
+    "natural": [
+      0,
+      1
+    ],
+    "factors": [
+      0
+    ],
+    "increase": [
+      0,
+      4,
+      5
+    ],
+    "quota": [
+      1,
+      2
+    ],
+    "spot": [
+      1,
+      2
+    ],
+    "prices": [
+      1,
+      2
+    ],
+    "volatility": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "supplier": [
+      1,
+      9,
+      10
+    ],
+    "alternative": [
+      1,
+      9,
+      10
+    ],
+    "accounting": [
+      1
+    ],
+    "madagascar": [
+      1
+    ],
+    "discussions": [
+      1,
+      2,
+      9,
+      10
+    ],
+    "export": [
+      1,
+      2,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "remained": [
+      1
+    ],
+    "observed": [
+      1,
+      2
+    ],
+    "increasing": [
+      1,
+      2
+    ],
+    "over": [
+      1
+    ],
+    "canada": [
+      1,
+      3,
+      4,
+      9,
+      10
+    ],
+    "levels": [
+      1,
+      2,
+      7,
+      8
+    ],
+    "constraints": [
+      1,
+      2
+    ],
+    "due": [
+      1,
+      2,
+      4,
+      5
+    ],
+    "with": [
+      1,
+      2,
+      3,
+      4,
+      6
+    ],
+    "supply": [
+      1,
+      2,
+      5,
+      6,
+      8,
+      9,
+      10
+    ],
+    "chain": [
+      1,
+      2,
+      5,
+      6
+    ],
+    "mexico": [
+      1,
+      3,
+      4
+    ],
+    "dominant": [
+      1
+    ],
+    "above": [
+      1,
+      2,
+      4,
+      5
+    ],
+    "price": [
+      1,
+      2,
+      9,
+      10
+    ],
+    "included": [
+      1,
+      7,
+      9,
+      10
+    ],
+    "destruction": [
+      2,
+      4,
+      5
+    ],
+    "some": [
+      2
+    ],
+    "recovery": [
+      2,
+      4,
+      5
+    ],
+    "financial": [
+      2,
+      4,
+      5,
+      6
+    ],
+    "economic": [
+      2
+    ],
+    "late": [
+      2
+    ],
+    "expected": [
+      2
+    ],
+    "pending": [
+      2
+    ],
+    "subsequent": [
+      2
+    ],
+    "stabilization": [
+      2
+    ],
+    "led": [
+      2
+    ],
+    "crisis": [
+      2,
+      4,
+      5,
+      6
+    ],
+    "pricing": [
+      3,
+      4
+    ],
+    "trade": [
+      3,
+      5,
+      6
+    ],
+    "patterns": [
+      3
+    ],
+    "examines": [
+      3
+    ],
+    "primary": [
+      3,
+      4
+    ],
+    "average": [
+      3,
+      4
+    ],
+    "annual": [
+      3,
+      4
+    ],
+    "import": [
+      3
+    ],
+    "evolution": [
+      3
+    ],
+    "findings": [
+      3
+    ],
+    "trends": [
+      3
+    ],
+    "period": [
+      3,
+      4,
+      5,
+      6
+    ],
+    "during": [
+      3
+    ],
+    "analysis": [
+      3
+    ],
+    "stable": [
+      3,
+      4
+    ],
+    "low": [
+      3,
+      4
+    ],
+    "significant": [
+      3,
+      6,
+      7,
+      8,
+      9
+    ],
+    "key": [
+      3,
+      7
+    ],
+    "policy": [
+      4,
+      5,
+      7,
+      10
+    ],
+    "disruption": [
+      4,
+      5
+    ],
+    "amid": [
+      4,
+      5
+    ],
+    "changes": [
+      4,
+      5
+    ],
+    "sharp": [
+      4,
+      5
+    ],
+    "following": [
+      4,
+      5
+    ],
+    "decline": [
+      4,
+      5
+    ],
+    "values": [
+      5,
+      6
+    ],
+    "shock": [
+      5,
+      6
+    ],
+    "alternatives": [
+      5,
+      6
+    ],
+    "diversification": [
+      5,
+      6
+    ],
+    "efforts": [
+      5,
+      6,
+      9,
+      10
+    ],
+    "synthetic": [
+      5,
+      6
+    ],
+    "sustained": [
+      5,
+      6
+    ],
+    "emergence": [
+      5,
+      6
+    ],
+    "higher": [
+      5,
+      6
+    ],
+    "post": [
+      5,
+      6
+    ],
+    "restrictions": [
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "responsiveness": [
+      6
+    ],
+    "that": [
+      6
+    ],
+    "data": [
+      6
+    ],
+    "both": [
+      6
+    ],
+    "markets": [
+      6
+    ],
+    "adjustment": [
+      6
+    ],
+    "periods": [
+      6
+    ],
+    "shocks": [
+      6
+    ],
+    "exhibit": [
+      6
+    ],
+    "suggests": [
+      6
+    ],
+    "exports": [
+      7,
+      8
+    ],
+    "reduced": [
+      7,
+      8
+    ],
+    "environmental": [
+      7,
+      8,
+      9
+    ],
+    "measures": [
+      7
+    ],
+    "tightened": [
+      7,
+      8
+    ],
+    "minerals": [
+      7
+    ],
+    "rare": [
+      7,
+      9,
+      10
+    ],
+    "raised": [
+      7,
+      8
+    ],
+    "quotas": [
+      7,
+      8
+    ],
+    "implemented": [
+      7
+    ],
+    "mining": [
+      7,
+      8
+    ],
+    "earth": [
+      7,
+      9,
+      10
+    ],
+    "critical": [
+      7,
+      10
+    ],
+    "licensing": [
+      7,
+      8
+    ],
+    "requirements": [
+      7,
+      8
+    ],
+    "elements": [
+      7,
+      9,
+      10
+    ],
+    "standards": [
+      7,
+      8
+    ],
+    "operations": [
+      7,
+      8
+    ],
+    "compared": [
+      7,
+      8
+    ],
+    "mineral": [
+      7,
+      8,
+      10
+    ],
+    "including": [
+      7,
+      8,
+      9
+    ],
+    "compliance": [
+      7,
+      8
+    ],
+    "had": [
+      8,
+      9
+    ],
+    "countries": [
+      8,
+      9
+    ],
+    "importing": [
+      8,
+      9,
+      10
+    ],
+    "members": [
+      8,
+      9
+    ],
+    "global": [
+      8,
+      9
+    ],
+    "protection": [
+      8,
+      9
+    ],
+    "major": [
+      8,
+      9
+    ],
+    "impacts": [
+      8,
+      9
+    ],
+    "these": [
+      8,
+      9
+    ],
+    "were": [
+      8,
+      9
+    ],
+    "chains": [
+      8,
+      9,
+      10
+    ],
+    "grounds": [
+      8,
+      9
+    ],
+    "disruptions": [
+      8,
+      9
+    ],
+    "japan": [
+      8,
+      9
+    ],
+    "faced": [
+      8,
+      9
+    ],
+    "justified": [
+      8,
+      9
+    ],
+    "stockpile": [
+      9,
+      10
+    ],
+    "development": [
+      9,
+      10
+    ],
+    "increases": [
+      9,
+      10
+    ],
+    "substitution": [
+      9,
+      10
+    ],
+    "certain": [
+      9,
+      10
+    ],
+    "acceleration": [
+      9,
+      10
+    ],
+    "strategic": [
+      9,
+      10
+    ],
+    "australia": [
+      9,
+      10
+    ],
+    "response": [
+      9,
+      10
+    ],
+    "recycling": [
+      9,
+      10
+    ],
+    "nations": [
+      9,
+      10
+    ],
+    "reviews": [
+      10
+    ],
+    "concentrated": [
+      10
+    ],
+    "prompted": [
+      10
+    ],
+    "dependencies": [
+      10
+    ],
+    "regarding": [
+      10
+    ],
+    "vulnerabilities": [
+      10
+    ],
+    "highlighted": [
+      10
+    ]
+  },
+  "has_embeddings": true
+}

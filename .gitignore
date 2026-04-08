@@ -1,0 +1,9 @@
+# Data artifacts
+data/raw/
+data/canonical/
+outputs/
+
+# Python
+__pycache__/
+*.pyc
+.venv/

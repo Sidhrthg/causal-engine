@@ -1,0 +1,15 @@
+digraph site_uptime {
+    rankdir=LR;
+    
+    ServerLoad -> ResponseTime;
+    NetworkLatency -> ResponseTime;
+    ResponseTime -> Uptime;
+    Monitoring -> Uptime;
+    
+    ServerLoad [label="Server\nLoad"];
+    NetworkLatency [label="Network\nLatency"];
+    ResponseTime [label="Response\nTime"];
+    Uptime [label="Uptime"];
+    Monitoring [label="Monitoring"];
+}
+
