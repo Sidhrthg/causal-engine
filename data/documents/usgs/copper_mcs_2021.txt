@@ -1,0 +1,369 @@
+COPPER
+(Data in thousand metric tons of copper content unless otherwise noted)
+Domestic Production and Use: In 2020, U.S. mine production of recoverable copper decreased by 5% to an
+estimated 1.2 million tons and was valued at an estimated $7.5 billion, 3% less than $7.75 billion in 2019. Arizona
+was the leading copper-producing State and accounted for an estimated 74% of domestic output, followed by, in
+descending order, Utah, New Mexico, Nevada, Montana, Michigan, and Missouri. Copper was recovered or
+processed at 25 mines (18 of which accounted for 99% of mine production), 3 smelters, 3 electrolytic refineries, and
+14 electrowinning facilities. Refined copper and scrap were used at about 30 brass mills, 15 rod mills, and
+500 foundries and miscellaneous consumers. Copper and copper alloy products were used in building construction,
+43%; electrical and electronic products, 21%; transportation equipment, 19%; consumer and general products, 10%;
+and industrial machinery and equipment, 7%.1
+Salient Statistics—United States:
+Production:
+Mine, recoverable
+Refinery:
+Primary (from ore)
+Secondary (from scrap)
+Copper recovered from old (post-consumer) scrap2
+Imports for consumption:
+Ore and concentrates
+Refined
+Exports:
+Ore and concentrates
+Refined
+Consumption:
+Reported, refined metal
+Apparent, primary refined and old scrap4
+Price, annual average, cents per pound:
+U.S. producer, cathode (COMEX + premium)
+COMEX, high-grade, first position
+London Metal Exchange, high-grade
+Stocks, refined, held by U.S. producers, consumers,
+and metal exchanges, yearend
+Employment, mine and plant, thousands
+Net import reliance5 as a percentage of
+apparent consumption
+
+2016
+
+2017
+
+2018
+
+2019
+
+2020e
+
+1,430
+
+1,260
+
+1,220
+
+1,260
+
+1,200
+
+1,180
+46
+149
+
+1,040
+40
+146
+
+1,070
+41
+149
+
+985
+44
+e150
+
+860
+45
+150
+
+(3)
+708
+
+14
+813
+
+32
+778
+
+27
+663
+
+2
+680
+
+331
+134
+
+237
+94
+
+253
+190
+
+363
+125
+
+390
+40
+
+1,800
+1,880
+
+1,800
+1,860
+
+1,820
+1,830
+
+1,830
+1,810
+
+1,700
+1,600
+
+224.9
+219.7
+220.6
+
+285.4
+280.4
+279.5
+
+298.7
+292.6
+296.0
+
+279.6
+272.3
+272.4
+
+280.0
+270.0
+270.0
+
+223
+10.1
+
+265
+10.5
+
+244
+11.7
+
+111
+12.0
+
+150
+11.0
+
+30
+
+36
+
+33
+
+37
+
+37
+
+Recycling: Old (post-consumer) scrap, converted to refined metal and alloys, provided an estimated 150,000 tons of
+copper. Purchased new (manufacturing) scrap, derived from fabricating operations, yielded an estimated 720,000 tons.
+Of the total copper recovered from scrap (including non-copper-base scrap), brass and wire-rod mills accounted for
+about 80%; smelters, refiners, and ingot makers, 15%; and miscellaneous chemical plants, foundries, and
+manufacturers, 5%. Copper recovered from scrap contributed about 38% of the U.S. copper supply.6
+Import Sources (2016–19): Copper content of blister and anodes: Finland, 75%; Malaysia, 19%; and other, 6%.
+Copper content of matte, ash, and precipitates: Canada, 27%; Mexico, 21%; Spain, 11%; Belgium, 10%; and other,
+31%. Copper content of ore and concentrates: Mexico, >99%; and other, <1%. Copper content of scrap: Canada,
+55%; Mexico, 33%; and other, 12%. Refined copper: Chile, 59%; Canada, 24%; Mexico, 11%; and other, 6%. Refined
+copper accounted for 85% of all unmanufactured copper imports.
+Tariff:
+
+Item
+
+Copper ore and concentrates, copper content
+Unrefined copper anodes
+Refined copper and alloys, unwrought
+Copper wire rod
+
+Number
+2603.00.0010
+7402.00.0000
+7403.00.0000
+7408.11.0000
+
+Depletion Allowance: 15% (domestic), 14% (foreign).
+Government Stockpile: None.
+Prepared by Daniel M. Flanagan [(703) 648–7726, dflanagan@usgs.gov]
+
+Normal Trade Relations
+12–31–20
+1.7¢/kg on lead content.
+Free.
+1.0% ad val.
+1.0% or 3.0% ad val.
+
+COPPER
+Events, Trends, and Issues: In 2020, U.S. mine production of copper decreased by an estimated 5%, primarily
+owing to reduced output from the Bingham Canyon Mine in Utah and the Chino Mine in New Mexico. At Bingham
+Canyon, ore grades were lower than those in 2019 because of planned pit sequencing and optimization of
+molybdenum production during an extended shutdown of the smelter. In April, operations at the Chino Mine were
+suspended after multiple workers tested positive for COVID-19; the mine was expected to restart in 2021 at about
+50% of capacity. Production at the Pumpkin Hollow Mine began in December 2019, was suspended in April 2020
+owing to restrictions implemented by the State of Nevada in response to the COVID-19 pandemic, and restarted in
+August. Output of refined copper in the United States decreased by an estimated 13% as a result of strikes, ongoing
+since October 2019, at a smelter in Arizona and electrolytic refinery in Texas. Refined copper production was also
+affected by maintenance at the smelter in Utah, which closed for several months for a complete furnace rebuild after
+an earthquake in March.
+Global mine production of copper declined slightly to an estimated 20 million tons in 2020 from 20.4 million tons in
+2019, owing primarily to COVID-19 lockdowns in April and May. These disruptions significantly affected output in
+Peru, the second-ranked mine producer of copper, where production through July 2020 fell by nearly 250,000 tons
+(23%) from that in the same period of 2019. Global refined copper production increased slightly to an estimated
+25 million tons in 2020 from 24.5 million tons in 2019, when output in multiple countries was affected by temporary
+smelter shutdowns for maintenance and upgrades.
+World Mine and Refinery Production and Reserves: Reserves for multiple countries were revised based on
+company and Government information.
+
+United States
+Australia
+Canada
+Chile
+China
+Congo (Kinshasa)
+Germany
+Japan
+Kazakhstan
+Korea, Republic of
+Mexico
+Peru
+Poland
+Russia
+Zambia
+Other countries
+World total (rounded)
+
+Mine production
+2019
+2020e
+1,260
+1,200
+934
+870
+573
+570
+5,790
+5,700
+1,680
+1,700
+1,290
+1,300
+—
+—
+—
+—
+562
+580
+—
+—
+715
+690
+2,460
+2,200
+399
+400
+801
+850
+797
+830
+3,100
+3,300
+20,400
+20,000
+
+Refinery production
+2019
+2020e
+1,030
+910
+426
+380
+281
+290
+2,270
+2,400
+9,780
+9,800
+1,080
+1,100
+632
+670
+1,500
+1,600
+512
+540
+665
+680
+477
+470
+308
+330
+566
+550
+1,050
+1,060
+262
+360
+3,640
+3,500
+24,500
+25,000
+
+Reserves7
+48,000
+888,000
+
+9,000
+200,000
+26,000
+19,000
+2,000
+—
+20,000
+—
+53,000
+92,000
+32,000
+61,000
+21,000
+200,000
+870,000
+
+World Resources:7 A U.S. Geological Survey study of global copper deposits indicated that, as of 2015, identified
+resources contained 2.1 billion tons of copper, and undiscovered resources contained an estimated 3.5 billion tons.9
+Substitutes: Aluminum substitutes for copper in automobile radiators, cooling and refrigeration tube, electrical
+equipment, and power cable. Titanium and steel are used in heat exchangers. Optical fiber substitutes for copper in
+telecommunications applications, and plastics substitute for copper in drain pipe, plumbing fixtures, and water pipe.
+Estimated. — Zero.
+Distribution reported by the Copper Development Association. Some electrical components are included in each end use.
+2
+Copper converted to refined metal and alloys by brass and wire-rod mills, foundries, refineries, and other manufacturers.
+3
+Less than ½ unit.
+4
+Primary refined production + copper in old scrap converted to refined metal and alloys + refined imports – refined exports ± refined stock changes.
+5
+Defined as refined imports – refined exports ± adjustments for refined copper stock changes.
+6
+Primary refined production + copper recovered from old and new scrap + refined imports – refined exports ± refined stock changes.
+7
+See Appendix C for resource and reserve definitions and information concerning data sources.
+8
+In Australia, Joint Ore Reserves Committee-compliant reserves were 22 million tons.
+9
+Hammarstrom, J.M., Zientek, M.L., Parks, H.L., Dicken, C.L., and the U.S. Geological Survey Global Copper Mineral Resource Assessment Team,
+2019, Assessment of undiscovered copper resources of the world, 2015 (ver.1.1, May 24, 2019): U.S. Geological Survey Scientific Investigations
+Report 2018–5160, 619 p., https://doi.org/10.3133/sir20185160.
+e
+1
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2021
+
+

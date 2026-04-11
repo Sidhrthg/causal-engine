@@ -5,8 +5,12 @@ import json
 import argparse
 import pandas as pd
 from pathlib import Path
-from anthropic import Anthropic
 from datetime import datetime
+
+try:
+    from anthropic import Anthropic
+except ImportError:
+    Anthropic = None
 
 
 class ModelValidator:
@@ -14,10 +18,12 @@ class ModelValidator:
     
     def __init__(self, api_key: str = None):
         self.api_key = api_key or os.getenv('ANTHROPIC_API_KEY')
-        if not self.api_key:
-            raise ValueError("ANTHROPIC_API_KEY not set")
-        
-        self.client = Anthropic(api_key=self.api_key)
+        if Anthropic is None:
+            self.client = None
+        elif not self.api_key:
+            self.client = None
+        else:
+            self.client = Anthropic(api_key=self.api_key)
     
     def validate_run(
         self,
@@ -196,7 +202,12 @@ class ModelValidator:
         reference_year: int = None
     ) -> str:
         """Generate LLM analysis using RAG approach."""
-        
+        if self.client is None:
+            return (
+                "[LLM analysis skipped] Install the anthropic package and set ANTHROPIC_API_KEY for full analysis. "
+                "Comparison data is still in the report."
+            )
+
         # Prepare context from retrieved data
         context = self._prepare_context(sim_data, actual_data, comparison)
         

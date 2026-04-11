@@ -1,0 +1,12 @@
+CEPII Trade Flow Data — Lithium
+Source file: BACI_HS92_Y2021_V202601
+Total records: 692
+
+Year 2021: 692 bilateral flows, total value 1,526,815 kUSD, total quantity 198,047 tonnes
+  Top exporters: Chile (986,590 kUSD), Argentina (256,893 kUSD), China (93,128 kUSD), Belgium (37,305 kUSD), South Korea (33,166 kUSD)
+  Top importers: China (576,429 kUSD), South Korea (360,152 kUSD), Japan (188,552 kUSD), USA (83,853 kUSD), Belgium (72,117 kUSD)
+  Chile → China: 388,196 kUSD  60,983 t
+  Chile → South Korea: 289,572 kUSD  35,590 t
+  Argentina → China: 153,430 kUSD  15,675 t
+  Chile → Japan: 129,604 kUSD  15,375 t
+  Chile → Belgium: 65,478 kUSD  9,683 t

@@ -1,0 +1,192 @@
+GALLIUM
+(Data in kilograms of contained gallium unless otherwise noted)
+Domestic Production and Use: No domestic primary (low-purity, unrefined) gallium has been recovered since 1987.
+Globally, primary gallium is recovered as a byproduct of processing bauxite and zinc ores. One company in Utah
+recovered and refined high-purity gallium from imported primary low-purity gallium metal and new scrap. Imports of
+gallium metal and gallium arsenide (GaAs) wafers were valued at about $3 million and $200 million, respectively.
+GaAs was used to manufacture compound semiconductor wafers used in integrated circuits (ICs) and optoelectronic
+devices, which include laser diodes, light-emitting diodes (LEDs), photodetectors, and solar cells. Gallium nitride
+(GaN) principally was used to manufacture optoelectronic devices. ICs accounted for 77% of domestic gallium
+consumption, optoelectronic devices accounted for 21%, and research and development accounted for 2%. About
+81% of the gallium consumed in the United States was contained in GaAs, GaN, and gallium phosphide (GaP)
+wafers. Gallium metal, triethyl gallium, and trimethyl gallium, used in the epitaxial layering process to fabricate
+epiwafers for the production of ICs and LEDs, accounted for most of the remainder. Optoelectronic devices were used
+in aerospace applications, consumer goods, industrial equipment, medical equipment, and telecommunications
+equipment. Uses of ICs included defense applications, high-performance computers, and telecommunications
+equipment.
+Salient Statistics—United States:
+Production, primary
+Imports for consumption:
+Metal
+Gallium arsenide wafers (gross weight)
+Exports
+Consumption, reported
+Price, imports, dollars per kilogram:
+High-purity, refined1
+Low-purity, primary2
+Stocks, consumer, yearend
+Net import reliance3 as a percentage of reported consumption
+
+2017
+—
+
+2018
+—
+
+2019
+—
+
+2020
+—
+
+2021e
+—
+
+20,200 32,000
+5,740
+4,460 10,600
+803,000 444,000 272,000 178,000 270,000
+NA
+NA
+NA
+NA
+NA
+17,900 15,000 14,900 15,700 16,000
+477
+124
+2,840
+100
+
+508
+185
+2,920
+100
+
+573
+153
+2,850
+100
+
+596
+163
+2,920
+100
+
+570
+200
+2,800
+100
+
+Recycling: Old scrap, none. Substantial quantities of new scrap generated in the manufacture of GaAs-based
+devices were reprocessed to recover high-purity gallium at one facility in Utah.
+Import Sources (2017–20): Metal: China,4 53%; the United Kingdom, 11%; Germany, 9%; Ukraine, 7%; and
+other, 20%.
+Tariff:
+
+Item
+
+Gallium arsenide wafers, doped
+Gallium metal
+
+Number
+3818.00.0010
+8112.92.1000
+
+Normal Trade Relations
+12–31–21
+Free.
+3.0% ad valorem.
+
+Depletion Allowance: 14% (domestic and foreign).
+Government Stockpile: None.
+Events, Trends, and Issues: Imports of gallium metal and GaAs wafers continued to account for all U.S.
+consumption of gallium. In 2021, gallium metal imports increased by an estimated 140% from those of 2020 owing to
+increased imports from Canada, Japan, and Singapore. Beginning in 2019, U.S. gallium metal imports decreased
+substantially from previous years when higher tariffs were placed on China’s gallium exports to the United States.
+Primary low-purity (99.99%-pure) gallium prices in China increased by an estimated 25% in 2021, to $345 per
+kilogram in October from approximately $275 per kilogram at yearend 2020. This followed a 96% increase in China’s
+primary low-purity gallium prices in 2020, to $275 per kilogram in December from $140 per kilogram in January. The
+increases in China’s gallium prices resulted from several issues. Environmental restrictions placed on Chinese
+bauxite production in 2019 compelled the country’s alumina refineries to import bauxite with lower gallium content
+from abroad, which increased gallium extraction costs. When the global COVID-19 pandemic reduced gallium
+demand in early to mid-2020, Chinese gallium producers slowed or shut down operations. Chinese gallium supply
+was scarce when gallium demand resumed in the second half of 2020, and gallium prices increased significantly in
+the last quarter of 2020, continuing through 2021.
+
+Prepared by Brian W. Jaskula [(703) 648–4908, bjaskula@usgs.gov]
+
+GALLIUM
+China’s primary low-purity gallium production capacity has been approximately 650,000 kilograms per year since
+2020, following an expansion from 140,000 kilograms per year in 2010. China accounted for approximately 84% of
+worldwide low-purity gallium capacity.
+The remaining primary low-purity gallium producers outside of China most likely restricted output owing to a large
+surplus of primary gallium that began in 2012. These producers included Japan, the Republic of Korea, and Russia.
+Germany and Kazakhstan ceased primary production in 2016 and 2013, respectively. However, owing to the increase
+in gallium prices in 2020 and 2021, Germany announced that it would restart primary gallium production by the end of
+2021. Hungary and Ukraine were thought to have ceased primary production in 2015 and 2019, respectively. Highpurity refined gallium production in 2021 was estimated to be about 225,000 kilograms, a 5% increase from that in
+2020. China, Japan, Slovakia, and the United States were the known principal producers of high-purity refined gallium.
+The United Kingdom ceased high-purity refined gallium production in 2018. Gallium was recovered from new scrap in
+Canada, China, Germany, Japan, Slovakia, and the United States. World primary low-purity gallium production
+capacity in 2021 was estimated to be 774,000 kilograms per year; high-purity refined gallium production capacity,
+325,000 kilograms per year; and secondary high-purity gallium production capacity, 273,000 kilograms per year.
+World Production and Reserves:
+
+United States
+China
+Japan
+Korea, Republic of
+Russia
+World total (rounded)
+
+Primary production
+2020
+2021e
+—
+—
+317,000
+420,000
+3,000
+3,000
+2,000
+2,000
+5,000
+5,000
+327,000
+430,000
+
+Reserves5
+Quantitative estimates of
+reserves are not available.
+
+World Resources:5 Gallium occurs in very small concentrations in ores of other metals. Most gallium is produced as
+a byproduct of processing bauxite, and the remainder is produced from zinc-processing residues. The average
+gallium content of bauxite is 50 parts per million. U.S. bauxite deposits consist mainly of subeconomic resources that
+are not generally suitable for alumina production owing to their high silica content. Some domestic zinc ores contain
+up to 50 parts per million gallium and could be a significant resource, although no gallium is currently recovered from
+domestic ores. Gallium contained in world resources of bauxite is estimated to exceed 1 million tons, and a
+considerable quantity could be contained in world zinc resources. However, less than 10% of the gallium in bauxite
+and zinc resources is potentially recoverable.
+Substitutes: Liquid crystals made from organic compounds are used in visual displays as substitutes for LEDs.
+Silicon-based complementary metal-oxide semiconductor power amplifiers compete with GaAs power amplifiers in
+midtier third generation (3G) cellular handsets. Indium phosphide components can be substituted for GaAs-based
+infrared laser diodes in some specific-wavelength applications, and helium-neon lasers compete with GaAs in visible
+laser diode applications. Silicon is the principal competitor with GaAs in solar-cell applications. In many defenserelated applications, GaAs-based ICs are used because of their unique properties, and no effective substitutes exist
+for GaAs in these applications. In heterojunction bipolar transistors, GaAs is being replaced in some applications by
+silicon-germanium.
+
+Estimated. NA Not available. — Zero.
+Estimated based on the average unit values of U.S. imports for 99.999%- and 99.99999%-pure gallium.
+2
+Estimated based on the average unit values of U.S. imports for 99.99%-pure gallium.
+3
+Defined as imports – exports. Excludes gallium arsenide wafers.
+4
+Includes Hong Kong.
+5
+See Appendix C for resource and reserve definitions and information concerning data sources.
+e
+1
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2022
+
+

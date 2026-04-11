@@ -1,0 +1,12 @@
+CEPII Trade Flow Data — Graphite
+Source file: BACI_HS92_Y2022_V202601
+Total records: 1190
+
+Year 2022: 1190 bilateral flows, total value 849,120 kUSD, total quantity 673,177 tonnes
+  Top exporters: China (451,509 kUSD), Mozambique (104,745 kUSD), 450 (87,213 kUSD), Brazil (29,981 kUSD), Germany (29,668 kUSD)
+  Top importers: USA (183,389 kUSD), South Korea (128,074 kUSD), China (101,821 kUSD), Japan (95,805 kUSD), Germany (72,254 kUSD)
+  China → USA: 136,338 kUSD  40,710 t
+  China → South Korea: 116,258 kUSD  46,986 t
+  China → Japan: 86,115 kUSD  35,473 t
+  Mozambique → China: 63,434 kUSD  108,432 t
+  450 → China: 29,408 kUSD  54,196 t

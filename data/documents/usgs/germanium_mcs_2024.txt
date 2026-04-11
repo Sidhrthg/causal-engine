@@ -1,0 +1,251 @@
+80
+
+GERMANIUM
+(Data in kilograms, germanium content, unless otherwise specified)
+Domestic Production and Use: In 2023, zinc concentrates containing germanium were produced at mines in Alaska
+and Tennessee. Some of the germanium-containing concentrates produced in Alaska were exported to a refinery in
+Canada for processing and germanium recovery in the form of dioxide and tetrachloride. A zinc smelter in Clarksville,
+TN, produced germanium leach concentrates recovered from processing zinc concentrates from the Middle
+Tennessee Zinc Complex. Germanium in the form of compounds and metal was imported into the United States for
+further processing by industry. The value of germanium metal and germanium dioxide (gross weight) imported
+domestically in 2023 was estimated to be $45 million. A company in Utah produced germanium wafers for the
+semiconductor industry and for solar cells used in satellites from imported and recycled germanium. A refinery in
+Oklahoma recovered germanium from scrap and produced germanium tetrachloride for the production of fiber optics.
+Salient Statistics—United States:
+Production, refinery:
+Primary
+Secondary
+Imports for consumption:e, 1
+Germanium metal
+Germanium dioxide
+Germanium tetrachloride
+Exports:e, 1
+Germanium metal
+Germanium dioxide
+Germanium tetrachloride
+Shipments from Government stockpile2
+Consumption, estimated3
+Price, annual average, dollars per kilogram:4
+Germanium metal
+Germanium dioxide
+Net import reliance5 as a percentage of estimated consumption
+
+2019
+
+2020
+
+2021
+
+2022
+
+2023e
+
+—
+NA
+
+—
+NA
+
+—
+NA
+
+—
+NA
+
+—
+NA
+
+14,000
+21,000
+NA
+
+14,000
+11,000
+NA
+
+13,000
+17,000
+NA
+
+16,000
+15,000
+NA
+
+24,000
+14,000
+NA
+
+3,900
+600
+NA
+—
+30,000
+
+4,000
+800
+NA
+—
+30,000
+
+5,500
+400
+NA
+—
+30,000
+
+6,600
+100
+NA
+—
+NA
+
+6,300
+100
+NA
+NA
+NA
+
+1,236
+913
+>50
+
+1,046
+724
+>50
+
+1,187
+770
+>50
+
+1,294
+828
+>50
+
+1,400
+880
+>50
+
+Recycling: The United States has the capability to recycle new and old germanium scrap. During the manufacture of
+infrared germanium optics, much of the germanium removed during the machining process is routinely recycled as
+new scrap. Infrared lenses and windows in decommissioned military equipment are also recycled to recover
+germanium. Germanium is recycled from certain wastes generated during the manufacture of optical fibers.
+Germanium wafers used as substrates to produce solar cells are also recycled. Available information was inadequate
+to make reliable estimates of the amount of secondary germanium produced.
+Import Sources (2019–22):1, 6 Germanium metal: China, 54%; Belgium, 30%; Germany, 8%; Russia, 6%; and
+other, 2%. Germanium dioxide: Belgium, 47%; Canada, 46%; and other, 7%. Combined total: Belgium, 39%; China,
+26%; Canada, 25%; and other, 10%.
+Tariff:
+
+Item
+
+Number
+
+Germanium oxides and zirconium dioxide
+Unspecified chlorides, including germanium
+tetrachloride
+Metal, unwrought
+Metal, powder
+Metal, wrought
+
+2825.60.0000
+2827.39.9000
+
+Normal Trade Relations
+12–31–23
+3.7% ad valorem.
+3.7% ad valorem.
+
+8112.92.6000
+8112.92.6500
+8112.99.1000
+
+2.6% ad valorem.
+4.4% ad valorem.
+4.4% ad valorem.
+
+Depletion Allowance: 14% (domestic and foreign).
+Government Stockpile:7
+
+Material
+Germanium (gross weight)
+
+FY 2023
+Potential
+Potential
+acquisitions
+disposals
+—
+5,000
+
+Prepared by Amy C. Tolcin [(703) 648–4940, atolcin@usgs.gov]
+
+FY 2024
+Potential
+Potential
+acquisitions
+disposals
+—
+5,000
+
+GERMANIUM
+Events, Trends, and Issues: The major global end uses for germanium were electronics and solar applications,
+fiber-optic systems, infrared optics, and polymerization catalysts. Other uses included chemotherapy, metallurgy, and
+phosphors.
+U.S. imports of germanium metal and dioxide (germanium content) in 2023 were estimated to have increased by
+about 20% in 2023 from those in 2022 to 38,000 kilograms. Imports of germanium tetrachloride could not be
+quantified from available trade data. More than 99% of total imports of metal and dioxide (germanium content) for the
+year through August were from China, Belgium, Germany, and Canada, in descending order by quantity.
+Global germanium refinery production and recycling data were limited, and available estimates were difficult to verify.
+China continued to be the leading global producer and exporter of germanium in 2023. In August, the Government of
+China implemented an export licensing program for germanium. Exporters were required to apply for an export
+license for each shipment of germanium, providing the Government with details on the overseas buyer and end use.
+Exports of germanium metal (China’s export codes 8112.92.10 and 8112.99.10) for the year through September
+increased by 34% to 34,600 kilograms compared with those in the same period in 2022, despite virtually no exports
+reported in August and September 2023 after China’s export control measures began. These exports were mostly
+sent to Russia (21%), Germany (19%), Hong Kong (18%), the United States (17%), Belgium (9%), and Japan (8%).
+Major germanium producers in China included Yunnan Chihong Germanium and Zinc Co. Ltd. and Yunnan Lincang
+Xinyuan Germanium Industry Co. Ltd.
+Germanium metal and germanium dioxide prices (Europe, minimum 99.999% purity) generally rose between January
+and October with the price for germanium metal increasing from $1,150 per kilogram to $1,550 per kilogram and the
+price for germanium dioxide increasing from $725 per kilogram to $940 per kilogram.
+World Refinery Production and Reserves:8 Germanium was known to have been produced or recycled
+commercially in only a few countries, including the United States, Belgium, Canada, China, Germany, and Russia,
+with China being the leading producer of germanium. Because most producers do not publicly report germanium
+production, global production data were limited. Substantial germanium-rich deposits, including tailings sites, that
+were in operation or in active development were in the United States, China, Congo (Kinshasa), and Russia.
+However, data were generally not available on the reserves of these deposits.
+World Resources:8 Germanium reserves data were not widely reported at a mine or country level and thus difficult to
+quantify. The available resources of germanium are associated with certain zinc and lead-zinc-copper sulfide ores
+and lignite coal deposits.
+Substitutes: Silicon or gallium arsenide substitute for germanium in certain electronic applications. Some metallic
+compounds can be substituted in high-frequency electronics applications and in some light-emitting-diode
+applications. Chalcogenide glass has been used as a substitute for germanium metal in infrared applications.
+Antimony and titanium are substitutes for use as polymerization catalysts.
+
+Estimated. NA Not available. — Zero.
+Data have been adjusted to exclude low-value shipments. Germanium dioxide data were multiplied by 69% to calculate the germanium content.
+2
+Defined as change in total inventory from prior yearend inventory. If negative, increase in inventory. Beginning in 2023, Government stock
+changes no longer available.
+3
+Estimated consumption of germanium contained in metal and germanium dioxide.
+4
+Average European price for minimum 99.999% purity. Source: Argus Media group, Argus Non-Ferrous Markets.
+5
+Defined for 2019–22 as imports – exports ± adjustments for Government stock changes. Beginning in 2023, Government stock changes no longer
+included.
+6
+Germanium metal import sources were based on adjusted data for Harmonized Tariff Schedule of the United States (HTS) codes 8112.92.6000,
+8112.92.6500, and 8112.99.1000. Germanium dioxide import sources were based on adjusted data for HTS code 2825.60.0000.
+7
+See Appendix B for definitions.
+8
+See Appendix C for resource and reserve definitions and information concerning data sources.
+e
+1
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2024
+
+81
+
+

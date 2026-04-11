@@ -52,20 +52,30 @@ def fit_pomdp(
             df["state"] = df["Failure"].map({0: "healthy", 1: "failed"})
             state_col = "state"
         else:
-            # Infer states: use quantiles of observations to create states
-            logger.warning("Inferring states heuristically from observations")
+            # Infer states by sorting unique observation labels and assigning thirds.
+            # Bottom 20% by sorted rank → "healthy", top 20% → "failed", middle → "degrading".
+            # This is only reliable when obs labels carry ordinal meaning (e.g. numeric or
+            # ordered strings). Prefer supplying a state_col or Failure column when possible.
+            logger.warning(
+                "No state labels found; inferring states by observation sort rank. "
+                "Supply state_col or a 'Failure' column for reliable results."
+            )
             df = df.copy()
-            obs_counts = df.groupby(obs_col, observed=True).size()
-            # Simple heuristic: bottom 20% = healthy, top 20% = failed, middle = degrading
-            thresholds = obs_counts.quantile([0.2, 0.8])
+            obs_sorted = sorted(df[obs_col].unique().tolist())
+            n_unique = len(obs_sorted)
+            low_cut = max(1, int(0.2 * n_unique))
+            high_cut = max(low_cut + 1, int(0.8 * n_unique))
+            obs_rank = {o: i for i, o in enumerate(obs_sorted)}
+
             def infer_state(obs):
-                count = obs_counts.get(obs, 0)
-                if count <= thresholds.iloc[0]:
+                rank = obs_rank.get(obs, 0)
+                if rank < low_cut:
                     return "healthy"
-                elif count >= thresholds.iloc[1]:
+                elif rank >= high_cut:
                     return "failed"
                 else:
                     return "degrading"
+
             df["state"] = df[obs_col].apply(infer_state)
             state_col = "state"
     

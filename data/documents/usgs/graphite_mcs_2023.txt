@@ -1,0 +1,274 @@
+GRAPHITE (NATURAL)
+(Data in metric tons unless otherwise noted)
+Domestic Production and Use: In 2022, natural graphite was not produced in the United States; however,
+approximately 95 U.S. companies, primarily in the Great Lakes and Northeast regions, consumed 72,000 tons valued
+at an estimated $140 million. The major uses of natural graphite were batteries, brake linings, lubricants, powdered
+metals, refractory applications, and steelmaking. During 2022, U.S. natural graphite imports were an estimated
+82,000 tons, consisting of about 77% flake and high-purity, 22% amorphous, and 1% lump and chip graphite.
+Graphite consumption is expected to continue to increase, owing largely to growth from the electric-vehicle market.
+The battery end-use market for graphite has grown by 250% globally since 2018. In the United States, 4 lithium-ion
+battery manufacturing plants are currently in operation, with an additional 21 in development. At full capacity, these
+plants are expected to require approximately 1.2 million tons per year of spherical purified graphite, with an estimated
+40% to 60% coming from synthetic graphite.
+Salient Statistics—United States:
+Production, mine
+Imports for consumption
+Exports
+Consumption, apparent1
+Price, average unit value of imports, dollars per metric ton at
+foreign ports:
+Flake
+Lump and chip (Sri Lanka)
+Amorphous
+Net import reliance1 as a percentage of apparent consumption
+
+2018
+—
+70,700
+9,950
+60,700
+
+2019
+—
+50,100
+5,890
+44,200
+
+2020
+—
+36,000
+5,930
+30,000
+
+2021
+—
+53,100
+8,670
+44,400
+
+2022e
+—
+82,000
+9,600
+72,000
+
+1,520
+1,890
+319
+100
+
+1,340
+2,380
+511
+100
+
+1,340
+2,940
+567
+100
+
+1,390
+2,010
+622
+100
+
+1,300
+2,500
+560
+100
+
+Recycling: Refractory brick and linings, alumina-graphite refractories for continuous metal castings, magnesiagraphite refractory brick for basic oxygen and electric arc furnaces, and insulation brick led the way in the recycling of
+graphite products. Recycling of refractory graphite material is increasing, with material being recycled into products
+such as brake linings and thermal insulation. Recovering high-quality flake graphite from steelmaking kish is
+technically feasible, but currently not practiced. The abundance of graphite in the world market inhibits increased
+recycling efforts. Information on the quantity and value of recycled graphite is not available.
+Import Sources (2018–21): China,5 33%; Mexico, 18%; Canada, 17%; Madagascar, 10%; and other, 22%.
+Tariff:
+
+Item
+
+Number
+
+Crystalline flake (not including flake dust)
+Powder
+Other
+
+2504.10.1000
+2504.10.5000
+2504.90.0000
+
+Normal Trade Relations
+12–31–22
+Free.
+Free.
+Free.
+
+Depletion Allowance: Lump and amorphous, 22% (domestic) and flake, 14% (domestic); 14% (foreign).
+Government Stockpile:2
+
+Material
+Graphite
+
+Inventory
+as of 9–30–22
+—
+
+FY 2022
+Potential
+Potential
+acquisitions
+disposals
+900
+—
+
+FY 2023
+Potential
+Potential
+acquisitions
+disposals
+—
+—
+
+Events, Trends, and Issues: U.S. natural graphite imports decreased by 29% and 28% in 2019 and 2020,
+respectively, and then increased by 48% in 2021, and by 55% in 2022. U.S. imports for consumption and U.S.
+apparent consumption increased by 16% and 19%, respectively, for the 5-year period of 2018 to 2022. The increase
+in consumption is likely due to rising demand from the lithium-ion battery industry.
+In 2022, China was the world’s leading graphite producer, producing an estimated 65% of total world production.
+Approximately 24% of graphite produced in China was amorphous and about 76% was flake. China produced some
+large flake graphite, but much of its flake graphite production was very small, in the +200-mesh range. China also
+processed most of the world’s spherical graphite.
+
+Prepared by Andrew A. Stewart [(703) 648–7723, astewart@usgs.gov]
+
+GRAPHITE (NATURAL)
+North America produced only 1.2% of the world’s graphite supply with production in Canada and Mexico. Three
+companies were developing graphite-mining projects in the United States—two in Alabama and one in Alaska. Two
+spherical graphite plants were in construction during 2022, located in Kellyton, AL, and Vidalia, LA, with production
+expected to begin during 2023. In 2022, the Vidalia project was awarded a grant of up to $220 million under the
+Bipartisan Infrastructure Law towards expanding the production capacity to 45,000 tons per year.
+Africa has been a recent focus for graphite exploration, with projects under development in Madagascar,
+Mozambique, Namibia, and Tanzania. Additional projects were in advanced development stages in Australia,
+Canada, and Sweden. A Canadian company and an Australian company continued to construct mines in Madagascar
+and Tanzania, respectively, with production expected to begin by 2023. In 2022, an Australian company
+commissioned a graphite anode plant in Sweden, becoming the first commercial plant operating in Europe.
+In February, Ukraine halted graphite production, citing Russian military action. Operations recommenced in August,
+although future production was uncertain as the conflict continued. Additionally, the United States and many other
+countries have suspended normal trade relations with Russia, removing supplies of Russian graphite from much of
+the global market. Leading up to the conflict, Ukraine and Russia were considered among the top 10 producers of
+graphite.
+World Mine Production and Reserves: Reserves for Brazil, China, and Russia were revised based on company
+and Government reports.
+
+United States
+Austria
+Brazil
+Canada
+China
+Germany
+India
+Korea, North
+Korea, Republic of
+Madagascar
+Mexico
+Mozambique
+Norway
+Russia
+Sri Lanka
+Tanzania
+Turkey
+Ukraine
+Uzbekistan
+Vietnam
+World total (rounded)
+
+Mine production
+2021
+2022e
+—
+—
+500
+500
+82,000
+87,000
+12,000
+15,000
+820,000
+850,000
+250
+250
+7,000
+8,300
+8,100
+8,100
+10,500
+17,000
+70,000
+110,000
+2,100
+1,900
+72,000
+170,000
+6,290
+10,000
+15,000
+15,000
+3,000
+3,000
+—
+8,000
+2,700
+2,900
+10,000
+3,000
+110
+—
+5,000
+5,000
+1,130,000 1,300,000
+
+Reserves3
+(4)
+(4)
+74,000,000
+(4)
+52,000,000
+(4)
+8,000,000
+2,000,000
+1,800,000
+26,000,000
+3,100,000
+25,000,000
+600,000
+14,000,000
+1,500,000
+18,000,000
+90,000,000
+(4)
+7,600,000
+(4)
+330,000,000
+
+World Resources:3 Domestic resources of graphite are relatively small, but the rest of the world’s resources exceed
+800 million tons of recoverable graphite.
+Substitutes: Synthetic graphite powder, scrap from discarded machined shapes, and calcined petroleum coke
+compete for use in iron and steel production. Synthetic graphite powder and secondary synthetic graphite from
+machining graphite shapes compete for use in battery applications. Finely ground coke with olivine is a potential
+competitor in foundry-facing applications. Molybdenum disulfide competes as a dry lubricant but is more sensitive to
+oxidizing conditions.
+Estimated. — Zero.
+Defined as imports – exports.
+2
+See Appendix B for definitions.
+3
+See Appendix C for resource and reserve definitions and information concerning data sources.
+4
+Included in “World total.”
+5
+Includes Hong Kong.
+e
+1
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2023
+
+

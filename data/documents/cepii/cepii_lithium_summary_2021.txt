@@ -1,0 +1,39 @@
+Lithium Global Trade — 2021 (CEPII data)
+Total world trade: 1,526.8 million USD, 198.0 thousand tonnes
+Number of bilateral trade relationships: 692
+
+Top exporters by value:
+  Chile: 986.6 MUSD (64.6% of world exports)
+  Argentina: 256.9 MUSD (16.8% of world exports)
+  China: 93.1 MUSD (6.1% of world exports)
+  Belgium: 37.3 MUSD (2.4% of world exports)
+  South Korea: 33.2 MUSD (2.2% of world exports)
+  Netherlands: 26.6 MUSD (1.7% of world exports)
+  Germany: 25.3 MUSD (1.7% of world exports)
+  USA: 14.3 MUSD (0.9% of world exports)
+  826: 12.7 MUSD (0.8% of world exports)
+  068: 10.5 MUSD (0.7% of world exports)
+
+Top importers by value:
+  China: 576.4 MUSD (37.8% of world imports)
+  South Korea: 360.2 MUSD (23.6% of world imports)
+  Japan: 188.6 MUSD (12.3% of world imports)
+  USA: 83.9 MUSD (5.5% of world imports)
+  Belgium: 72.1 MUSD (4.7% of world imports)
+  Russia: 52.7 MUSD (3.5% of world imports)
+  Germany: 32.5 MUSD (2.1% of world imports)
+  Netherlands: 28.3 MUSD (1.9% of world imports)
+  826: 21.6 MUSD (1.4% of world imports)
+  251: 15.7 MUSD (1.0% of world imports)
+
+Top bilateral trade corridors:
+  Chile→China: 388.2 MUSD
+  Chile→South Korea: 289.6 MUSD
+  Argentina→China: 153.4 MUSD
+  Chile→Japan: 129.6 MUSD
+  Chile→Belgium: 65.5 MUSD
+  China→South Korea: 53.1 MUSD
+  Chile→USA: 41.8 MUSD
+  Argentina→USA: 38.0 MUSD
+  Argentina→Japan: 26.3 MUSD
+  China→Japan: 24.7 MUSD

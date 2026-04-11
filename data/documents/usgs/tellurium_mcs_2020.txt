@@ -1,0 +1,200 @@
+166
+
+TELLURIUM
+(Data in metric tons unless otherwise noted)
+Domestic Production and Use: In 2019, no tellurium was produced in the United States. One firm in Texas was
+thought to export copper anode slimes to Mexico for recovery of commercial-grade tellurium. Downstream companies
+further refined imported commercial-grade metal to produce tellurium dioxide, high-purity tellurium, and tellurium
+compounds for specialty applications.
+Tellurium was predominantly used in the production of cadmium telluride (CdTe) for thin-film solar cells. Another
+important end use was for the production of bismuth telluride (BiTe), which is used in thermoelectric devices for both
+cooling and energy generation. Other uses were as an alloying additive in steel to improve machining characteristics,
+as a minor additive in copper alloys to improve machinability without reducing conductivity, in lead alloys to improve
+resistance to vibration and fatigue, in cast iron to help control the depth of chill, and in malleable iron as a carbide
+stabilizer. It was used in the chemical industry as a vulcanizing agent and accelerator in the processing of rubber and
+as a component of catalysts for synthetic fiber production. Other uses included those in photoreceptor and
+thermoelectric devices, blasting caps, and as a pigment to produce various colors in glass and ceramics.
+Global consumption estimates of tellurium by end use are solar, 40%; thermoelectric production, 30%; metallurgy,
+15%; rubber applications, 5%; and other, 10%.
+Salient Statistics—United States:
+Production, refinery
+Imports for consumption
+Exports
+Consumption, apparent1
+Price, dollars per kilogram 2
+Stocks, producer, refined, yearend
+Net import reliance3 as a percentage of
+apparent consumption
+
+2015
+—
+76
+41
+W
+79
+W
+
+2016
+—
+73
+3
+W
+36
+W
+
+2017
+—
+163
+2
+W
+38
+W
+
+2018
+—
+192
+4
+W
+80
+W
+
+2019e
+—
+50
+1
+W
+70
+W
+
+>95
+
+>95
+
+>95
+
+>95
+
+>95
+
+Recycling: For traditional metallurgical and chemical uses, there was little or no old scrap from which to extract
+secondary tellurium because these uses of tellurium are highly dispersive or dissipative. A very small amount of
+tellurium was recovered from scrapped selenium-tellurium photoreceptors employed in older plain-paper copiers in
+Europe. A plant in the United States recycled tellurium from CdTe solar cells; however, the amount recycled was
+limited because most CdTe solar cells were relatively new and had not reached the end of their useful life.
+Import Sources (2015–18): Canada, 64%; China, 25%; Germany, 7%; and other, 4%.
+Tariff: Item
+Tellurium
+
+Number
+2804.50.0020
+
+Normal Trade Relations
+12–31–19
+Free.
+
+Depletion Allowance: 14% (Domestic and foreign).
+Government Stockpile: None.
+Events, Trends, and Issues: Domestic tellurium production was estimated to have remained essentially unchanged
+from that in 2018. One domestic producer of anode slimes shipped at least a portion of its anode slimes to Mexico for
+treatment and refining. World production of tellurium in 2019 was estimated to be about 470 tons. In 2019, the
+domestic average monthly price of tellurium generally decreased in the first 10 months of the year, from around $80
+per kilogram in January to $65 per kilogram in October.
+
+Prepared by C. Schuyler Anderson [(703) 648–4985, csanderson@usgs.gov]
+
+167
+
+TELLURIUM
+Domestic imports of tellurium were estimated to have decreased by about 74% in 2019 from those of 2018, mostly as
+a result of a significant decrease in imports from China and Canada. During the first 8 months of 2019, the United
+States imported 2 tons of tellurium from Canada and 0.3 tons of tellurium from China. During the same period of
+2018, the United States imported 99 tons of tellurium from Canada and 7 tons of tellurium from China.
+China was the leading producer of refined tellurium, recovering tellurium from copper anode slimes and from residues
+generated during the lead, nickel, precious metals, and zinc smelting processes.
+The Yunnan Provincial government in China announced an auction of 170 tons of tellurium from the defunct Fanya
+Metal Exchange (FME) with a starting price of $43 per kilogram (306 yuan per kilogram), or a total lot bid of $7.34
+million (51.95 million yuan).
+A solar cell manufacturer in Germany announced in April that it would increase production rate of CdTe solar cells to
+60 megawatts per year after finding a new investor in July 2018.
+World Refinery Production and Reserves: The figures shown for reserves include only tellurium contained in
+copper reserves. These estimates assume that more than one-half of the tellurium contained in unrefined copper
+anodes is recoverable.
+
+United States
+Bulgaria
+Canada
+China
+Japan
+Russia
+South Africa
+Sweden
+Other countries5
+World total (rounded)
+
+Refinery productione
+2018
+2019
+—
+—
+5
+5
+25
+30
+280
+290
+58
+55
+42
+40
+6
+5
+45
+40
+NA
+NA
+460
+470
+
+Reserves4
+3,500
+NA
+800
+6,600
+—
+NA
+—
+670
+19,000
+31,000
+
+World Resources: Data on tellurium resources were not available. More than 90% of tellurium has been produced
+from anode slimes collected from electrolytic copper refining, and the remainder was derived from skimmings at lead
+refineries and from flue dusts and gases generated during the smelting of bismuth, copper, and lead-zinc ores.
+Potential sources of tellurium include bismuth telluride and gold telluride ores.
+Substitutes: Several materials can replace tellurium in most of its uses, but usually with losses in efficiency or
+product characteristics. Bismuth, calcium, lead, phosphorus, selenium, and sulfur can be used in place of tellurium in
+many free-machining steels. Several of the chemical process reactions catalyzed by tellurium can be carried out with
+other catalysts or by means of noncatalyzed processes. In rubber compounding, sulfur and (or) selenium can act as
+vulcanization agents in place of tellurium. The selenides and sulfides of niobium and tantalum can serve as electricalconducting solid lubricants in place of tellurides of those metals.
+The selenium-tellurium photoreceptors used in some plain paper photocopiers and laser printers have been replaced
+by organic photoreceptors in newer devices. Amorphous silicon and copper indium gallium selenide were the two
+principal competitors of CdTe in thin-film photovoltaic solar cells. Bismuth selenide and organic polymers can be used
+to substitute for some BiTe thermal devices.
+
+Estimated. NA Not available. W Withheld to avoid disclosing company proprietary data. — Zero.
+Defined as production + imports – exports + adjustments for industry stock changes.
+2
+Average annual price. Source: Argus Media group–Argus Metals International for 99.95% tellurium, free on board, U.S. warehouses.
+3
+Defined as imports – exports + adjustments for industry stock changes.
+4
+See Appendix C for resource and reserve definitions and information concerning data sources.
+5
+In addition to the countries listed, Australia, Belgium, Chile, Colombia, Germany, Kazakhstan, Mexico, the Philippines, and Poland produced
+refined tellurium, but output was not reported and available information was inadequate to make reliable production and reserves estimates.
+e
+1
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2020
+
+

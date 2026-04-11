@@ -1,0 +1,261 @@
+GERMANIUM
+(Data in kilograms of germanium content unless otherwise noted)
+Domestic Production and Use: In 2020, zinc concentrates containing germanium were produced at mines in Alaska
+and Tennessee. Germanium-containing concentrates in Alaska were exported to a refinery in Canada for processing
+and germanium recovery. A zinc smelter in Clarksville, TN, produced and exported germanium leach concentrates
+recovered from processing zinc concentrates from the Middle Tennessee Mines. Germanium in the form of
+compounds and metal was imported into the United States for further processing by industry. A company in Utah
+produced germanium wafers for solar cells used in satellites from imported and recycled germanium. A refinery in
+Oklahoma recovered germanium from industry-generated scrap and produced germanium tetrachloride for the
+production of fiber optics. Although the consumption quantity was estimated to have remained level in 2020 compared
+with that in 2019, the estimated value of germanium consumed in 2020, based on the annual average germanium
+metal price, was $30 million, about 19% less than that in 2019.
+Salient Statistics—United States:
+Production, refinery:
+Primary
+Secondary
+Imports for consumption:
+Germanium metal
+Germanium dioxide1
+Exports2
+Shipments from Government stockpile
+Consumption, estimated3
+Price, annual average, dollars per kilogram:4
+Germanium metal
+Germanium dioxide
+Net import reliance5 as a percentage of
+estimated consumption
+
+2016
+
+2017
+
+2018
+
+2019
+
+2020e
+
+—
+W
+
+—
+W
+
+—
+W
+
+—
+W
+
+—
+W
+
+11,000
+15,200
+4,780
+—
+30,000
+
+11,100
+12,000
+3,670
+—
+30,000
+
+11,900
+12,200
+4,880
+—
+30,000
+
+14,100
+21,000
+4,600
+—
+30,000
+
+16,000
+10,000
+8,000
+—
+30,000
+
+1,087
+830
+
+1,082
+731
+
+1,543
+1,084
+
+1,236
+913
+
+1,000
+720
+
+>50%
+
+>50%
+
+>50%
+
+>50%
+
+>50%
+
+Recycling: Worldwide, about 30% of the total germanium consumed is produced from recycled materials. During the
+manufacture of most optical devices, more than 60% of the germanium metal used is routinely recycled as new scrap.
+Germanium scrap is also recovered from the windows in decommissioned tanks and other military vehicles. The
+United States has the capability to recycle new and old scrap.
+Import Sources (2016–19):6 Germanium metal: China, 58%; Belgium, 21%; Germany, 10%; Russia, 8%; and other,
+3%.
+Tariff:
+
+Item
+
+Number
+
+Germanium oxides and zirconium dioxide
+Metal, unwrought
+Metal, powder
+Metal, wrought
+
+2825.60.0000
+8112.92.6000
+8112.92.6500
+8112.99.1000
+
+Normal Trade Relations
+12–31–20
+3.7% ad val.
+2.6% ad val.
+4.4% ad val.
+4.4% ad val.
+
+Depletion Allowance: 14% (domestic and foreign).
+Government Stockpile:7
+
+Material
+Germanium metal
+Germanium scrap (gross weight)
+Germanium wafers (each)
+
+Inventory
+as of 9–30–20
+14,004
+3,794
+68,671
+
+FY 2020
+Potential
+Potential
+acquisitions disposals
+—
+—
+—
+3,000
+—
+—
+
+Prepared by Amy C. Tolcin [(703) 648–4940, atolcin@usgs.gov]
+
+FY 2021
+Potential
+Potential
+acquisitions disposals
+—
+—
+—
+3,000
+—
+—
+
+GERMANIUM
+Events, Trends, and Issues: The major global end uses for germanium were electronics and solar applications,
+fiber-optic systems, infrared optics, polymerization catalysts, and other uses (such as chemotherapy, metallurgy, and
+phosphors). Germanium-containing infrared optics were primarily for military use, but the commercial applications for
+thermal-imaging devices that use germanium lenses have increased during the past few years.
+Demand for fiber-optic cable in the United States reportedly decreased during 2020 owing to decreasing demand
+from related industrial end use markets as a result of the COVID-19 pandemic. However, this decrease was partially
+offset by Federal funding to increase broadband infrastructure in rural communities and a nationwide increase in
+remote work. Domestic demand for fiber-optic cable was still expected to increase as wireless carriers continue to
+expand and upgrade their networks.
+The government of Yunnan Province, a significant area of nonferrous and minor metals production in China, created
+a stimulus plan directing companies to purchase and stockpile nonferrous metals in response to lower demand
+caused by the COVID-19 pandemic. Under the plan, the government had targeted a “commercial” stockpile of about
+800,000 tons of metals, including 20 tons of germanium, and set aside $141 million to subsidize the interest on any
+loans taken out by companies to stockpile these metals. China’s germanium exports in January through August 2020
+increased by 18% compared with those in the same period of 2019. A leading Chinese producer of processed
+germanium products, based in Yunnan Province, reported that production of germanium wafers for satellites in
+January through June 2020 was more the seven times higher than wafer production in the first half of 2019 as
+production ramped up at its new germanium wafer production line.
+World Refinery Production and Reserves:8
+
+United States
+China
+Russia
+Other countries10
+World total (rounded)11
+
+Refinery production
+2019
+2020e
+W
+W
+85,700
+86,000
+5,000
+5,000
+40,000
+40,000
+131,000
+130,000
+
+Reserves9
+Data on the recoverable germanium
+content of zinc ores are not available.
+
+World Resources:9 The available resources of germanium are associated with certain zinc and lead-zinc-copper
+sulfide ores. Substantial U.S. reserves of recoverable germanium are contained in zinc deposits in Alaska,
+Tennessee, and Washington. Based on an analysis of zinc concentrates, U.S. reserves of zinc may contain as much
+as 2,500 tons of germanium. Because zinc concentrates are shipped globally and blended at smelters, however, the
+recoverable germanium in zinc reserves cannot be determined. On a global scale, as little as 3% of the germanium
+contained in zinc concentrates is recovered. Significant amounts of germanium are contained in ash and flue dust
+generated in the combustion of certain coals for power generation.
+Substitutes: Silicon can be a less-expensive substitute for germanium in certain electronic applications. Some
+metallic compounds can be substituted in high-frequency electronics applications and in some light-emitting-diode
+applications. Zinc selenide and germanium glass substitute for germanium metal in infrared applications systems, but
+often at the expense of performance. Antimony and titanium are substitutes for use as polymerization catalysts.
+
+Estimated. W Withheld to avoid disclosing company proprietary data. — Zero.
+Data has been adjusted to exclude low-value shipments, then multiplied by 69% to account for germanium content.
+2
+Includes Schedule B numbers: 8112.92.6100, 8112.99.1000, and 2825.60.0000. Data have been adjusted to exclude low-value shipments. Oxide
+data have been multiplied by 69% to account for germanium content.
+3
+Estimated consumption of germanium contained in metal and germanium dioxide.
+4
+Average European price for minimum 99.999% purity. Source: Argus Media group—Argus Metals International.
+5
+Defined as imports – exports + adjustments for Government stock changes.
+6
+Import sources are based on gross weight of wrought and unwrought germanium metal and germanium metal powders.
+7
+See Appendix B for definitions.
+8
+Includes primary and secondary production.
+9
+See Appendix C for resource and reserve definitions and information concerning data sources.
+10
+Includes Belgium, Canada, Germany, Japan, and Ukraine.
+11
+Excludes U.S. production.
+e
+1
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2021
+
+

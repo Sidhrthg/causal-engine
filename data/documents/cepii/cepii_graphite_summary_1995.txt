@@ -1,0 +1,39 @@
+Graphite Global Trade — 1995 (CEPII data)
+Total world trade: 151.8 million USD, 282.2 thousand tonnes
+Number of bilateral trade relationships: 612
+
+Top exporters by value:
+  China: 55.0 MUSD (36.3% of world exports)
+  Canada: 16.0 MUSD (10.5% of world exports)
+  Brazil: 12.4 MUSD (8.2% of world exports)
+  Japan: 11.7 MUSD (7.7% of world exports)
+  Germany: 11.7 MUSD (7.7% of world exports)
+  450: 10.6 MUSD (7.0% of world exports)
+  USA: 7.2 MUSD (4.8% of world exports)
+  716: 3.2 MUSD (2.1% of world exports)
+  757: 3.1 MUSD (2.0% of world exports)
+  Sweden: 2.3 MUSD (1.5% of world exports)
+
+Top importers by value:
+  USA: 30.3 MUSD (19.9% of world imports)
+  Japan: 24.5 MUSD (16.2% of world imports)
+  Germany: 18.3 MUSD (12.0% of world imports)
+  826: 11.8 MUSD (7.8% of world imports)
+  South Korea: 10.1 MUSD (6.6% of world imports)
+  Italy: 5.5 MUSD (3.6% of world imports)
+  Spain: 5.2 MUSD (3.4% of world imports)
+  040: 4.8 MUSD (3.2% of world imports)
+  Canada: 3.2 MUSD (2.1% of world imports)
+  058: 3.1 MUSD (2.1% of world imports)
+
+Top bilateral trade corridors:
+  China→Japan: 21.4 MUSD
+  Canada→USA: 10.5 MUSD
+  China→South Korea: 8.8 MUSD
+  China→USA: 6.7 MUSD
+  China→Germany: 4.3 MUSD
+  Brazil→USA: 4.1 MUSD
+  Japan→Germany: 3.8 MUSD
+  450→826: 3.6 MUSD
+  450→USA: 3.1 MUSD
+  Brazil→Germany: 2.3 MUSD

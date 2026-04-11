@@ -1,0 +1,280 @@
+98
+
+LITHIUM
+(Data in metric tons of lithium content unless otherwise noted)
+Domestic Production and Use: The only lithium production in the United States was from a brine operation in
+Nevada. Two companies produced a wide range of downstream lithium compounds in the United States from
+domestic or imported lithium carbonate, lithium chloride, and lithium hydroxide. Domestic production data were
+withheld to avoid disclosing company proprietary data.
+Although lithium markets vary by location, global end-use markets are estimated as follows: batteries, 65%; ceramics
+and glass, 18%; lubricating greases, 5%; polymer production, 3%; continuous casting mold flux powders, 3%; air
+treatment, 1%; and other uses, 5%. Lithium consumption for batteries has increased significantly in recent years
+because rechargeable lithium batteries are used extensively in the growing market for portable electronic devices and
+increasingly are used in electric tools, electric vehicles, and grid storage applications. Lithium minerals were used
+directly as ore concentrates in ceramics and glass applications.
+Salient Statistics—United States:
+Production
+Imports for consumption
+Exports
+Consumption, estimated1
+Price, annual average, battery-grade lithium
+carbonate, dollars per metric ton2
+Employment, mine and mill, number
+Net import reliance3 as a percentage of
+estimated consumption
+
+2015
+W
+2,750
+1,790
+2,000
+
+2016
+W
+3,140
+1,520
+3,000
+
+2017
+W
+3,330
+1,960
+3,000
+
+2018
+W
+3,420
+1,660
+3,000
+
+2019e
+W
+2,500
+1,700
+2,000
+
+6,500
+70
+
+8,650
+70
+
+15,000
+70
+
+17,000
+70
+
+13,000
+70
+
+>25
+
+>50
+
+>50
+
+>50
+
+>25
+
+Recycling: One domestic company has recycled lithium metal and lithium-ion batteries since 1992 at its facility in
+British Columbia, Canada. In 2015, the company began operating the first U.S. recycling facility for lithium-ion vehicle
+batteries in Lancaster, OH.
+Import Sources (2015–18): Argentina, 53%; Chile, 40%; China, 3%; and other, 4%.
+Tariff: Item
+
+Number
+
+Other alkali metals
+Lithium oxide and hydroxide
+Lithium carbonate:
+U.S. pharmaceutical grade
+Other
+
+2805.19.9000
+2825.20.0000
+
+Normal Trade Relations
+12–31–19
+5.5% ad val.
+3.7% ad val.
+
+2836.91.0010
+2836.91.0050
+
+3.7% ad val.
+3.7% ad val.
+
+Depletion Allowance: 22% (Domestic), 14% (Foreign).
+Government Stockpile:4
+Material
+Lithium cobalt oxide
+(kilograms, gross weight)
+Lithium nickel cobalt aluminum
+oxide (kilograms, gross weight)
+Lithium-ion precursors
+(kilograms, gross weight)
+
+Inventory
+As of 9–30–19
+
+FY 2019
+Potential
+Potential
+Acquisitions Disposals
+
+FY 2020
+Potential
+Potential
+Acquisitions Disposals
+
+750
+
+—
+
+—
+
+—
+
+—
+
+1,620
+
+—
+
+—
+
+—
+
+—
+
+—
+
+19,000
+
+—
+
+—
+
+—
+
+Events, Trends, and Issues: Excluding U.S. production, worldwide lithium production in 2019 decreased by 19% to
+77,000 tons of lithium content from 95,000 tons of lithium content in 2018 in response to lithium production exceeding
+consumption and decreasing lithium prices. Global consumption of lithium in 2019 was estimated to be about 57,700
+tons of lithium content, an increase of 18% from 49,100 tons of lithium content in 2018. However, consumption was
+lower than anticipated by the lithium industry owing to China scaling back subsidies on electric vehicles, consumers
+reducing lithium inventories, and lower electric vehicle sales volumes.
+
+Prepared by Brian W. Jaskula [(703) 648–4908, bjaskula@usgs.gov]
+
+99
+
+LITHIUM
+Spot lithium carbonate prices in China decreased from approximately $11,600 per ton at the beginning of the year to
+about $7,300 per ton in December. For large fixed contracts, the annual average U.S. lithium carbonate price was
+$13,000 per metric ton in 2019, a 24% decrease from that of 2018. Spot lithium hydroxide prices in China decreased
+from approximately $15,500 per ton at the beginning of the year to about $8,000 per ton in December. Spot lithium
+metal (99.9% Li) prices in China decreased from approximately $120,000 per ton at the beginning of the year to about
+$82,000 per ton in December.
+Six mineral operations in Australia, two brine operations each in Argentina and Chile, and one brine and one mineral
+operation in China accounted for the majority of world lithium production. Owing to overproduction and decreased
+prices, several established lithium operations postponed capacity expansion plans. Junior mining operations in
+Australia, Canada, and Namibia ceased production altogether.
+Lithium supply security has become a top priority for technology companies in the United States and Asia. Strategic
+alliances and joint ventures among technology companies and exploration companies continued to be established to
+ensure a reliable, diversified supply of lithium for battery suppliers and vehicle manufacturers. Brine-based lithium
+sources were in various stages of development in Argentina, Bolivia, Chile, China, and the United States; mineralbased lithium sources were in various stages of development in Australia, Austria, Brazil, Canada, China, Congo
+(Kinshasa), Czechia, Finland, Germany, Mali, Namibia, Portugal, Serbia, Spain, and Zimbabwe; and lithium-clay
+sources were in various stages of development in Mexico and the United States.
+World Mine Production and Reserves: Reserves for Argentina, Australia, Brazil, Chile, the United States, and
+Zimbabwe were revised based on new information from Government and industry sources.
+
+United States
+Argentina
+Australia
+Brazil
+Canada
+Chile
+China
+Namibia
+Portugal
+Zimbabwe
+Other7
+World total (rounded)
+
+Mine production
+2018
+2019e
+W
+W
+6,400
+6,400
+58,800
+42,000
+300
+300
+2,400
+200
+17,000
+18,000
+7,100
+7,500
+500
+—
+800
+1,200
+1,600
+1,600
+—
+—
+895,000
+877,000
+
+Reserves5
+630,000
+1,700,000
+62,800,000
+95,000
+370,000
+8,600,000
+1,000,000
+NA
+60,000
+230,000
+1,100,000
+17,000,000
+
+World Resources: Owing to continuing exploration, identified lithium resources have increased substantially
+worldwide and total about 80 million tons. Lithium resources in the United States—from continental brines,
+geothermal brines, hectorite, oilfield brines, and pegmatites—are 6.8 million tons. Lithium resources in other countries
+have been revised to 73 million tons. Lithium resources, in descending order, are: Bolivia, 21 million tons; Argentina,
+17 million tons; Chile, 9 million tons; Australia, 6.3 million tons; China, 4.5 million tons; Congo (Kinshasa), 3 million
+tons; Germany, 2.5 million tons; Canada and Mexico, 1.7 million tons each; Czechia, 1.3 million tons; Mali, Russia,
+and Serbia, 1 million tons each; Zimbabwe, 540,000 tons; Brazil, 400,000 tons; Spain, 300,000 tons; Portugal,
+250,000 tons; Peru, 130,000 tons; Austria, Finland and Kazakhstan, 50,000 tons each; and Namibia, 9,000 tons.
+Substitutes: Substitution for lithium compounds is possible in batteries, ceramics, greases, and manufactured glass.
+Examples are calcium, magnesium, mercury, and zinc as anode material in primary batteries; calcium and aluminum
+soaps as substitutes for stearates in greases; and sodic and potassic fluxes in ceramics and glass manufacture.
+Estimated. W Withheld to avoid disclosing company proprietary data. NA Not available. — Zero.
+Defined as production + imports – exports. Rounded to one significant digit to avoid disclosing company proprietary data.
+2
+Source: Industrial Minerals, IM prices: Lithium carbonate, large contracts, delivered continental United States.
+3
+Defined as imports – exports + adjustments for Government and industry stock changes.
+4
+See Appendix B for definitions.
+5
+See Appendix C for resource and reserve definitions and information concerning data sources.
+6
+For Australia, Joint Ore Reserves Committee-compliant reserves were 1.7 million tons.
+7
+Other countries with reported reserves include Finland, Mali, and Mexico.
+8
+Excludes U.S. production.
+e
+1
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2020
+
+

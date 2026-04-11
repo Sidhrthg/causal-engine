@@ -1,0 +1,262 @@
+72
+
+GRAPHITE (NATURAL)
+(Data in metric tons unless otherwise noted)
+Domestic Production and Use: In 2019, natural graphite was not produced in the United States; however,
+approximately 95 U.S. firms, primarily in the Great Lakes and Northeastern regions and Alabama and Tennessee,
+consumed 52,000 tons valued at an estimated $44 million. The major uses of natural graphite were brake linings,
+lubricants, powdered metals, refractory applications, and steelmaking. During 2019, U.S. natural graphite imports
+were an estimated 58,000 tons, which were about 65% flake and high-purity, 34% amorphous, and 1% lump and chip
+graphite.
+Salient Statistics—United States:
+2015
+Production, mine
+—
+Imports for consumption
+46,700
+Exports
+11,600
+Consumption, apparent1
+35,100
+Price, imports (average dollars per ton at foreign ports):
+Flake
+1,710
+Lump and chip (Sri Lankan)
+1,800
+Amorphous
+454
+Net import reliance1 as a percentage
+of apparent consumption
+100
+
+2016
+—
+38,900
+14,300
+24,700
+
+2017
+—
+51,900
+13,900
+38,000
+
+2018
+—
+70,700
+10,400
+60,300
+
+2019e
+—
+58,000
+6,600
+52,000
+
+1,920
+1,880
+571
+
+1,390
+1,900
+451
+
+1,520
+1,890
+310
+
+1,300
+2,370
+438
+
+100
+
+100
+
+100
+
+100
+
+Recycling: Refractory brick and linings, alumina-graphite refractories for continuous metal castings, magnesiagraphite refractory brick for basic oxygen and electric arc furnaces, and insulation brick led the way in the recycling of
+graphite products. The market for recycled refractory graphite material is expanding, with material being recycled into
+products such as brake linings and thermal insulation. Recovering high-quality flake graphite from steelmaking kish is
+technically feasible, but currently not practiced. The abundance of graphite in the world market inhibits increased
+recycling efforts. Information on the quantity and value of recycled graphite is not available.
+Import Sources (2015–18): China, 33%; Mexico, 24%; Canada, 16%; India, 9%; and other, 18%.
+Tariff:
+
+Item
+
+Crystalline flake (not including flake dust)
+Powder
+Other
+
+Number
+2504.10.1000
+2504.10.5000
+2504.90.0000
+
+Normal Trade Relations
+12–31–19
+Free.
+Free.
+Free.
+
+Depletion Allowance: 22% (Domestic lump and amorphous), 14% (Domestic flake), and 14% (Foreign).
+Government Stockpile: None.
+Events, Trends, and Issues: Worldwide consumption of graphite has steadily increased since 2013 and into 2019.
+U.S. consumption has fluctuated over this time period. During 2015 and 2016, U.S. consumption decreased by 39%
+and by 30%, respectively. In 2017 and 2018, consumption increased by 54% and by 59%, respectively, to its highest
+point during the past 5 years. However, during 2019, consumption declined again by 14%.
+In 2019, principal United States import sources of natural graphite were, in descending order of tonnage, China,
+Mexico, Canada, Madagascar, Brazil, Mozambique, the United Kingdom, Japan, Sri Lanka, and Austria, which
+combined accounted for 99% of the tonnage and 97% of the value of total United States imports. Mexico and China
+provided most of the amorphous graphite, and Sri Lanka provided all the lump and chip dust variety.
+During 2019, China produced more than 60% of the world’s graphite. Approximately 40% of production in China was
+amorphous graphite and about 60% was flake. China does produce some large flake graphite, but the majority of its
+flake graphite production is very small, in the +200-mesh range. North America produced only 4% of the world’s
+graphite supply with production in Canada and Mexico. No production of natural graphite was reported in the United
+States, but two companies were developing graphite projects—one in Alabama and one in Alaska.
+Large graphite deposits were being developed in Madagascar, northern Mozambique, Namibia, and south-central
+Tanzania. Some mines in Madagascar began ramping up production in 2018, and a mine in Tanzania started
+sampling production beginning in 2017. A graphite mine project in Mozambique commenced operations at the start of
+2018 and was ramping up production during 2018 and 2019 at a high-grade graphite deposit, which was reportedly
+Prepared by Donald W. Olson [(703) 648–7721, dolson@usgs.gov]
+
+73
+
+GRAPHITE (NATURAL)
+the largest natural graphite mine globally. The mine cut back production during 2019 in an effort to stabilize graphite
+prices. The mine is expected to operate for 50 years.
+During the first half of 2019, crystalline flake graphite prices declined to levels similar to those of midyear 2017. The
+price decline was the result of oversupply, and some graphite mining companies cut back production in an effort to
+stabilize and increase graphite prices.
+A U.S. automaker continued to build a large plant to manufacture lithium-ion electric vehicle batteries. The plant’s
+completion was projected for 2020. A portion of the plant was operational and battery packs were being assembled in
+2018 and 2019. When the plant is complete, it was expected to require 35,200 tons per year of spherical graphite for
+use as anode material for lithium-ion batteries.
+New thermal technology and acid-leaching techniques have enabled the production of higher purity graphite powders
+that are likely to lead to development of new applications for graphite in high-technology fields. Innovative refining
+techniques have made the use of graphite possible in carbon-graphite composites, electronics, foils, friction materials,
+and specialty lubricant applications. Flexible graphite product lines are likely to be the fastest growing market. Largescale fuel-cell applications are being developed that could consume as much graphite as all other uses combined.
+World Mine Production and Reserves: Reserves for Mozambique and Tanzania were revised based on information
+reported by graphite-producing companies and the Governments of those countries.
+
+United States
+Austria
+Brazil
+Canada
+China
+Germany
+India
+Korea, North
+Madagascar
+Mexico
+Mozambique
+Namibia
+Norway
+Pakistan
+Russia
+Sri Lanka
+Tanzania
+Turkey
+Ukraine
+Vietnam
+Zimbabwe
+Other
+World total (rounded)
+
+Mine production
+2018
+2019e
+—
+—
+1,000
+1,000
+95,000
+96,000
+40,000
+40,000
+693,000
+700,000
+800
+800
+35,000
+35,000
+6,000
+6,000
+46,900
+47,000
+9,000
+9,000
+104,000
+100,000
+3,460
+3,500
+16,000
+16,000
+14,000
+14,000
+25,200
+25,000
+4,000
+4,000
+150
+150
+2,000
+2,000
+20,000
+20,000
+5,000
+5,000
+2,000
+2,000
+200
+200
+1,120,000
+1,100,000
+
+Reserves2
+( 3)
+( 3)
+72,000,000
+( 3)
+73,000,000
+( 3)
+8,000,000
+2,000,000
+1,600,000
+3,100,000
+25,000,000
+( 3)
+600,000
+( 3)
+( 3)
+( 3)
+18,000,000
+90,000,000
+( 3)
+7,600,000
+( 3)
+( 3)
+300,000,000
+
+World Resources: Domestic resources of graphite are relatively small, but the rest of the world’s inferred resources
+exceed 800 million tons of recoverable graphite.
+Substitutes: Synthetic graphite powder, scrap from discarded machined shapes, and calcined petroleum coke
+compete for use in iron and steel production. Synthetic graphite powder and secondary synthetic graphite from
+machining graphite shapes compete for use in battery applications. Finely ground coke with olivine is a potential
+competitor in foundry-facing applications. Molybdenum disulfide competes as a dry lubricant but is more sensitive to
+oxidizing conditions.
+Estimated. — Zero.
+Defined as imports – exports.
+2
+See Appendix C for resource and reserve definitions and information concerning data sources.
+3
+Included with “World total.”
+e
+1
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2020
+
+

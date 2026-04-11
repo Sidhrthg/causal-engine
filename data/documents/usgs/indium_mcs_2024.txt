@@ -1,0 +1,215 @@
+90
+
+INDIUM
+(Data in metric tons unless otherwise specified)
+Domestic Production and Use: Indium was not recovered from ores in the United States in 2023. Several
+companies produced indium products—including alloys, compounds, high-purity metal, and solders—from imported
+indium metal. Production of indium tin oxide (ITO) continued to account for most global indium consumption. ITO thinfilm coatings were primarily used for electrically conductive purposes in a variety of flat-panel displays—most
+commonly liquid crystal displays (LCDs). Other indium end uses included alloys and solders, compounds, electrical
+components and semiconductors, and research. Estimated domestic consumption of refined indium was 300 tons in
+2023 and was based on the annual estimated import quantity. There were no readily available recycling or end-use
+data available for indium. The estimated value of refined indium consumed domestically in 2023, based on the
+average U.S. warehouse price, was about $72 million.
+Salient Statistics—United States:
+Production, refinery
+Imports for consumption
+Exports
+Consumption, estimated1
+Price, annual average, dollars per kilogram:
+New York dealer2
+U.S. warehouse, free on board3
+Rotterdam, duties unpaid4
+Net import reliance5 as a percentage of estimated consumption
+
+2019
+—
+95
+NA
+95
+
+2020
+—
+115
+NA
+115
+
+2021
+—
+158
+NA
+158
+
+2022
+—
+202
+NA
+202
+
+2023e
+—
+300
+NA
+300
+
+390
+182
+177
+100
+
+395
+161
+158
+100
+
+NA
+223
+217
+100
+
+NA
+250
+252
+100
+
+NA
+240
+240
+100
+
+Recycling: Indium is most commonly recovered from ITO scrap in Japan and the Republic of Korea. Indium-containing
+scrap was recycled domestically; however, data on the quantity of indium recovered from scrap were not available.
+Import Sources (2019–22): Republic of Korea, 32%; Canada, 19%; Belgium, 11%; and other, 38%.
+Tariff:
+
+Item
+
+Unwrought indium, including powders
+
+Number
+8112.92.3000
+
+Normal Trade Relations
+12–31–23
+Free.
+
+Depletion Allowance: 14% (domestic and foreign).
+Government Stockpile: None.
+Events, Trends, and Issues: In 2023, the estimated annual average U.S. warehouse price (free on board) was
+$240 per kilogram, 4% less than the reported average price in 2022. The U.S. price, as reported by Argus Media
+Group, Argus Non-Ferrous Markets, began the year at $223 per kilogram and remained around $220 through
+midyear. By the end of September, tight feedstock availability caused prices to trend upward to $275.
+In February, an Australian company completed the maiden resource estimate on its zinc-copper-silver-indium project
+in Utah. The resource estimate did not include indium owing to data gaps in historical drilling, but the company began
+a resampling program to include indium in the next resource update. The historical resource estimate, completed in
+2014, included about 1,530 tons of contained indium.
+A manufacturer of navigation and inertial sensing products announced that it would begin a restructuring program that
+would shut down its broadband business segment. The restructuring program would include closing down its indium
+phosphide (InP) wafer fabrication facility, located in Alhambra, CA.
+In Bolivia, the Minister of Mining and Metallurgy announced that it was finalizing a $350 million loan from the ExportImport Bank of China to aid in the construction of a zinc refinery, also capable of processing indium. The refinery
+would be built in the city of Oruro. Bolivia has large indium deposits and has been exporting zinc ores to Europe for
+indium recovery.
+An indium-producing zinc smelter in Auby, France, was placed on care-and-maintenance status in December 2022
+owing to unfavorable market conditions. The company announced that it would use this period to apply planned
+investments to improve operations. The facility was reopened in March 2023, but with variable production.
+
+Prepared by Andrew A. Stewart [(703) 648–7723, astewart@usgs.gov]
+
+91
+
+INDIUM
+China, the leading producer and exporter of indium globally, exported 381 tons of indium in the first 8 months of 2023
+according to international trade statistics. This was a 9% decrease compared with exports in the same period in 2022.
+Exports were primarily sent to the Republic of Korea, 57%; Hong Kong, 25%; and Singapore, 11%.
+The advent of fifth-generation (5G) technologies continued to increase demand for indium. InP-based substrates are
+used in 5G fiber-optic telecommunications networks where InP lasers and receivers send data through fiber-optic
+lines, which allow for lower latency, reduced signal loss, and faster speeds.
+The growing interest in artificial intelligence (AI) is expected to increase demand for specialized chip materials that
+allow for more advanced computation. One U.S.-based chipmaker announced in May that demand from data centers
+for AI chips was largely responsible for its second quarter revenue, which was 54% higher than expected. According
+to the consulting firm McKinsey, around two-thirds of the AI hardware demand will come from data centers for use in
+servers. Indium, as ITO, is used as a coating on data center fibers and cables to increase signal transmission and
+reduce loss. As InP, indium is used in high-speed photodetectors and laser diodes for optical communications.
+Additionally, some electrical components in data centers use indium-based solder alloys.
+World Refinery Production and Reserves:
+
+United States
+Belgium
+Canada
+China
+France
+Japan
+Korea, Republic of
+Russia
+Uzbekistan
+World total (rounded)
+
+Refinery productione, 6
+2022
+2023
+—
+—
+19
+18
+39
+37
+670
+650
+19
+12
+66
+64
+180
+200
+5
+5
+1
+1
+999
+990
+
+Reserves7
+Quantitative estimates of
+reserves were not available.
+
+World Resources:7 Indium is most commonly recovered from the zinc-sulfide ore mineral sphalerite. The indium
+content of zinc deposits from which it is recovered ranges from less than 1 part per million to 100 parts per million.
+Although the geochemical properties of indium are such that it occurs in trace amounts in other base-metal sulfides—
+particularly chalcopyrite and stannite—indium recovery from most deposits of these minerals was not economic.
+Substitutes: Antimony tin oxide coatings have been developed as an alternative to ITO coatings in LCDs and have
+been successfully annealed to LCD glass; carbon nanotube coatings have been developed as an alternative to ITO
+coatings in flexible displays, solar cells, and touch screens; poly (3,4-ethylene dioxythiophene) (PEDOT) has also
+been developed as a substitute for ITO in flexible displays and organic light-emitting diodes; and copper or silver
+nanowires have been explored as a substitute for ITO in touch screens. Graphene has been developed to replace
+ITO electrodes in solar cells and also has been explored as a replacement for ITO in flexible touch screens.
+Researchers have developed a more adhesive zinc oxide nanopowder to replace ITO in LCDs. Hafnium can replace
+indium in nuclear reactor control rod alloys.
+
+Estimated. NA Not available. — Zero.
+Estimated to equal imports.
+2
+Price is based on 99.99%-minimum-purity indium, delivered duty paid by U.S. buyers, in minimum lots of 50 kilograms. Source: S&P Global Platts
+Metals Week; price was discontinued as of September 11, 2020.
+e
+1
+
+Price is based on 99.99%-minimum-purity indium, free on board U.S. warehouse. Source: Argus Media Group, Argus Non-Ferrous Markets.
+Price is based on 99.99%-minimum-purity indium, duties unpaid in warehouse (Rotterdam). Source: Argus Media Group, Argus Non-Ferrous
+Markets.
+
+3
+
+4
+
+Defined as imports – exports.
+Refinery production data for indium were limited or unavailable for most countries. Estimates were derived from trade data, production capacity,
+and (or) changes in related lead and zinc smelter production.
+5
+6
+
+See Appendix C for resource and reserve definitions and information concerning data sources.
+
+7
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2024
+
+

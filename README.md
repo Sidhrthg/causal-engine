@@ -1,31 +1,169 @@
 # Causal Engine
 
-A causal modeling engine for effect estimation and policy simulation.
+A causal modeling engine for supply chain policy simulation and effect estimation, built on Pearl's causal inference framework. Designed for critical minerals analysis — model supply disruptions, run counterfactual scenarios, and validate against real trade data.
+
+## What it does
+
+- **Scenario simulation** — run year-by-year supply chain models under shocks (export restrictions, demand surges, cost spikes, stockpile releases)
+- **Causal identification** — check whether a causal query is identifiable from observational data using do-calculus, backdoor/frontdoor criteria
+- **Counterfactual analysis** — implement Pearl's three-layer ladder: observational (L1), interventional (L2), and counterfactual (L3)
+- **Knowledge graph construction** — extract causal edges from documents via LLM, build typed KGs, propagate shocks through supply chains
+- **RAG-powered validation** — compare simulation outputs against historical Comtrade data with LLM-generated analysis
+- **Web UI** — Gradio app with tabs for all of the above
+
+## Architecture
+
+```
+src/
+  minerals/       # Supply chain simulation engine (model, shocks, metrics)
+  minerals/causal_inference.py   # CausalDAG, identifiability, do-calculus
+  minerals/causal_discovery.py   # LLM-driven edge extraction from documents
+  minerals/knowledge_graph.py    # Typed KG with CAUSES/PRODUCES/EXPORTS_TO edges
+  minerals/rag_retrieval.py      # TF-IDF + semantic search over document corpus
+  minerals/pearl_layers.py       # L1/L2/L3 Pearl API
+  pomdp/          # Sensor degradation / maintenance modeling (POMDP)
+  llm/            # Unified LLM backend (Anthropic, OpenAI, vLLM)
+  estimate.py     # ATE estimation via DoWhy
+  simulate.py     # Counterfactual intervention simulation
+  scm.py          # Structural Causal Model from DOT DAG
+scenarios/        # Pre-built YAML scenarios (graphite, 2008 crisis, export bans)
+scripts/          # CLI entry points
+app.py            # Gradio web application
+```
 
 ## Setup
 
+**Python 3.10–3.12 required.** Python 3.14 is not supported.
+
 ```bash
-python3 -m venv .venv
+# macOS: brew install python@3.12 if needed
+python3.12 -m venv .venv
 source .venv/bin/activate
-pip install -e ".[dev]"
+
+pip install -e ".[dev,ui]"       # core + tests + Gradio app
+pip install -e ".[hipporag]"     # optional: graph-based RAG
 ```
 
-**Note:** `pydot<4` is pinned due to NetworkX DOT parsing incompatibility with pydot 4.x.
+**Optional `.env` in project root:**
 
-## Quickstart (graphite baseline)
+```bash
+ANTHROPIC_API_KEY=...    # for LLM query, RAG validation, causal discovery
+OPENAI_API_KEY=...       # for some normalizers/priors
+COMTRADE_API_KEY=...     # for UN Comtrade data download
+
+# Use a local vLLM server instead of Anthropic:
+LLM_BACKEND=vllm
+VLLM_BASE_URL=http://localhost:8000
+VLLM_MODEL=mistral-7b
+```
+
+## Quickstart
 
 ```bash
 source .venv/bin/activate
-python -m pip install -U pip
-python -m pip install pydantic pyyaml pandas numpy
+
+# Run a baseline scenario
 python -m scripts.run_scenario --scenario scenarios/graphite_baseline.yaml
-python -m pytest -q
+
+# Run tests
+python -m pytest tests/ -q
+
+# Launch the web UI
+python app.py   # http://127.0.0.1:7860
 ```
 
-## Tests
+## Scenarios
+
+Pre-built scenarios in `scenarios/`:
+
+| Scenario | Description |
+|----------|-------------|
+| `graphite_baseline.yaml` | Steady-state baseline 2024–2030 |
+| `china_export_restriction_40pct_2025.yaml` | 40% export reduction from China in 2025 |
+| `china_graphite_export_ban_2027.yaml` | Complete Chinese export ban in 2027 |
+| `graphite_2008_multishock.yaml` | Multi-shock calibrated to 2008 financial crisis |
+| `graphite_30pct_export_restriction_2024.yaml` | 30% restriction starting 2024 |
+
+Scenario outputs are saved to `runs/<scenario>/<timestamp>/`: a `timeseries.csv` and `metrics.json` with total shortage, peak shortage, average price, and inventory cover.
+
+### Scenario YAML structure
+
+```yaml
+name: china_export_restriction_40pct_2025
+commodity: graphite
+seed: 42
+time:
+  start_year: 2024
+  end_year: 2030
+baseline:
+  K0: 108.7      # initial capacity
+  I0: 20.0       # initial inventory
+  D0: 100.0      # initial demand
+  P0: 1.0        # initial price
+parameters:
+  eta_D: -0.25   # demand price elasticity
+  tau_K: 3.0     # capacity adjustment lag (years)
+  # ...
+shocks:
+  - type: export_restriction
+    start_year: 2025
+    end_year: 2025
+    magnitude: 0.4
+policy:
+  stockpile_release: 0.0
+  substitution: 0.0
+```
+
+## LLM query
+
+Ask natural-language questions — the LLM generates a scenario YAML, runs it, and returns structured results:
 
 ```bash
-source .venv/bin/activate
-python -m pytest -q
+python -m scripts.llm_query "What happens if China bans graphite exports in 2027?"
 ```
 
+## Causal identification
+
+Check whether P(Y | do(X)) is identifiable and get a derivation:
+
+```python
+from src.minerals.causal_inference import GraphiteSupplyChainDAG
+
+dag = GraphiteSupplyChainDAG()
+result = dag.is_identifiable(treatment="ExportPolicy", outcome="Price")
+print(result.formula)           # adjustment formula
+print(result.derivation_steps)  # do-calculus rule applications
+```
+
+## Comtrade data
+
+To validate against real trade data, set `COMTRADE_API_KEY` in `.env`, then:
+
+```bash
+python -m scripts.download_comtrade_specific
+python -m scripts.validate_with_real_rag --run-dir runs/<scenario>/<timestamp>
+```
+
+See [docs/COMTRADE.md](docs/COMTRADE.md) for full setup.
+
+## Documentation
+
+| Doc | Contents |
+|-----|----------|
+| [docs/CAUSAL_FRAMEWORK.md](docs/CAUSAL_FRAMEWORK.md) | Pearl's three-layer causation ladder, identifiability theory |
+| [docs/IMPLEMENTATION_FLOW.md](docs/IMPLEMENTATION_FLOW.md) | End-to-end data flow from UI to outputs |
+| [docs/KG_TO_CAUSAL.md](docs/KG_TO_CAUSAL.md) | Knowledge graph → causal DAG pipeline |
+| [docs/COMTRADE.md](docs/COMTRADE.md) | UN Comtrade API setup and data ingestion |
+| [docs/HIPPORAG.md](docs/HIPPORAG.md) | Graph-based RAG with HippoRAG |
+| [docs/VLLM.md](docs/VLLM.md) | Local vLLM server as LLM backend |
+| [docs/README_pomdp.md](docs/README_pomdp.md) | POMDP sensor maintenance module |
+
+## Dependencies
+
+Core: `dowhy`, `econml`, `networkx`, `pydot<4`, `scikit-learn`, `pandas`, `numpy`, `pydantic`, `fastapi`, `gradio`
+
+Optional: `sentence-transformers`, `chromadb`, `hipporag`, `anthropic`, `openai`
+
+## License
+
+MIT

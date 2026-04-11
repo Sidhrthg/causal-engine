@@ -2,6 +2,11 @@
 
 This module implements a Partially Observable Markov Decision Process (POMDP) for modeling sensor degradation and maintenance decisions.
 
+## Integration with the rest of the system
+
+- **Gradio app**: Run `python app.py` and open the **"POMDP – Sensor Maintenance"** tab to build the POMDP from sensor data (optional CSV/priors paths) and run a simulation. Output and DOT graph paths are shown in the UI.
+- **Same sensor domain as Causal Estimation**: The sensor dataset (`data/sensor_test_data.csv` or `tests/sensor_test_data.csv`) is also used by DoWhy-based causal estimation and the DAG `dag_registry/sensor_reliability.dot`. You can use the same data for both POMDP policies and causal ATE estimation.
+
 ## Overview
 
 The POMDP framework allows us to:

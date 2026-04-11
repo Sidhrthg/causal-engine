@@ -1,0 +1,12 @@
+CEPII Trade Flow Data — Graphite
+Source file: BACI_HS92_Y2013_V202601
+Total records: 978
+
+Year 2013: 978 bilateral flows, total value 386,734 kUSD, total quantity 336,440 tonnes
+  Top exporters: China (211,196 kUSD), Brazil (33,356 kUSD), Germany (24,564 kUSD), Canada (21,403 kUSD), Japan (20,208 kUSD)
+  Top importers: USA (70,235 kUSD), Japan (63,166 kUSD), Germany (43,881 kUSD), South Korea (20,459 kUSD), 699 (20,151 kUSD)
+  China → Japan: 54,765 kUSD  28,566 t
+  China → USA: 29,831 kUSD  20,266 t
+  China → Germany: 26,122 kUSD  26,467 t
+  China → 699: 16,553 kUSD  19,145 t
+  Canada → USA: 15,303 kUSD  10,530 t

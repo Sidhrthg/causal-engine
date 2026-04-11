@@ -1,0 +1,193 @@
+INDIUM
+(Data in metric tons unless otherwise noted)
+Domestic Production and Use: Indium was not recovered from ores in the United States in 2021. Several
+companies produced indium products—including alloys, compounds, high-purity metal, and solders—from imported
+indium metal. Production of indium tin oxide (ITO) continued to account for most global indium consumption. ITO thinfilm coatings were primarily used for electrically conductive purposes in a variety of flat-panel displays—most
+commonly liquid crystal displays (LCDs). Other indium end uses included alloys and solders, compounds, electrical
+components and semiconductors, and research. Estimated domestic consumption of refined indium was 170 tons in
+2021. The estimated value of refined indium consumed domestically in 2021, based on the average free on board
+U.S. warehouse price, was about $37 million.
+Salient Statistics—United States:
+Production, refinery
+Imports for consumption
+Exports
+Consumption, estimated1
+Price, annual average, dollars per kilogram:
+New York dealer2
+Free on board U.S. warehouse3
+Duties unpaid in warehouse, Rotterdam4
+Net import reliance5 as a percentage of estimated consumption
+
+2017
+—
+127
+NA
+127
+
+2018
+—
+125
+NA
+125
+
+2019
+—
+95
+NA
+95
+
+2020
+—
+115
+NA
+115
+
+2021e
+—
+170
+NA
+170
+
+363
+206
+205
+100
+
+375
+285
+281
+100
+
+390
+182
+177
+100
+
+395
+161
+158
+100
+
+NA
+220
+210
+100
+
+Recycling: Indium is most commonly recovered from ITO scrap in Japan and the Republic of Korea. A significant
+quantity of scrap was recycled domestically; however, data on the quantity of secondary indium recovered from scrap
+were not available.
+Import Sources (2017–20): China,6 31%; Canada, 23%; Republic of Korea, 20%; France, 9%; and other, 17%.
+Tariff:
+
+Item
+
+Unwrought indium, including powders, waste,
+and scrap
+
+Number
+
+Normal Trade Relations
+12–31–21
+
+8112.92.3000
+
+Free.
+
+Depletion Allowance: 14% (domestic and foreign).
+Government Stockpile: None.
+Events, Trends, and Issues: The New York dealer price of indium from the listed source was discontinued in 2021.
+In 2021, the average annual free on board U.S. warehouse price was an estimated $220 per kilogram, 37% greater
+than in 2020. The average monthly price was $187 per kilogram in January and increased throughout most of the
+year to a weekly average price of $270 per kilogram at the beginning of October. The 2021 estimated annual average
+Rotterdam price of indium (duties unpaid in the warehouse) was $210 per kilogram, 33% greater than that in 2020.
+The average monthly Rotterdam price of indium (duties unpaid in the warehouse) price began the year at $184 per
+kilogram in January then generally increased throughout the remainder of the year to a daily average of $235 per
+kilogram at the beginning of October.
+
+Prepared by C. Schuyler Anderson [(703) 648–4985, csanderson@usgs.gov]
+
+INDIUM
+Demand for indium in Europe has been reduced during the global COVID-19 pandemic restrictions, but demand
+began to increase in May, when China’s exports of indium to Europe increased sharply. Several European buyers
+started to build up indium stocks to ensure they had enough supply, owing to the prevalence of shipping delays in
+2021.
+The leading producer of tin in China announced that it produced 34.88 tons of indium in the first 6 months of 2021,
+with a reported capacity of 60 tons per year of indium. Other producers in China also announced the resumption of
+production of indium, accounting for an additional 50 to 60 tons per year of capacity, after shutting down to perform
+maintenance in the beginning of July.
+World Refinery Production and Reserves:
+
+United States
+Belgium
+Canada
+China
+France
+Japan
+Korea, Republic of
+Peru
+Russia
+World total (rounded)
+
+Refinery productione
+2020
+2021
+—
+—
+20
+20
+66
+60
+540
+530
+38
+35
+66
+60
+210
+200
+12
+10
+5
+5
+960
+920
+
+Reserves7
+Quantitative estimates of
+reserves are not available.
+
+World Resources:7 Indium is most commonly recovered from the zinc-sulfide ore mineral sphalerite. The indium
+content of zinc deposits from which it is recovered ranges from less than 1 part per million to 100 parts per million.
+Although the geochemical properties of indium are such that it occurs in trace amounts in other base-metal sulfides—
+particularly chalcopyrite and stannite—most deposits of these minerals are subeconomic for indium recovery.
+Substitutes: Antimony tin oxide coatings have been developed as an alternative to ITO coatings in LCDs and have
+been successfully annealed to LCD glass; carbon nanotube coatings have been developed as an alternative to ITO
+coatings in flexible displays, solar cells, and touch screens; poly(3,4-ethylene dioxythiophene) (PEDOT) has also
+been developed as a substitute for ITO in flexible displays and organic light-emitting diodes; and copper or silver
+nanowires have been explored as a substitute for ITO in touch screens. Graphene has been developed to replace
+ITO electrodes in solar cells and also has been explored as a replacement for ITO in flexible touch screens.
+Researchers have developed a more adhesive zinc oxide nanopowder to replace ITO in LCDs. Hafnium can replace
+indium in nuclear reactor control rod alloys.
+
+Estimated. NA Not available. — Zero.
+Estimated to equal imports.
+2
+Price is based on 99.99%-minimum-purity indium; delivered duty paid U.S. buyers; in minimum lots of 50 kilograms. Source: S&P Global Platts
+Metals Week; price was discontinued as of September 11, 2020.
+3
+Price is based on 99.99%-minimum-purity indium, free on board U.S. warehouse. Source: Argus Media group—Argus Metals International.
+4
+Price is based on 99.99%-minimum-purity indium, duties unpaid in warehouse (Rotterdam). Source: Argus Media group—Argus Metals
+International.
+5
+Defined as imports – exports.
+6
+Includes Hong Kong.
+7
+See Appendix C for resource and reserve definitions and information concerning data sources.
+e
+1
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2022
+
+

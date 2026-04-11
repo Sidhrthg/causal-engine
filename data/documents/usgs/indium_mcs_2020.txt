@@ -1,0 +1,185 @@
+78
+
+INDIUM
+(Data in metric tons unless otherwise noted)
+Domestic Production and Use: Indium was not recovered from ores in the United States in 2019. Several
+companies produced indium products—including alloys, compounds, high-purity metal, and solders—from imported
+indium metal. Production of indium tin oxide (ITO) continued to account for most of global indium consumption. ITO
+thin-film coatings were primarily used for electrical conductive purposes in a variety of flat-panel displays—most
+commonly liquid crystal displays (LCDs). Other indium end uses included alloys and solders, compounds, electrical
+components and semiconductors, and research. Based on an average of recent annual import levels, estimated
+domestic consumption of refined indium was 110 tons in 2019. The estimated value of refined indium consumed
+domestically in 2019, based on the average New York dealer price, was about $43 million.
+Salient Statistics—United States:
+Production, refinery
+Imports for consumption
+Exports
+Consumption, estimated1
+Price, annual average, dollars per kilogram:
+New York dealer2
+Duties unpaid in warehouse, Rotterdam3
+Net import reliance4 as a percentage of
+estimated consumption
+
+2015
+—
+140
+NA
+140
+
+2016
+—
+160
+NA
+160
+
+2017
+—
+127
+NA
+127
+
+2018
+—
+125
+NA
+125
+
+2019e
+—
+110
+NA
+110
+
+520
+410
+
+345
+240
+
+363
+225
+
+375
+291
+
+390
+210
+
+100
+
+100
+
+100
+
+100
+
+100
+
+Recycling: Indium is most commonly recovered from ITO scrap in Japan and the Republic of Korea. A significant
+quantity of scrap was recycled domestically; however, data on the quantity of secondary indium recovered from scrap
+were not available.
+Import Sources (2015–18): China, 36%; Canada, 22%; Republic of Korea, 11%; Taiwan, 7%; and other, 24%.
+Tariff: Item
+Unwrought indium, including powders, waste, and scrap
+
+Number
+8112.92.3000
+
+Normal Trade Relations
+12–31–19
+Free.
+
+Depletion Allowance: 14% (Domestic and foreign).
+Government Stockpile: None.
+Events, Trends, and Issues: The 2019 estimated average New York dealer price of indium was $390 per kilogram,
+4% more than that of 2018. The average monthly price in January was $390 per kilogram where it remained through
+September. The 2019 estimated average free market price of indium was $210 per kilogram, 28% less than in 2018.
+The average monthly free market price began the year at $232 per kilogram and decreased throughout the year to an
+average of $160 per kilogram in September.
+
+Prepared by C. Schuyler Anderson [(703) 648–4985, csanderson@usgs.gov]
+
+79
+
+INDIUM
+In January, the Fanya Metal Exchange attempted to auction two lots of indium, totaling 37.41 tons, with a starting
+price of $170 per kilogram, but no bids were received. A second auction for 34.64 tons of indium was held in April,
+and the total lot sold for about $5.5 million ($161 per kilogram) to the State-owned China National Corporation for
+Overseas Economic Cooperation (CCOEC). The Fanya Metal Exchange reportedly held 3,600 tons of indium, which
+is equivalent to 4 years of global primary indium production, before it closed in 2015.
+New telecommunication networks have created a new demand for indium, which is used for indium phosphide (InP)
+lasers and receivers. InP lasers are used in telecommunications for fiber-optic networks that have connections
+between third-, fourth-, and fifth-generation (3G, 4G, and 5G) wireless antennas; have data transmission speeds of
+greater than 10 terabits per second; and have total transmission distances of more than 5,000 kilometers.
+World Refinery Production and Reserves:
+
+United States
+Belgium
+Canada
+China
+France
+Japan
+Korea, Republic of
+Peru
+Russia
+World total (rounded)
+
+Refinery production
+2018
+2019e
+—
+—
+22
+20
+58
+60
+300
+300
+40
+50
+70
+75
+235
+240
+11
+10
+5
+5
+741
+760
+
+Reserves5
+Quantitative estimates of reserves are not
+available.
+
+World Resources: Indium is most commonly recovered from the zinc-sulfide ore mineral sphalerite. The indium
+content of zinc deposits from which it is recovered ranges from less than 1 part per million to 100 parts per million.
+Although the geochemical properties of indium are such that it occurs in trace amounts in other base-metal sulfides—
+particularly chalcopyrite and stannite—most deposits of these minerals are subeconomic for indium.
+Substitutes: Antimony tin oxide coatings have been developed as an alternative to ITO coatings in LCDs and have
+been successfully annealed to LCD glass; carbon nanotube coatings have been developed as an alternative to ITO
+coatings in flexible displays, solar cells, and touch screens; PEDOT [poly(3,4-ethylene dioxythiophene)] has also
+been developed as a substitute for ITO in flexible displays and organic light-emitting diodes; and copper or silver
+nanowires have been explored as a substitute for ITO in touch screens. Graphene has been developed to replace
+ITO electrodes in solar cells and also has been explored as a replacement for ITO in flexible touch screens.
+Researchers have developed a more adhesive zinc oxide nanopowder to replace ITO in LCDs. Hafnium can replace
+indium in nuclear reactor control rod alloys.
+
+Estimated. NA Not available. — Zero.
+Estimated to equal imports.
+2
+Price is based on 99.99%-minimum-purity indium; delivered duty paid U.S. buyers; in minimum lots of 50 kilograms. Source: Platts Metals Week.
+3
+Price is based on 99.99%-minimum-purity indium, duties unpaid in warehouse (Rotterdam). Sources: Metal Bulletin (2015–2017) and Argus Media
+group–Argus Metals International (2018–2019).
+4
+Defined as imports – exports.
+5
+See Appendix C for resource and reserve definitions and information concerning data sources.
+e
+1
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2020
+
+

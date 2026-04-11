@@ -1,0 +1,317 @@
+180
+
+VANADIUM
+(Data in metric tons of vanadium content unless otherwise noted)
+Domestic Production and Use: In January 2019, byproduct vanadium production resumed in Utah and an estimated
+470 tons of contained vanadium with an estimated value of $6.8 million was produced. In 2009–13, small quantities of
+vanadium were similarly produced as a byproduct from the mining of uraniferous sandstones on the Colorado
+Plateau. Secondary vanadium production continued primarily in Arkansas, Delaware, Ohio, Pennsylvania, and Texas,
+where processed waste materials (petroleum residues, spent catalysts, utility ash, and vanadium-bearing pig iron
+slag) were used to produce ferrovanadium, vanadium-bearing chemicals or specialty alloys, vanadium metal, and
+vanadium pentoxide. Metallurgical use, primarily as an alloying agent for iron and steel, accounted for about 94% of
+domestic reported vanadium consumption in 2019. Of the other uses for vanadium, the major nonmetallurgical use
+was in catalysts to produce maleic anhydride and sulfuric acid.
+Salient Statistics—United States:
+2015
+Production, mine, mill
+—
+Imports for consumption:
+Vanadium ores and concentrates
+72
+Ferrovanadium
+1,980
+Vanadium pentoxide, anhydride
+2,870
+Oxides and hydroxides, other
+94
+Aluminum-vanadium master alloys
+143
+Ash and residues
+4,600
+Vanadium chemicals1
+292
+Vanadium metal2
+135
+Exports:
+Vanadium ores and concentrates
+166
+Ferrovanadium
+122
+Vanadium pentoxide, anhydride
+356
+Oxides and hydroxides, other
+100
+Aluminum-vanadium master alloys
+128
+Ash and residues
+43
+Vanadium metal2
+4
+Consumption:
+Apparent3
+9,300
+Reported
+4,720
+Price, average, dollars per pound vanadium pentoxide 4 4.16
+Stocks, yearend5
+136
+Net import reliance6 as a percentage of
+apparent consumption
+100
+
+2016
+—
+
+2017
+—
+
+2018
+—
+
+2019e
+470
+
+18
+1,590
+2,460
+660
+157
+2,820
+407
+33
+
+1
+2,810
+3,400
+148
+288
+2,540
+526
+54
+
+330
+3,130
+4,600
+98
+281
+2,810
+470
+28
+
+41
+2,500
+4,000
+140
+240
+2,100
+150
+60
+
+260
+394
+5
+81
+53
+123
+15
+
+37
+229
+126
+148
+132
+322
+45
+
+29
+575
+563
+53
+90
+289
+30
+
+47
+380
+210
+480
+20
+270
+15
+
+7,220
+4,620
+3.38
+138
+
+8,740
+4,680
+7.61
+125
+
+10,100
+5,660
+16.4
+185
+
+8,300
+4,600
+11.8
+190
+
+100
+
+100
+
+100
+
+94
+
+Recycling: The quantity of vanadium recycled from spent chemical process catalysts was significant and may
+compose as much as 40% of total vanadium catalysts.
+Import Sources (2015–18): Ferrovanadium: Austria, 48%; Canada, 22%; Russia, 14%; Republic of Korea, 11%; and
+other, 5%. Vanadium pentoxide: South Africa, 44%; Brazil, 29%; China, 11%; Taiwan, 6%; and other, 10%.
+Tariff: Item
+Vanadium ores and concentrates
+Vanadium bearing ash and residues
+Vanadium bearing ash and residues, other
+Chemical compounds:
+Vanadium pentoxide, anhydride
+Vanadium oxides and hydroxides, other
+Vanadium sulfates
+Vanadates
+Hydrides & nitrides, of vanadium
+Ferrovanadium
+Vanadium metal
+Vanadium and articles thereof7
+
+Number
+2615.90.6090
+2620.40.0030
+2620.99.1000
+
+Normal Trade Relations
+12–31–19
+Free.
+Free.
+Free.
+
+2825.30.0010
+2825.30.0050
+2833.29.3000
+2841.90.1000
+2850.00.2000
+7202.92.0000
+8112.92.7000
+8112.99.2000
+
+5.5% ad val.
+5.5% ad val.
+5.5% ad val.
+5.5% ad val.
+5.5% ad val.
+4.2% ad val.
+2.0% ad val.
+2.0% ad val.
+
+Depletion Allowance: 22% (Domestic), 14% (Foreign).
+Prepared by Désirée E. Polyak [(703) 648–4909, dpolyak@usgs.gov]
+
+181
+
+VANADIUM
+Government Stockpile: None.
+Events, Trends, and Issues: U.S. apparent consumption of vanadium in 2019 decreased by 18% from that of 2018.
+Among the major uses for vanadium, production of carbon, full-alloy, and high-strength low-alloy steels accounted for
+18%, 45%, and 31%, respectively, of domestic consumption. Average 2019 vanadium pentoxide prices decreased by
+28% compared with 2018 prices, and ferrovanadium prices decreased by 41% to $23 per pound in 2019 compared
+with 2018. In January 2019, ferrovanadium prices averaged $43.10 per pound but continued to decrease for the
+remainder of 2019. Byproduct vanadium production in the United States resumed in early 2019 at the White Mesa mill
+in Utah. The company expected to continue production, subject to successful recovery and suitable prices. An iron
+and vanadium mine in South Africa remained closed leaving South Africa with only two major producers of vanadium.
+A producer in Brazil that started production in 2014 began construction on an expansion project in 2018 that would
+increase its production capacity by 25%. The expansion was expected to be completed by the end of the third quarter
+of 2019.
+The implementation of the new high-strength rebar standards by the Standardization Administration of China has
+been enforced more gradually than originally expected. Larger mills began implementation in 2018; however, smaller
+mills have been slower to implement the new standards. Enforcement of the new standards was also reportedly more
+difficult to monitor at smaller mills. The increase of vanadium in rebar was originally expected to increase overall
+consumption of vanadium in China by approximately 10,000 tons per year.
+World Mine Production and Reserves: Reserves for Australia and Brazil were revised based on Government
+reports.
+
+United States
+Australia
+Brazil
+China
+Russia
+South Africa
+World total (rounded)
+
+Mine production
+2018
+2019e
+—
+470
+—
+—
+5,500
+7,000
+40,000
+40,000
+18,000
+18,000
+7,700
+8,000
+71,200
+73,000
+
+Reserves8
+(thousand metric tons)
+45
+94,000
+120
+9,500
+5,000
+3,500
+22,000
+
+World Resources: World resources of vanadium exceed 63 million tons. Vanadium occurs in deposits of phosphate
+rock, titaniferous magnetite, and uraniferous sandstone and siltstone, in which it constitutes less than 2% of the host
+rock. Significant quantities are also present in bauxite and carboniferous materials, such as coal, crude oil, oil shale,
+and tar sands. Because vanadium is typically recovered as a byproduct or coproduct, demonstrated world resources
+of the element are not fully indicative of available supplies. Although domestic resources and secondary recovery are
+adequate to supply a large portion of domestic needs, all of U.S. demand is currently met by foreign sources.
+Substitutes: Steels containing various combinations of other alloying elements can be substituted for steels
+containing vanadium. Certain metals, such as manganese, molybdenum, niobium (columbium), titanium, and
+tungsten, are to some degree interchangeable with vanadium as alloying elements in steel. Platinum and nickel can
+replace vanadium compounds as catalysts in some chemical processes. Currently, no acceptable substitute for
+vanadium is available for use in aerospace titanium alloys.
+
+Estimated. — Zero.
+Includes hydrides, nitrides, sulfates, and vanadates of vanadium.
+2
+Vanadium metal includes waste and scrap.
+3
+Defined as production + net import reliance.
+4
+Prices for 2015–2016 are U.S. annual average vanadium pentoxide prices. The 2017 annual average vanadium pentoxide price includes U.S.
+monthly averages for January 2017–June 2017 and China monthly average prices for July 2017–December 2017. The prices for 2018–2019 are
+the China annual average vanadium pentoxide prices.
+5
+Includes chlorides, ferrovanadium, vanadates, vanadium-aluminum alloy, other vanadium alloys, vanadium metal, vanadium pentoxide, and other
+specialty chemicals.
+6
+Defined as imports – exports + adjustments for industry stock changes.
+7
+Aluminum-vanadium master alloy consisting of 35% aluminum and 64.5% vanadium.
+8
+See Appendix C for resource and reserve definitions and information concerning data sources.
+9
+For Australia, Joint Ore Reserves Committee-compliant reserves were 1.1 million tons.
+e
+1
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2020
+
+

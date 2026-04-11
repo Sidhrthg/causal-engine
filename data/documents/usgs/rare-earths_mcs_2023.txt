@@ -1,0 +1,383 @@
+RARE EARTHS1
+[Data in metric tons of rare-earth-oxide (REO) equivalent unless otherwise noted]
+Domestic Production and Use: Rare earths were mined domestically in 2022. Bastnaesite (or bastnäsite), a rareearth fluorocarbonate mineral, was mined as a primary product at a mine in Mountain Pass, CA. Monazite, a
+phosphate mineral, was produced as a separated concentrate or included as an accessory mineral in heavy-mineralsand concentrates in the southeastern United States. Mixed rare-earth compounds were also produced in the western
+United States. The estimated value of rare-earth compounds and metals imported by the United States in 2022 was
+$200 million, a 25% increase from $160 million in 2021. The estimated leading domestic end use of rare earths was
+catalysts. A significant amount of rare earths are imported as permanent magnets embedded in finished goods. Other
+end uses were ceramics and glass, metallurgical applications and alloys, and polishing.
+Salient Statistics—United States:
+Production:e
+Mineral concentrates
+Compounds and metals
+Imports:e, 2
+Compounds
+Metals:
+Ferrocerium, alloys
+Rare-earth metals, scandium, and yttrium
+Exports:e, 2
+Ores and compounds
+Metals:
+Ferrocerium, alloys
+Rare-earth metals, scandium, and yttrium
+Consumption, apparent, compounds and metals3
+Price, average, dollars per kilogram:4
+Cerium oxide, 99.5% minimum
+Dysprosium oxide, 99.5% minimum
+Europium oxide, 99.99% minimum
+Lanthanum oxide, 99.5% minimum
+Mischmetal, 65% cerium, 35% lanthanum
+Neodymium oxide, 99.5% minimum
+Terbium oxide, 99.99% minimum
+Employment, mine and mill, annual average, number
+Net import reliance5 as a percentage of apparent consumption:6
+Compounds and metals
+Mineral concentrates
+
+2018
+
+2019
+
+2020
+
+2021
+
+2022e
+
+14,000
+—
+
+28,000
+—
+
+39,000
+—
+
+42,000
+120
+
+43,000
+250
+
+10,800
+
+12,200
+
+6,510
+
+7,690
+
+11,000
+
+297
+526
+
+330
+627
+
+271
+363
+
+330
+580
+
+420
+520
+
+17,900
+
+28,300
+
+40,000
+
+44,000
+
+44,000
+
+1,250
+28
+9,600
+
+1,290
+83
+11,200
+
+625
+25
+5,400
+
+825
+20
+6,060
+
+1,700
+21
+9,300
+
+2
+179
+53
+2
+6
+50
+455
+190
+
+2
+239
+35
+2
+6
+45
+507
+202
+
+2
+261
+31
+2
+5
+49
+670
+185
+
+2
+400
+31
+2
+6
+49
+1,300
+293
+
+1
+390
+30
+1
+7
+130
+2,000
+370
+
+100
+E
+
+100
+E
+
+100
+E
+
+>95
+E
+
+>95
+E
+
+Recycling: Limited quantities of rare earths are recovered from batteries, permanent magnets, and fluorescent lamps.
+Import Sources (2018–21): Rare-earth compounds and metals: China,7 74%; Malaysia, 8%; Estonia and Japan, 5%
+each; and other, 8%. Compounds and metals imported from Estonia, Japan, and Malaysia were derived from mineral
+concentrates and chemical intermediates produced in Australia, China, and elsewhere.
+Tariff:
+
+Item
+
+Rare-earth metals
+Cerium compounds
+Other rare-earth compounds:
+Oxides or chlorides
+Carbonates
+Ferrocerium and other pyrophoric alloys
+
+Number
+2805.30.0000
+2846.10.0000
+
+Normal Trade Relations
+12–31–22
+5% ad valorem.
+5.5% ad valorem.
+
+2846.90.2000
+2846.90.8000
+3606.90.3000
+
+Free.
+3.7% ad valorem.
+5.9% ad valorem.
+
+Depletion Allowance: Monazite, 22% on thorium content and 14% on rare-earth content (domestic), 14% (foreign);
+bastnäsite and xenotime, 14% (domestic and foreign).
+
+Prepared by Daniel J. Cordier [(703) 648–7707, dcordier@usgs.gov]
+
+RARE EARTHS
+Government Stockpile:8 In the addition to the materials listed below, the FY 2022 and FY 2023 potential acquisitions
+include cerium, 550 tons; lanthanum, 1,300 tons; neodymium, 600 tons; praseodymium, 70 tons; rare-earth magnet
+block, 100 tons; and samarium cobalt alloy, 50 tons.
+
+Material
+Dysprosium
+Europium (gross weight)
+Ferrodysprosium
+Yttrium
+
+Inventory
+as of 9–30–22
+0.2
+35.8
+0.5
+25
+
+FY 2022
+Potential
+Potential
+acquisitions disposals
+20
+—
+—
+—
+—
+—
+25
+—
+
+FY 2023
+Potential
+Potential
+acquisitions
+disposals
+—
+—
+—
+—
+—
+—
+—
+—
+
+Events, Trends, and Issues: Global mine production was estimated to have increased to 300,000 tons of REO
+equivalent. China’s Ministry of Industry and Information Technology raised 2022 quotas for rare-earth mining and
+separation to 210,000 tons and 202,000 tons of REO equivalent, respectively. The mine production quota was
+allocated to 190,850 tons of light rare earths and 19,150 tons of ion-adsorption clays.
+World Mine Production and Reserves: Reserves for Australia and the United States were revised based on
+company and Government reports.
+
+United States
+Australia
+Brazil
+Burma
+Burundi
+Canada
+China
+Greenland
+India
+Madagascar
+Russia
+South Africa
+Tanzania
+Thailand
+Vietnam
+Other countries
+World total (rounded)
+
+Mine production
+2021
+2022e
+42,000
+43,000
+e
+24,000
+18,000
+e
+500
+80
+e
+35,000
+12,000
+e
+200
+—
+—
+—
+11
+168,000 11210,000
+—
+—
+e
+2,900
+2,900
+e
+6,800
+960
+e
+2,600
+2,600
+—
+—
+—
+—
+e
+8,200
+7,100
+400
+4,300
+60
+80
+290,000
+300,000
+
+Reserves9
+2,300,000
+4,200,000
+21,000,000
+NA
+NA
+830,000
+44,000,000
+1,500,000
+6,900,000
+NA
+21,000,000
+790,000
+890,000
+NA
+22,000,000
+280,000
+130,000,000
+10
+
+World Resources:9 Rare earths are relatively abundant in the Earth’s crust, but minable concentrations are less
+common than for most other mineral commodities. In North America, measured and indicated resources of rare
+earths were estimated to include 3.6 million tons in the United States and more than 14 million tons in Canada.
+Substitutes: Substitutes are available for many applications but generally are less effective.
+
+Estimated. E Net exporter. NA Not available. — Zero.
+Data include lanthanides and yttrium but exclude most scandium. See also the Scandium and Yttrium chapters.
+2
+REO equivalent or content of various materials were estimated. Source: U.S. Census Bureau.
+3
+Defined as production + imports – exports.
+4
+Source: Argus Media group, Argus Metals International.
+5
+Defined as imports – exports.
+6
+In 2018–2020, all domestic production of mineral concentrates was exported or held in inventory, and all compounds and metals consumed were
+assumed to be imported material.
+7
+Includes Hong Kong.
+8
+Gross weight. See Appendix B for definitions.
+9
+See Appendix C for resource and reserve definitions and information concerning data sources.
+10
+For Australia, Joint Ore Reserves Committee-compliant or equivalent reserves were 2.98 million tons.
+11
+Production quota; does not include undocumented production.
+e
+1
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2023
+
+

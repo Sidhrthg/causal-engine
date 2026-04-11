@@ -1,0 +1,325 @@
+TITANIUM AND TITANIUM DIOXIDE1
+(Data in metric tons unless otherwise noted)
+Domestic Production and Use: Titanium sponge metal was produced by one operation in Utah. Production data
+were withheld to avoid disclosing company proprietary data. The facility in Salt Lake City, UT, with an estimated
+capacity of 500 tons per year, produced titanium that was further refined for use in electronics. A second sponge
+facility in Henderson, NV, with an estimated capacity of 12,600 tons per year, was idled since 2020 owing to market
+conditions. A third facility, in Rowley, UT, with an estimated capacity of 10,900 tons per year, has remained on careand-maintenance status since 2016.
+Although detailed 2022 consumption data were withheld to avoid disclosing proprietary data, the majority of titanium
+metal was used in aerospace applications, and the remainder was used in armor, chemical processing, marine
+hardware, medical implants, power generation, and consumer other applications. The value of imported sponge was
+about $250 million, a significant increase compared with $148 million in 2021.
+In 2022, titanium dioxide (TiO2) pigment production, by four companies operating five facilities in four States, was
+valued at about $3.4 billion. The leading uses of TiO2 pigment were, in descending order, paints (including lacquers
+and varnishes), plastics, and paper. Other uses of TiO2 pigment included catalysts, ceramics, coated fabrics and
+textiles, floor coverings, printing ink, and roofing granules.
+Salient Statistics—United States:
+Titanium sponge metal:
+Production
+Imports for consumptione
+Exports
+Consumption, apparent2
+Consumption, reported
+Price, dollars per kilogram4
+Stocks, industry, yearende
+Employment, numbere
+Net import reliance5 as a percentage of
+apparent consumption
+TiO2 pigment:
+Production
+Imports for consumption
+Exports
+Consumption, apparent2
+Price, dollars per metric ton4
+Producer price index (1982=100), yearend6
+Employment, numbere
+Net import reliance5 as a percentage of
+apparent consumption
+
+2018
+
+2019
+
+2020
+
+2021
+
+2022e
+
+W
+23,700
+533
+W
+35,200
+10.70
+10,700
+150
+>50
+
+W
+30,000
+869
+W
+W
+10.70
+W
+150
+>50
+
+W
+19,200
+711
+W
+W
+10.60
+W
+150
+>50
+
+W
+16,000
+117
+3
+16,000
+W
+11.20
+W
+20
+>95
+
+W
+28,000
+120
+3
+28,000
+W
+11
+W
+20
+>95
+
+1,150,000
+268,000
+528,000
+890,000
+2,730
+205
+3,050
+E
+
+1,000,000
+226,000
+401,000
+825,000
+2,750
+NA
+3,050
+E
+
+1,000,000
+262,000
+386,000
+876,000
+2,710
+NA
+3,100
+E
+
+1,100,000
+251,000
+494,000
+857,000
+2,920
+NA
+3,200
+E
+
+1,100,000
+260,000
+420,000
+940,000
+3,400
+NA
+3,200
+E
+
+Recycling: Owing to limited responses from voluntary surveys, consumption data of titanium scrap metal for the
+titanium metal industry were withheld. Consumption data of titanium scrap for the steel, superalloy, and other
+industries were not available.
+Import Sources (2018–21): Sponge metal: Japan, 89%; Kazakhstan, 9%; Ukraine, 1%, and other, 1%. TiO2 pigment:
+Canada, 42%; China, 16%; Germany, 10%; Belgium, 5%; and other, 27%.
+Tariff:
+
+Item
+
+Titanium oxides (unfinished TiO2 pigments)
+TiO2 pigments, 80% or more TiO2
+TiO2 pigments, other
+Ferrotitanium and ferrosilicon titanium
+Unwrought titanium metal
+Titanium waste and scrap metal
+Other titanium metal articles
+Wrought titanium metal
+
+Number
+2823.00.0000
+3206.11.0000
+3206.19.0000
+7202.91.0000
+8108.20.0000
+8108.30.0000
+8108.90.3000
+8108.90.6000
+
+Depletion Allowance: Not applicable.
+Prepared by Joseph Gambogi [(703) 648–7718, jgambogi@usgs.gov]
+
+Normal Trade Relations
+12–31–22
+5.5% ad valorem.
+6% ad valorem.
+6% ad valorem.
+3.7% ad valorem.
+15% ad valorem.
+Free.
+5.5% ad valorem.
+15% ad valorem.
+
+TITANIUM AND TITANIUM DIOXIDE
+Government Stockpile: None.
+Events, Trends, and Issues: The 500-ton-per-year Salt Lake City, UT, plant was the only active domestic producer
+of titanium sponge, and the Salt Lake City operations primarily supported the production of electronic-grade materials.
+Consequently, U.S. producers of titanium ingot and downstream products were reliant on imports of titanium sponge
+and scrap. Rebounding demand from the aerospace and other industries resulted in a 75% increase in imports of
+titanium sponge compared with those in 2021. Japan (82%), Kazakhstan (9%), and Saudi Arabia (7%) were the
+leading import sources for titanium sponge in 2022. U.S. imports of titanium scrap were about 17,000 tons. The
+United Kingdom and Germany (14% each), France (11%), Canada (10%), and Japan (9%) were the leading import
+sources for titanium waste and scrap in 2022. In 2022, the annual average duty-paid unit value of scrap imports was
+about $7.50 per kilogram compared with $4.80 per kilogram in 2021. In 2022, several companies were planning to
+expand domestic downstream production capacity. In Pennsylvania, one company was adding 7,300 metric tons per
+year of ingot melting capacity as well as additional forging capabilities. Another company planned to construct a new
+melt facility in West Virginia, although the annual capacity was not yet available. A third company expected to
+complete an initial 125 tons per year of titanium powder capacity using new technology and recycled metal feedstock.
+Following the onset of the conflict between Russia and Ukraine, major European and domestic aerospace consumers
+of titanium were seeking alternative sources of supply. Prior to the conflict, Ukraine was the leading source of titanium
+mineral concentrates suppling Russia’s titanium metal industry.
+Domestic production of TiO2 pigment in 2022 was an estimated 1.1 million tons. Although heavily reliant on imports of
+titanium mineral concentrates, the United States was a net exporter of TiO2 pigments. Exports of TiO2 pigments
+decreased in 2022 while imports increased.
+World Sponge Metal Production and Sponge and Pigment Capacity:
+
+United States
+Australia
+Canada
+China
+Germany
+India
+Japan
+Kazakhstan
+Mexico
+Russia
+Saudi Arabia
+Ukraine
+United Kingdom
+Other countries
+World total (rounded)
+
+Sponge productione
+2021
+2022
+W
+W
+—
+—
+—
+—
+140,000
+150,000
+—
+—
+250
+250
+49,200
+50,000
+15,000
+16,000
+—
+—
+27,000
+25,000
+5,700
+11,000
+6,100
+1,000
+—
+—
+—
+—
+8
+8
+240,000
+260,000
+
+Capacity, 20227
+Sponge
+Pigment
+500
+1,370,000
+—
+260,000
+—
+104,000
+181,000
+5,000,000
+—
+472,000
+500
+108,000
+68,800
+322,000
+26,000
+1,000
+—
+300,000
+46,500
+55,000
+15,600
+210,000
+12,000
+120,000
+—
+315,000
+—
+784,000
+350,000
+9,400,000
+
+World Resources:9 Resources of titanium minerals are discussed in the Titanium Mineral Concentrates chapter.
+Substitutes: Few materials possess titanium metal’s strength-to-weight ratio and corrosion resistance. In highstrength applications, titanium competes with aluminum, composites, intermetallics, steel, and superalloys. Aluminum,
+nickel, specialty steels, and zirconium alloys may be substituted for titanium for applications that require corrosion
+resistance. Ground calcium carbonate, precipitated calcium carbonate, kaolin, and talc compete with titanium dioxide
+as a white pigment.
+Estimated. E Net exporter. NA Not available. W Withheld to avoid disclosing company proprietary data. — Zero.
+See also the Titanium Mineral Concentrates chapter.
+2
+Defined as production + imports – exports.
+3
+Excludes domestic production of sponge in Utah.
+4
+Landed duty-paid value based on U.S. imports for consumption.
+5
+Defined as imports – exports.
+6
+Source: U.S. Department of Labor, Bureau of Labor Statistics.
+7
+Yearend operating capacity.
+8
+Excludes U.S. production.
+9
+See Appendix C for resource and reserve definitions and information concerning data sources.
+e
+1
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2023
+
+

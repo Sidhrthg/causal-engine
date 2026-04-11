@@ -1,0 +1,14 @@
+{
+  "total_downloaded": 604,
+  "total_failed": 0,
+  "by_source": {},
+  "usgs": {
+    "downloaded": 598,
+    "failed": 243
+  },
+  "usgs_books": 5,
+  "yearbooks": 0,
+  "iea": 1,
+  "academic": 0,
+  "timestamp": "2026-02-09T14:18:21.539886"
+}

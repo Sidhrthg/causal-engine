@@ -1,0 +1,45 @@
+name: graphite_comtrade_calibrated
+commodity: graphite
+seed: 123
+description: Calibrated to Comtrade trade data (P*Q vs trade_value_usd).
+time:
+  dt: 1.0
+  start_year: 1995
+  end_year: 2024
+baseline:
+  P_ref: 1.0
+  P0: 1.0
+  K0: 108.695652
+  I0: 20.0
+  D0: 100.0
+parameters:
+  eps: 1.0e-09
+  u0: 0.92
+  beta_u: 0.1
+  u_min: 0.7
+  u_max: 1.0
+  tau_K: 3.0
+  eta_K: 0.4
+  retire_rate: 0.0
+  eta_D: -0.25
+  demand_growth:
+    type: constant
+    g: 1.0
+  alpha_P: 0.7999999429304252
+  cover_star: 0.2
+  lambda_cover: 0.6
+  sigma_P: 0.0
+policy:
+  substitution: 0.0
+  efficiency: 0.0
+  subsidy: 0.0
+  stockpile_release: 0.0
+shocks: []
+outputs:
+  out_dir: runs
+  save_csv: true
+  metrics:
+  - total_shortage
+  - peak_shortage
+  - avg_price
+  - final_inventory_cover

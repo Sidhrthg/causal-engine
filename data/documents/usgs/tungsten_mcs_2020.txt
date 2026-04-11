@@ -1,0 +1,326 @@
+178
+
+TUNGSTEN
+(Data in metric tons of tungsten content unless otherwise noted)
+Domestic Production and Use: There has been no known domestic commercial production of tungsten
+concentrates since 2015. Approximately six companies in the United States used chemical processes to convert
+tungsten concentrates, ammonium paratungstate (APT), tungsten oxide, and (or) scrap to tungsten metal powder,
+tungsten carbide powder, and (or) tungsten chemicals. Nearly 60% of the tungsten used in the United States was
+used in cemented carbide parts for cutting and wear-resistant applications, primarily in the construction,
+metalworking, mining, and oil and gas drilling industries. The remaining tungsten was used to make various alloys
+and specialty steels; electrodes, filaments, wires, and other components for electrical, electronic, heating, lighting,
+and welding applications; and chemicals for various applications. The estimated value of apparent consumption in
+2019 was approximately $700 million.
+Salient Statistics—United States:
+2015
+Production:
+Mine
+NA
+Secondary
+W
+Imports for consumption:
+Concentrate
+3,970
+Other forms
+6,270
+Exports:
+Concentrate
+398
+Other forms
+3,360
+Shipments from Government stockpile:
+Concentrate
+—
+Other forms
+—
+Consumption:
+Reported, concentrate
+W
+Apparent, all forms1
+W
+Price, concentrate, dollars per mtu WO3,2 average,
+U.S. spot market, Platts Metals Week
+302
+Stocks, industry, yearend, concentrate and other forms
+W
+Net import reliance3 as a percentage of
+apparent consumption
+>25
+
+2016
+
+2017
+
+2018
+
+2019e
+
+—
+W
+
+—
+W
+
+—
+W
+
+—
+W
+
+3,580
+6,300
+
+3,920
+9,780
+
+4,050
+10,400
+
+2,900
+10,900
+
+183
+3,200
+
+532
+3,010
+
+284
+3,210
+
+720
+2,900
+
+—
+—
+
+1,460
+—
+
+1,180
+—
+
+750
+—
+
+W
+W
+
+W
+W
+
+W
+W
+
+W
+W
+
+148
+W
+
+245
+W
+
+326
+W
+
+270
+W
+
+>25
+
+>50
+
+>50
+
+>50
+
+Recycling: The estimated quantity of secondary tungsten produced and the amount consumed from secondary
+sources by processors and end users in 2019 were withheld to avoid disclosing company proprietary data.
+Import Sources (2015–18): Tungsten contained in ores and concentrates, intermediate and primary products,
+wrought and unwrought tungsten, and waste and scrap: China, 31%; Bolivia, 10%; Germany, 9%; Spain, 6%; and
+other, 44%.
+Tariff: Item
+
+Number
+
+Ores
+Concentrates
+Tungsten oxides
+Ammonium tungstates
+Tungsten carbides
+Ferrotungsten
+Tungsten powders
+Tungsten waste and scrap
+
+2611.00.3000
+2611.00.6000
+2825.90.3000
+2841.80.0010
+2849.90.3000
+7202.80.0000
+8101.10.0000
+8101.97.0000
+
+Normal Trade Relations
+12–31–19
+Free.
+37.5¢/kg tungsten content.
+5.5% ad val.
+5.5% ad val.
+5.5% ad val.
+5.6% ad val.
+7.0% ad val.
+2.8% ad val.
+
+Depletion Allowance: 22% (Domestic), 14% (Foreign).
+Government Stockpile:4
+Material
+Metal powder
+Ores and concentrates
+Tungsten alloys, gross weight5
+
+Inventory
+As of 9–30–19
+125
+8,370
+6
+
+FY 2019
+Potential
+Potential
+Acquisitions Disposals
+—
+125
+—
+1,360
+5
+—
+
+Prepared by Kim B. Shedd [(703) 648–4974, kshedd@usgs.gov]
+
+FY 2020
+Potential
+Potential
+Acquisitions Disposals
+—
+125
+—
+1,360
+5
+—
+
+179
+
+TUNGSTEN
+Events, Trends, and Issues: World tungsten supply was dominated by production in China and exports from China.
+China’s Government regulated its tungsten industry by limiting the number of mining and export licenses, imposing
+quotas on concentrate production, and placing constraints on mining and processing. Production of tungsten
+concentrate outside China in 2019 was expected to be less than that of 2018, owing in part to the closure of the sole
+tungsten mine in the United Kingdom after the owner entered voluntary administration in late 2018. Scrap continued
+to be an important source of raw material for the tungsten industry worldwide.
+China was the world’s leading tungsten consumer. Analysts forecast global tungsten demand in 2019 to be less than
+that in 2018, as a result of destocking by consumers and reduced consumption owing to reported slowing global
+economic growth. In September, APT stocks equivalent to 3 months of production in China were sold from the Fanya
+Metal Exchange to a leading Chinese tungsten mining and processing company. This relieved some of the
+uncertainty that had been hanging over the global tungsten market since the exchange’s collapse in 2015. During
+most of 2019, Chinese and European prices of tungsten concentrate and downstream tungsten materials trended
+downward; prices increased following the Fanya sale.
+World Mine Production and Reserves: Reserves for the United Kingdom were revised based on a company report.
+Reserves for North Korea are based on a report from an independent research organization funded by the
+Government of the Republic of Korea.
+
+United States
+Austria
+Bolivia
+China
+Korea, North
+Mongolia
+Portugal
+Russia
+Rwanda
+Spain
+United Kingdom
+Vietnam
+Other countries
+World total (rounded)
+
+Mine production
+2018
+2019e
+—
+—
+936
+940
+1,370
+1,200
+65,000
+70,000
+1,410
+1,100
+1,940
+1,900
+715
+700
+1,500
+1,500
+920
+1,100
+750
+500
+900
+—
+4,800
+4,800
+900
+900
+81,100
+85,000
+
+Reserves6
+NA
+10,000
+NA
+1,900,000
+29,000
+NA
+3,100
+240,000
+NA
+54,000
+44,000
+95,000
+820,000
+3,200,000
+
+World Resources: World tungsten resources are geographically widespread. China ranks first in the world in terms
+of tungsten resources and reserves and has some of the largest deposits. Canada, Kazakhstan, Russia, and the
+United States also have significant tungsten resources.
+Substitutes: Potential substitutes for cemented tungsten carbides include cemented carbides based on molybdenum
+carbide, niobium carbide, or titanium carbide; ceramics; ceramic-metallic composites (cermets); and tool steels. Most
+of these options reduce, rather than replace, the amount of tungsten used. Potential substitutes for other applications
+are as follows: molybdenum for certain tungsten mill products; molybdenum steels for tungsten steels, although most
+molybdenum steels still contain tungsten; lighting based on carbon nanotube filaments, induction technology, and
+light-emitting diodes for lighting based on tungsten electrodes or filaments; depleted uranium or lead for tungsten or
+tungsten alloys in applications requiring high-density or the ability to shield radiation; and depleted uranium alloys or
+hardened steel for cemented tungsten carbides or tungsten alloys in armor-piercing projectiles. In some applications,
+substitution would result in increased cost or a loss in product performance.
+
+Estimated. NA Not available. W Withheld to avoid disclosing company proprietary data. — Zero.
+Defined as mine production + secondary production + imports – exports + adjustments for Government and industry stock changes.
+2
+A metric ton unit (mtu) of tungsten trioxide (WO3) contains 7.93 kilograms of tungsten.
+3
+Defined as imports – exports + adjustments for Government and industry stock changes.
+4
+See Appendix B for definitions.
+5
+Inventory includes tungsten alloys and tungsten-rhenium metal; potential acquisitions are tungsten-rhenium metal only.
+6
+See Appendix C for resource and reserve definitions and information concerning data sources.
+e
+1
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2020
+
+

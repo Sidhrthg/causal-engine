@@ -132,7 +132,8 @@ def estimate_ate_drl(
     treatment: str,
     outcome: str,
     controls: List[str],
-    graph_dot: str,
+    graph_dot: str | None = None,
+    graph_path: str | None = None,
 ) -> EstimationResult:
     """
     Compute ATE using DoWhy's regression estimator.
@@ -149,6 +150,7 @@ def estimate_ate_drl(
         treatment=treatment,
         outcome=outcome,
         graph_dot=graph_dot,
+        graph_path=graph_path,
     )
 
     # Identify effect
@@ -204,13 +206,10 @@ def estimate_from_dag_path(
     controls: List[str],
     dag_path: str,
 ) -> EstimationResult:
-
-    graph_dot = load_dag_dot(dag_path)
-
     return estimate_ate_drl(
         df=df,
         treatment=treatment,
         outcome=outcome,
         controls=controls,
-        graph_dot=graph_dot,
+        graph_path=dag_path,
     )

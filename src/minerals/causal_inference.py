@@ -6,10 +6,12 @@ Implements do-calculus for identifiability and parameter identification.
 from __future__ import annotations
 
 import networkx as nx
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from itertools import combinations
 from typing import Dict, List, Optional, Set, Tuple
+
+from . import do_calculus
 
 
 class IdentificationStrategy(Enum):
@@ -20,6 +22,7 @@ class IdentificationStrategy(Enum):
     DIFFERENCE_IN_DIFFERENCES = "difference_in_differences"
     BACKDOOR_ADJUSTMENT = "backdoor_adjustment"
     FRONTDOOR_ADJUSTMENT = "frontdoor_adjustment"
+    ID_ALGORITHM = "id_algorithm"  # Shpitser-Pearl full ID algorithm
 
 
 @dataclass
@@ -30,6 +33,7 @@ class IdentificationResult:
     adjustment_set: Set[str]
     assumptions: List[str]
     formula: str
+    derivation_steps: List[str] = field(default_factory=list)
 
 
 class CausalDAG:
@@ -154,12 +158,72 @@ class CausalDAG:
 
         Frontdoor criterion (Pearl, 2009):
         1. M intercepts all directed paths from X to Y
-        2. No backdoor path from X to M
+        2. No backdoor path from X to M (i.e. X d-separated from M given
+           empty set in the graph with outgoing edges from X removed — but we
+           actually need: no unblocked backdoor path from X to M, which is
+           equivalent to X and M being d-separated given empty set in the
+           subgraph where outgoing edges from X are removed)
         3. All backdoor paths from M to Y are blocked by X
 
         If satisfied: P(Y|do(X)) = Σ_m P(M|X) Σ_x' P(Y|M,X=x')P(X=x')
         """
-        return False
+        if not mediator_set:
+            return False
+
+        # All mediators must be observed
+        if not mediator_set <= self.observed_vars:
+            return False
+
+        # Condition 1: M intercepts all directed paths from X to Y.
+        # Remove mediator nodes and check if any directed path remains.
+        g_no_m = self.graph.copy()
+        g_no_m.remove_nodes_from(mediator_set)
+        if nx.has_path(g_no_m, treatment, outcome):
+            return False
+
+        # Condition 2: No unblocked backdoor path from X to any M.
+        # Equivalent to: in graph with outgoing edges of X removed,
+        # X is d-separated from M given the empty set.
+        g_no_out_x = self._graph_no_outgoing(treatment)
+        for m in mediator_set:
+            if not nx.is_d_separator(g_no_out_x, {treatment}, {m}, set()):
+                return False
+
+        # Condition 3: All backdoor paths from M to Y are blocked by {X}.
+        for m in mediator_set:
+            g_no_out_m = self.graph.copy()
+            outgoing = list(g_no_out_m.out_edges(m))
+            g_no_out_m.remove_edges_from(outgoing)
+            if not nx.is_d_separator(g_no_out_m, {m}, {outcome}, {treatment}):
+                return False
+
+        return True
+
+    def find_frontdoor_set(
+        self, treatment: str, outcome: str
+    ) -> Optional[Set[str]]:
+        """
+        Find a set of mediators satisfying the frontdoor criterion.
+
+        Searches observed nodes that lie on directed paths from treatment
+        to outcome.
+        """
+        # Candidate mediators: observed nodes on directed paths from X to Y
+        descendants_x = self.get_descendants(treatment)
+        ancestors_y = self.get_ancestors(outcome)
+        candidates = (descendants_x & ancestors_y & self.observed_vars) - {treatment, outcome}
+
+        if not candidates:
+            return None
+
+        # Try subsets of increasing size
+        for size in range(1, len(candidates) + 1):
+            for subset in combinations(candidates, size):
+                mediator_set = set(subset)
+                if self.frontdoor_criterion(treatment, outcome, mediator_set):
+                    return mediator_set
+
+        return None
 
     def is_identifiable(self, treatment: str, outcome: str) -> IdentificationResult:
         """
@@ -178,15 +242,53 @@ class CausalDAG:
                     "Positivity: P(Z) > 0 for all Z",
                     "SUTVA: Stable Unit Treatment Value Assumption",
                 ]
+                deriv = do_calculus.derivation_steps_for_result(
+                    treatment, outcome,
+                    IdentificationStrategy.BACKDOOR_ADJUSTMENT.value,
+                    adjustment_set, formula,
+                )
                 return IdentificationResult(
                     identifiable=True,
                     strategy=IdentificationStrategy.BACKDOOR_ADJUSTMENT,
                     adjustment_set=adjustment_set,
                     assumptions=assumptions,
                     formula=formula,
+                    derivation_steps=deriv,
                 )
 
+        # Try frontdoor criterion
+        frontdoor_set = self.find_frontdoor_set(treatment, outcome)
+        if frontdoor_set is not None:
+            m_str = ", ".join(sorted(frontdoor_set))
+            formula = (
+                f"P({outcome}|do({treatment})) = "
+                f"Σ_{{{m_str}}} P({m_str}|{treatment}) "
+                f"Σ_{{{treatment}'}} P({outcome}|{m_str},{treatment}')P({treatment}')"
+            )
+            deriv = do_calculus.derivation_steps_for_result(
+                treatment, outcome,
+                IdentificationStrategy.FRONTDOOR_ADJUSTMENT.value,
+                frontdoor_set, formula,
+            )
+            return IdentificationResult(
+                identifiable=True,
+                strategy=IdentificationStrategy.FRONTDOOR_ADJUSTMENT,
+                adjustment_set=frontdoor_set,
+                assumptions=[
+                    f"Frontdoor criterion satisfied via mediator(s): {{{m_str}}}",
+                    f"{m_str} intercept(s) all directed paths from {treatment} to {outcome}",
+                    f"No unblocked backdoor path from {treatment} to {m_str}",
+                    f"All backdoor paths from {m_str} to {outcome} are blocked by {treatment}",
+                ],
+                formula=formula,
+                derivation_steps=deriv,
+            )
+
         if nx.is_d_separator(self.graph, {treatment}, {outcome}, set()):
+            formula_triv = f"P({outcome}|do({treatment})) = P({outcome}|{treatment})"
+            deriv = do_calculus.derivation_steps_for_result(
+                treatment, outcome, None, set(), formula_triv,
+            )
             return IdentificationResult(
                 identifiable=True,
                 strategy=IdentificationStrategy.SYNTHETIC_CONTROL,
@@ -196,7 +298,35 @@ class CausalDAG:
                     "Parallel trends (for synthetic control)",
                     "SUTVA",
                 ],
-                formula=f"P({outcome}|do({treatment})) = P({outcome}|{treatment})",
+                formula=formula_triv,
+                derivation_steps=deriv if deriv else [],
+            )
+
+        # ---------------------------------------------------------------
+        # Full ID Algorithm (Shpitser & Pearl 2006) — handles all cases
+        # that backdoor and frontdoor cannot, including effects identifiable
+        # via C-component decomposition with hidden confounders.
+        # ---------------------------------------------------------------
+        id_result = do_calculus.id_algorithm(self, treatment, outcome)
+        if id_result["identifiable"]:
+            formula = id_result["formula"]
+            # Build human-readable assumptions from bidirected / C-component info
+            bd = id_result.get("bidirected_edges", [])
+            cc = id_result.get("c_components", [])
+            assumptions = [
+                "Causal graph is correct (no missing/extra edges)",
+                f"Hidden confounders create bidirected edges: {bd if bd else '∅'}",
+                f"Observed C-components of graph: {cc}",
+                "Positivity: all conditioning events have positive probability",
+                "SUTVA: stable unit treatment value assumption",
+            ]
+            return IdentificationResult(
+                identifiable=True,
+                strategy=IdentificationStrategy.ID_ALGORITHM,
+                adjustment_set=set(),  # ID algorithm uses C-component structure, not a simple adj set
+                assumptions=assumptions,
+                formula=formula,
+                derivation_steps=id_result["derivation_steps"],
             )
 
         return IdentificationResult(
@@ -204,31 +334,62 @@ class CausalDAG:
             strategy=None,
             adjustment_set=set(),
             assumptions=[],
-            formula="Not identifiable - unmeasured confounding present",
+            formula=id_result.get("formula", "Not identifiable — unmeasured confounding present"),
+            derivation_steps=id_result.get("derivation_steps", []),
         )
 
     def visualize(self, filename: str = "causal_dag.png") -> None:
         """Export DAG visualization."""
         try:
+            if self.graph.number_of_nodes() == 0:
+                return
+            import matplotlib
+            matplotlib.use("Agg")  # Headless backend for server/CLI
             import matplotlib.pyplot as plt
 
-            pos = nx.spring_layout(self.graph)
+            G = self.graph
+            n_nodes = G.number_of_nodes()
+
+            # Use hierarchical layout for DAGs to avoid overlap
+            try:
+                generations = list(nx.topological_generations(G))
+                pos = {}
+                max_width = max(len(layer) for layer in generations)
+                h_spacing = 1.2
+                v_spacing = 1.5
+                for layer_idx, layer in enumerate(generations):
+                    y = (len(generations) - 1 - layer_idx) * v_spacing
+                    sorted_layer = sorted(layer)
+                    n = len(sorted_layer)
+                    spacing = max(0.8, h_spacing * max_width / max(n, 1))
+                    for i, node in enumerate(sorted_layer):
+                        x = (i - (n - 1) / 2) * spacing
+                        pos[node] = (x, y)
+            except nx.NetworkXError:
+                # Fallback: spring with larger k for more spacing
+                pos = nx.spring_layout(G, k=2.0, iterations=100, seed=42)
+
             colors = [
                 "lightblue" if n in self.observed_vars else "lightgray"
-                for n in self.graph.nodes()
+                for n in G.nodes()
             ]
+            fig_w = max(14, n_nodes * 0.8)
+            fig_h = max(10, n_nodes * 0.5)
+            plt.figure(figsize=(fig_w, fig_h))
             nx.draw(
-                self.graph,
+                G,
                 pos,
                 with_labels=True,
                 node_color=colors,
-                node_size=3000,
-                font_size=10,
+                node_size=2800,
+                font_size=9,
                 font_weight="bold",
                 arrows=True,
-                arrowsize=20,
+                arrowsize=18,
             )
-            plt.savefig(filename, bbox_inches="tight", dpi=300)
+            plt.tight_layout()
+            plt.savefig(filename, bbox_inches="tight", dpi=150)
+            plt.close()
             print(f"✅ DAG saved to {filename}")
         except ImportError:
             print("⚠️  matplotlib not installed, skipping visualization")
@@ -262,7 +423,33 @@ class GraphiteSupplyChainDAG(CausalDAG):
         self._build_structure()
 
     def _build_structure(self) -> None:
-        """Build graphite supply chain causal structure."""
+        """Build graphite supply chain causal structure.
+
+        Observed nodes correspond to variables measurable in trade/price data:
+          ExportPolicy  — export quota/restriction severity (0=none, 1=full ban)
+          TradeValue    — bilateral trade value USD (UN Comtrade / CEPII)
+          Price         — graphite spot price USD/tonne
+          Demand        — industrial demand (steel/battery production index)
+          GlobalDemand  — macro demand driver (global IP index)
+
+        Unobserved nodes are latent market state variables not directly in data:
+          Supply        — physical supply (production - inventory change)
+          Shortage      — supply-demand gap (Supply - Demand)
+          Inventory     — stockpile level (not publicly reported in real time)
+          Capacity      — mining/processing capacity (changes slowly, partially inferred)
+
+        The key observed causal paths are:
+          ExportPolicy → TradeValue → Price  (trade channel: restrictions cut trade, raise price)
+          ExportPolicy → TradeValue         (direct effect of policy on measured trade)
+          GlobalDemand → Demand → Price     (demand channel: demand growth raises price)
+          TradeValue   → Price              (reduced-form: lower trade value ↔ higher prices)
+          Demand       → Price              (reduced-form: higher demand ↔ higher prices)
+
+        These reduced-form edges make P(Price|do(ExportPolicy)) identifiable from
+        observational data via the backdoor criterion (adjusting for Demand/GlobalDemand).
+        The full structural mechanism (through Supply/Shortage) is modelled in model.py
+        and is used for simulation-based Layer-2 do() and Layer-3 counterfactuals.
+        """
         observed = [
             "ExportPolicy",
             "TradeValue",
@@ -282,8 +469,13 @@ class GraphiteSupplyChainDAG(CausalDAG):
         for var in unobserved:
             self.add_node(var, observed=False)
 
-        self.add_edge("ExportPolicy", "TradeValue")
-        self.add_edge("GlobalDemand", "Demand")
+        # Observed edges (identifiable from trade/price data)
+        self.add_edge("ExportPolicy", "TradeValue")   # policy restricts trade
+        self.add_edge("TradeValue", "Price")           # lower supply → higher price
+        self.add_edge("GlobalDemand", "Demand")        # macro drives demand
+        self.add_edge("Demand", "Price")               # demand growth → price rise
+
+        # Unobserved structural mechanism (full SCM used in simulation)
         self.add_edge("Capacity", "Supply")
         self.add_edge("ExportPolicy", "Supply")
         self.add_edge("Supply", "Shortage")
@@ -369,11 +561,111 @@ class GraphiteSupplyChainDAG(CausalDAG):
         ]
 
 
+    def estimate_parameter(
+        self,
+        parameter: str,
+        data: "pd.DataFrame",
+        **kwargs,
+    ):
+        """
+        Estimate a model parameter using its pre-specified identification strategy.
+
+        Dispatches to the appropriate estimator in causal_identification based on
+        the strategy in get_parameter_identifications().
+
+        Args:
+            parameter: One of 'eta_D', 'tau_K', 'alpha_P', 'policy_shock_magnitude'.
+            data: Panel / time-series DataFrame with the required columns.
+            **kwargs: Forwarded to the estimator. Required kwargs per parameter:
+                eta_D               → instrument_var (str)
+                tau_K               → treated_unit, control_units, treatment_time
+                alpha_P             → threshold (float)
+                policy_shock_magnitude → treatment_time (int)
+              Optional for all: verbose (bool), outcome_var, treatment_var,
+              unit_col, time_col, controls, bandwidth.
+
+        Returns:
+            IVResult | TreatmentEffect | RDResult | DIDResult
+
+        Raises:
+            ValueError: If parameter is unknown or a required kwarg is missing.
+        """
+        from .causal_identification import (
+            InstrumentalVariable,
+            SyntheticControl,
+            RegressionDiscontinuity,
+            DifferenceInDifferences,
+        )
+
+        pid_map = {p.parameter: p for p in self.get_parameter_identifications()}
+        if parameter not in pid_map:
+            raise ValueError(
+                f"Unknown parameter '{parameter}'. Available: {sorted(pid_map)}"
+            )
+        pid = pid_map[parameter]
+        verbose = kwargs.pop("verbose", False)
+
+        if pid.strategy == IdentificationStrategy.INSTRUMENTAL_VARIABLE:
+            if "instrument_var" not in kwargs:
+                raise ValueError("estimate_parameter('eta_D') requires instrument_var=<col>")
+            return InstrumentalVariable(verbose=verbose).estimate(
+                data=data,
+                outcome_var=kwargs.pop("outcome_var", pid.outcome),
+                treatment_var=kwargs.pop("treatment_var", pid.treatment),
+                instrument_var=kwargs.pop("instrument_var"),
+                controls=kwargs.pop("controls", None),
+            )
+
+        if pid.strategy == IdentificationStrategy.SYNTHETIC_CONTROL:
+            for req in ("treated_unit", "control_units", "treatment_time"):
+                if req not in kwargs:
+                    raise ValueError(f"estimate_parameter('tau_K') requires {req}=<value>")
+            return SyntheticControl(verbose=verbose).estimate_treatment_effect(
+                data=data,
+                treated_unit=kwargs.pop("treated_unit"),
+                control_units=kwargs.pop("control_units"),
+                treatment_time=kwargs.pop("treatment_time"),
+                outcome_var=kwargs.pop("outcome_var", pid.outcome),
+                unit_col=kwargs.pop("unit_col", "country"),
+                time_col=kwargs.pop("time_col", "year"),
+            )
+
+        if pid.strategy == IdentificationStrategy.REGRESSION_DISCONTINUITY:
+            if "threshold" not in kwargs:
+                raise ValueError("estimate_parameter('alpha_P') requires threshold=<float>")
+            return RegressionDiscontinuity(verbose=verbose).estimate(
+                data=data,
+                running_var=kwargs.pop("running_var", pid.treatment),
+                outcome_var=kwargs.pop("outcome_var", pid.outcome),
+                threshold=kwargs.pop("threshold"),
+                bandwidth=kwargs.pop("bandwidth", None),
+            )
+
+        if pid.strategy == IdentificationStrategy.DIFFERENCE_IN_DIFFERENCES:
+            if "treatment_time" not in kwargs:
+                raise ValueError("estimate_parameter('policy_shock_magnitude') requires treatment_time=<int>")
+            return DifferenceInDifferences(verbose=verbose).estimate(
+                data=data,
+                outcome_var=kwargs.pop("outcome_var", pid.outcome),
+                treatment_col=kwargs.pop("treatment_col", "treated"),
+                time_col=kwargs.pop("time_col", "year"),
+                treatment_time=kwargs.pop("treatment_time"),
+                unit_col=kwargs.pop("unit_col", "country"),
+            )
+
+        raise NotImplementedError(f"No estimator wired for strategy '{pid.strategy.value}'")
+
+
 def demonstrate_identifiability() -> None:
-    """Demo: Check identifiability of key causal effects."""
+    """Demo: Check identifiability of key causal effects (with do-calculus derivations)."""
     print("=" * 70)
-    print("CAUSAL IDENTIFIABILITY ANALYSIS")
+    print("CAUSAL IDENTIFIABILITY ANALYSIS (Pearl do-calculus)")
     print("=" * 70)
+
+    print("\n📐 Do-calculus (three rules, algebraic):")
+    print(do_calculus.rule_1_statement())
+    print(do_calculus.rule_2_statement())
+    print(do_calculus.rule_3_statement())
 
     dag = GraphiteSupplyChainDAG()
 
@@ -389,7 +681,7 @@ def demonstrate_identifiability() -> None:
         ("Price", "Demand"),
     ]
 
-    print("\n🔬 Identifiability Analysis:\n")
+    print("\n🔬 Identifiability Analysis (formula + derivation):\n")
 
     for treatment, outcome in queries:
         result = dag.is_identifiable(treatment, outcome)
@@ -400,6 +692,10 @@ def demonstrate_identifiability() -> None:
             if result.adjustment_set:
                 print(f"  Adjustment set: {result.adjustment_set}")
             print(f"  Formula: {result.formula}")
+            if result.derivation_steps:
+                print("  Do-calculus derivation:")
+                for step in result.derivation_steps:
+                    print(f"    {step}")
             print("  Assumptions:")
             for assumption in result.assumptions:
                 print(f"    - {assumption}")

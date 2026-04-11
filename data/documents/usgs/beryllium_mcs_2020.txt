@@ -1,0 +1,282 @@
+32
+
+BERYLLIUM
+(Data in metric tons of beryllium content unless otherwise noted)
+Domestic Production and Use: One company in Utah mined bertrandite ore and converted it, along with imported
+beryl, into beryllium hydroxide. Some of the beryllium hydroxide was shipped to the company’s plant in Ohio, where it
+was converted into metal, oxide, and downstream beryllium-copper master alloy, and some was sold. Based on the
+estimated unit value for beryllium in imported beryllium-copper master alloy, beryllium apparent consumption of 180
+tons was valued at about $113 million. Based on sales revenues, approximately 21% of beryllium products were used
+in industrial components; 20% in aerospace and defense applications; 14% each in automotive electronics, consumer
+electronics, and telecommunications infrastructure; 9% in energy applications; 1% in semiconductor applications; and
+7% in other applications. Beryllium alloy strip and bulk products, the most common forms of processed beryllium,
+were used in all application areas. The majority of unalloyed beryllium metal and beryllium composite products were
+used in defense and scientific applications.
+Salient Statistics—United States:
+Production, mine shipments
+Imports for consumption1
+Exports2
+Shipments from Government stockpile3
+Consumption:
+Apparent4
+Reported, ore
+Unit value, annual average, beryllium-copper master
+alloy, dollars per kilogram contained beryllium 5
+Stocks, ore, consumer, yearend
+Net import reliance6 as a percentage
+of apparent consumption
+
+2015
+205
+66
+29
+1
+
+2016
+155
+68
+34
+3
+
+2017
+150
+60
+38
+2
+
+2018
+165
+67
+30
+—
+
+2019e
+170
+45
+40
+—
+
+233
+220
+
+182
+160
+
+179
+160
+
+202
+170
+
+180
+170
+
+490
+25
+
+510
+35
+
+640
+30
+
+590
+30
+
+660
+30
+
+12
+
+15
+
+16
+
+18
+
+3
+
+Recycling: Beryllium was recovered from new scrap generated during the manufacture of beryllium products and
+from old scrap. Detailed data on the quantities of beryllium recycled are not available but may account for as much as
+20% to 25% of total beryllium consumption. The leading U.S. beryllium producer established a comprehensive
+recycling program for all of its beryllium products, recovering approximately 40% of the beryllium content of the new
+and old beryllium alloy scrap.
+Import Sources (2015–18):1 Kazakhstan, 39%; Japan, 15%; Brazil, 13%; United Kingdom, 5%; and other, 28%.
+Tariff: Item
+
+Number
+
+Beryllium ores and concentrates
+Beryllium oxide and hydroxide
+Beryllium-copper master alloy
+Beryllium-copper plates, sheets, and strip:
+Thickness of 5 millimeters (mm) or more
+Thickness of less than 5 mm:
+Width of 500 mm or more
+Width of less than 500 mm
+Beryllium:
+Unwrought, including powders
+Waste and scrap
+Other
+
+2617.90.0030
+2825.90.1000
+7405.00.6030
+
+Normal Trade Relations
+12–31–19
+Free.
+3.7% ad val.
+Free.
+
+7409.90.1030
+
+3.0% ad val.
+
+7409.90.5030
+7409.90.9030
+
+1.7% ad val.
+3.0% ad val.
+
+8112.12.0000
+8112.13.0000
+8112.19.0000
+
+8.5% ad val.
+Free.
+5.5% ad val.
+
+Depletion Allowance: 22% (Domestic), 14% (Foreign).
+Government Stockpile:7 The Defense Logistics Agency Strategic Materials had a goal of retaining 47 tons of
+beryllium metal in the National Defense Stockpile.
+
+Material
+Beryl ore (gross weight)
+Metal
+Structured powder
+
+Inventory
+As of 9–30–19
+1
+67
+7
+
+FY 2019
+Potential
+Potential
+Acquisitions Disposals
+—
+—
+—
+5
+—
+—
+
+Prepared by Brian W. Jaskula [(703) 648–4908, bjaskula@usgs.gov]
+
+FY 2020
+Potential
+Potential
+Acquisitions Disposals
+—
+—
+—
+7
+—
+—
+
+33
+
+BERYLLIUM
+Events, Trends, and Issues: Apparent consumption of beryllium-based products was estimated to have decreased
+by about 11% in 2019 from that of 2018 owing primarily to a 33% decrease in beryllium imports and a 33% increase
+in beryllium exports. Imported beryl concentrate has decreased substantially since 2015. Domestic beryllium
+production and consumption in 2019 were estimated to be close to that of 2018. During the first 6 months of 2019, the
+leading U.S. beryllium producer reported that net sales of its beryllium alloy strip and bulk products and beryllium
+metal and composite products were 6% higher than those during the first 6 months of 2018. Value-added sales of
+beryllium products increased primarily in the aerospace and defense, consumer electronics, energy, and
+telecommunications markets.
+Because of the toxic nature of beryllium, various international, national, and State guidelines and regulations have
+been established regarding beryllium in air, water, and other media. Industry is required to carefully control the
+quantity of beryllium dust, fumes, and mists in the workplace.
+World Mine Production and Reserves: Reserves for the United States were revised based on updated company
+information.
+
+United States
+Brazil
+China
+Madagascar
+Mozambique
+Nigeria
+Rwanda
+World total (rounded)
+
+Mine production8, 9
+2018
+2019e
+165
+170
+e3
+3
+e48
+70
+e6
+1
+e16
+15
+e4
+1
+e1
+1
+240
+260
+
+Reserves10
+The United States has very little beryl that can be
+economically hand sorted from pegmatite deposits.
+The Spor Mountain area in Utah, an epithermal
+deposit, contains a large bertrandite resource, which
+is being mined. Proven and probable bertrandite
+reserves in Utah total about 20,000 tons of contained
+beryllium. World beryllium reserves are not available.
+
+World Resources: The world’s identified resources of beryllium have been estimated to be more than 100,000 tons.
+About 60% of these resources are in the United States; by size, the Spor Mountain area in Utah, the McCullough
+Butte area in Nevada, the Black Hills area in South Dakota, the Sierra Blanca area in Texas, the Seward Peninsula in
+Alaska, and the Gold Hill area in Utah account for most of the total.
+Substitutes: Because the cost of beryllium is high compared with that of other materials, it is used in applications in
+which its properties are crucial. In some applications, certain metal matrix or organic composites, high-strength
+grades of aluminum, pyrolytic graphite, silicon carbide, steel, or titanium may be substituted for beryllium metal or
+beryllium composites. Copper alloys containing nickel and silicon, tin, titanium, or other alloying elements or phosphor
+bronze alloys (copper-tin-phosphorus) may be substituted for beryllium-copper alloys, but these substitutions can
+result in substantially reduced performance. Aluminum nitride or boron nitride may be substituted for beryllium oxide.
+
+Estimated. — Zero.
+Includes estimated beryllium content of imported ores and concentrates, oxide and hydroxide, unwrought metal (including powders), beryllium
+articles, waste and scrap, beryllium-copper master alloy, and beryllium-copper plates, sheets, and strip.
+2
+Includes estimated beryllium content of exported unwrought metal (including powders), beryllium articles, and waste and scrap.
+3
+Change in total inventory level from prior yearend inventory.
+4
+Defined as production + net import reliance.
+5
+Calculated from gross weight and customs value of imports; beryllium content estimated to be 4%. Rounded to two significant figures.
+6
+Defined as imports – exports + adjustments for Government and industry stock changes.
+7
+See Appendix B for definitions.
+8
+In addition to the countries listed, Kazakhstan, Portugal, and Uganda may have produced beryl ore, but available information was inadequate to
+make reliable estimates of output. Other nations that produced gemstone beryl ore may also have produced some industrial beryl ore.
+9
+Based on a beryllium content of 4% from bertrandite and beryl sources.
+10
+See Appendix C for resource and reserve definitions and information concerning data sources.
+e
+1
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2020
+
+

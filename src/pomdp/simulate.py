@@ -78,11 +78,11 @@ def rollout(
         observation = pomdp.O[obs_idx]
         observation_history.append(observation)
         
-        # Get reward
+        # Get reward (discounted)
         R_a = pomdp.R[action]
         reward = R_a[current_state_idx, next_state_idx]
         reward_history.append(reward)
-        total_reward += reward
+        total_reward += (pomdp.gamma ** step) * reward
         
         # Update belief
         belief = belief_update(pomdp, belief, action, observation)

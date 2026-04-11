@@ -1,0 +1,143 @@
+44
+
+CESIUM
+(Data in metric tons of cesium oxide unless otherwise noted)
+Domestic Production and Use: In 2019, no cesium was mined domestically, and the United States was 100%
+import reliant for cesium minerals. Pollucite, mainly found in association with lithium-rich, lepidolite-bearing or petalitebearing zoned granite pegmatites, is the principal cesium ore mineral. Cesium minerals are used as feedstocks to
+produce a variety of cesium compounds and cesium metal. The primary application for cesium, by gross weight, is in
+cesium formate brines used for high-pressure, high-temperature well drilling for oil and gas production and
+exploration.
+Cesium metal is used in the production of cesium compounds and potentially in photoelectric cells. Cesium bromide is
+used in infrared detectors, optics, photoelectric cells, scintillation counters, and spectrophotometers. Cesium
+carbonate is used in the alkylation of organic compounds and in energy conversion devices, such as fuel cells,
+magneto-hydrodynamic generators, and polymer solar cells. Cesium chloride is used in analytical chemistry
+applications as a reagent, in high-temperature solders, as an intermediate in cesium metal production, in isopycnic
+centrifugation, as a radioisotope in nuclear medicine, as an insect repellent in agricultural applications, and in
+specialty glasses. Cesium hydroxide is used as an electrolyte in alkaline storage batteries. Cesium iodide is used in
+fluoroscopy equipment—Fourier-transform infrared spectrometers—as the input phosphor of x-ray image intensifier
+tubes, and in scintillators. Cesium nitrate is used as a colorant and oxidizer in the pyrotechnic industry, in petroleum
+cracking, in scintillation counters, and in x-ray phosphors. Cesium sulfates are soluble in water and are thought to be
+used primarily in water treatment, fuel cells, and to improve optical quality for scientific instruments.
+Cesium isotopes, which are obtained as a byproduct in nuclear fission or formed from other isotopes, such as barium131, are used in electronic, medical, metallurgical, and research applications. Cesium isotopes are used as an atomic
+resonance frequency standard in atomic clocks, which plays a vital role in aircraft guidance systems, global
+positioning satellites, and internet and cellular telephone transmissions. Cesium clocks monitor the cycles of
+microwave radiation emitted by cesium’s electrons and use these cycles as a time reference. Owing to the high
+accuracy of the cesium atomic clock, the international definition of 1 second is based on the cesium atom. The U.S.
+civilian time and frequency standard is based on a cesium fountain clock at the National Institute of Standards and
+Technology in Boulder, CO. The U.S. military frequency standard, the United States Naval Observatory Time Scale,
+is based on 48 weighted atomic clocks, including 25 cesium fountain clocks.
+A company in Richland, WA, produced a range of cesium-131 medical products for treatment of various cancers.
+Cesium-137 may be used in industrial gauges, in mining and geophysical instruments, and for sterilization of food,
+sewage, and surgical equipment. Because of the danger posed by the radiological properties of cesium-137, efforts to
+find substitutes in its applications continued.
+Salient Statistics—United States: Consumption, import, and export data for cesium have not been available since
+the late 1980s. Because cesium metal is not traded in commercial quantities, a market price is unavailable. Only a
+few thousand kilograms of cesium chemicals are thought to be consumed in the United States every year. The United
+States was 100% import reliant for its cesium needs.
+In 2019, one company offered 1-gram ampoules of 99.8% (metal basis) cesium for $63.00, a slight increase from
+$61.80 in 2018, and 99.98% (metal basis) cesium for $81.10, a 3% increase from $78.70 in 2018.
+In 2019, the prices for 50 grams of 99.9% (metal basis) cesium acetate, cesium bromide, cesium carbonate, cesium
+chloride, and cesium iodide were $118.20, $71.90, $101.80, $103.60, and $117.00 respectively, a 3% increase from
+prices in 2018. The price for a cesium-plasma standard solution (10,000 micrograms per milliliter) was $81.90 for 50
+milliliters and $125.00 for 100 milliliters, and the price for 25 grams of cesium formate, 98% basis, was $39.90.
+Recycling: Cesium formate brines are typically rented by oil and gas exploration clients. After completion of the well,
+the used cesium formate brine is returned and reprocessed for subsequent drilling operations. The formate brines are
+recycled with an estimated recovery rate of 85%, which can be reprocessed for further use.
+Import Sources (2015–18): No reliable data have been available to determine the source of cesium ore imported by
+the United States since 1988. Previously, Canada was thought to be the primary supplier of cesium ore.
+
+Prepared by Candice C. Tuck [(703) 648–4912, ctuck@usgs.gov]
+
+45
+
+CESIUM
+Tariff:
+
+Item
+
+Number
+
+Alkali metals, other
+Chlorides, other
+Bromides, other
+Iodides, other
+Sulfates, other
+Nitrates, other
+Carbonates, other
+Cesium-137, other
+
+2805.19.9000
+2827.39.9000
+2827.59.5100
+2827.60.5100
+2833.29.5100
+2834.29.5100
+2836.99.5000
+2844.40.0021
+
+Normal Trade Relations
+12–31–19
+5.5% ad val.
+3.7% ad val.
+3.6% ad val.
+4.2% ad val.
+3.7% ad val.
+3.5% ad val.
+3.7% ad val.
+Free
+
+Depletion Allowance: 14% (Domestic and foreign).
+Government Stockpile: None.
+Events, Trends, and Issues: Domestic cesium occurrences will likely remain uneconomic unless market conditions
+change. No known human health issues are associated with naturally occurring cesium, and its use has minimal
+environmental impact. Radioactive isotopes of cesium have been known to cause adverse health effects. Certain
+cesium compounds may be toxic if consumed. Food that has been irradiated using the radioisotope Cesium-137 has
+been found to be safe by the U.S. Food and Drug Administration.
+During 2019, projects that were primarily aimed at developing lithium resources with cesium content were at various
+stages of development. One United States-based company sold its cesium mine in Manitoba, Canada, and its
+specialty fluids division, including cesium formate, in Norway, Scotland, and Singapore to a company in China.
+Operations commenced at a pollucite mine in Western Australia in December 2018, with cesium being exported to the
+United States as contracted with a cesium chemical producer. The company reported that the first stage of mining
+produced 19,000 tons of pollucite with an average grade of 9.1% cesium oxide. The U.S. Food and Drug
+Administration issued a notice of significant health and safety risks associated with compounded cesium chloride,
+which had been used as an alternative cancer treatment. In May 2019, a blood irradiator that used cesium-137 spilled
+while being moved from a medical research center to a secure disposal site. The National Nuclear Security
+Administration managed the cleanup efforts and an investigation. Congressional budget proposals recommended
+increased funding for the National Nuclear Security Administration’s Cesium Irradiator Replacement Project to assist
+in replacing cesium-137 blood irradiators.
+World Mine Production and Reserves: There were no official sources for cesium production data. In addition to
+production of pollucite in Australia, Namibia and Zimbabwe were thought to have produced cesium in small quantities
+as a byproduct of lithium mining operations. Cesium reserves are, therefore, estimated based on the occurrence of
+pollucite, which is mined as a byproduct of the lithium mineral lepidolite. Most pollucite contains 5% to 32% cesium
+oxide. Reserves data for Australia and Canada were added based on industry information.
+Australia
+Canada
+Namibia
+Zimbabwe
+World total (rounded)
+
+Reserves1
+7,100
+120,000
+30,000
+60,000
+220,000
+
+World Resources: Cesium is associated with lithium-bearing pegmatites worldwide, and cesium resources have
+been identified in Australia, Canada, Namibia, the United States, and Zimbabwe. In the United States, pollucite
+occurs in pegmatites in Alaska, Maine, and South Dakota. Lower concentrations occur in brines in Chile and China
+and in geothermal systems in Germany, India, and Tibet. China was thought to have cesium-rich deposits of
+geyserite, lepidolite, and pollucite, with concentrations highest in Yichun, Jiangxi Province, although no resource,
+reserves, or production estimates were available.
+Substitutes: Cesium and rubidium can be used interchangeably in many applications because they have similar
+physical properties and atomic radii. Cesium, however, is more electropositive than rubidium, making it a preferred
+material for some applications. However, rubidium is mined from similar deposits, in relatively smaller quantities, as a
+byproduct of cesium production in pegmatites and as a byproduct of lithium production from lepidolite (hard-rock)
+mining and processing, making it no more readily available than cesium.
+See Appendix C for resource and reserve definitions and information concerning data sources.
+
+1
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2020
+
+

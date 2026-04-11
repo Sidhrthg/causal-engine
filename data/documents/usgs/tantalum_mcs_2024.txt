@@ -1,0 +1,280 @@
+176
+
+TANTALUM
+(Data in metric tons, tantalum content, unless otherwise specified)
+
+Domestic Production and Use: Tantalum has not been mined in the United States since 1959. Domestic tantalum
+resources are low grade; some are mineralogically complex, and most are not commercially recoverable. Companies
+in the United States produced tantalum alloys, capacitors, carbides, compounds, and tantalum metal from imported
+tantalum ores and concentrates and tantalum-containing materials. Tantalum metal and alloys were recovered from
+foreign and domestic scrap. Domestic tantalum consumption was not reported by consumers. The value of tantalum
+consumed in 2023 was estimated to exceed $205 million as measured by the value of imports.
+Salient Statistics—United States:
+Production:
+Mine
+Secondary
+Imports for consumption1
+Exports1
+Shipments from Government stockpile2
+Consumption, apparent3
+Price, tantalite, annual average, dollars per kilogram of Ta2O5 content5
+Net import reliance6 as a percentage of apparent consumption
+
+2019
+
+2020
+
+2021
+
+2022
+
+2023e
+
+—
+NA
+1,350
+427
+—
+919
+161
+100
+
+—
+NA
+1,200
+434
+−16
+753
+158
+100
+
+—
+NA
+1,330
+655
+−10
+663
+158
+100
+
+—
+NA
+1,720
+662
+—
+1,060
+214
+100
+
+—
+NA
+1,100
+680
+NA
+4
+370
+190
+100
+
+Recycling: Tantalum was recycled mostly from new scrap generated during the manufacture of tantalum-containing
+electronic components and from tantalum-containing cemented carbide and superalloy scrap. The amount of tantalum
+recycled was not available, but it may account for as much as 30% of consumption by domestic primary processors.
+Import Sources (2019–22): Tantalum ores and concentrates: Australia, 54%; Congo (Kinshasa), 11%; Rwanda, 9%;
+Mozambique, 7%; and other, 19%. Tantalum metal and powder: China,7 42%; Germany, 27%; Kazakhstan, 13%;
+Thailand, 7%; and other, 11%. Tantalum waste and scrap: Indonesia, 26%; China,7 15%; Japan, 14%; Republic of
+Korea, 7%; and other, 38%. Total: China,7 24%; Germany, 13%; Australia, 11%; Indonesia, 9%; and other, 43%.
+Tariff:
+
+Item
+
+Number
+
+Synthetic tantalum-niobium concentrates
+Niobium ores and concentrates
+Tantalum ores and concentrates
+Tantalum oxide
+Potassium fluorotantalate
+Tantalum, unwrought:
+Powders
+Alloys and metal
+Tantalum, waste and scrap
+Tantalum, wrought:
+Crucibles
+Other
+
+2615.90.3000
+2615.90.6030
+2615.90.6060
+2825.90.9000
+2826.90.9000
+
+Normal Trade Relations
+12–31–23
+Free.
+Free.
+Free.
+3.7% ad valorem.
+3.1% ad valorem.
+
+8103.20.0030
+8103.20.0090
+8103.30.0000
+
+2.5% ad valorem.
+2.5% ad valorem.
+Free.
+
+8103.91.0000
+8103.99.0000
+
+4.4% ad valorem.
+4.4% ad valorem.
+
+Depletion Allowance: 22% (domestic), 14% (foreign).
+Government Stockpile:8
+Material
+Tantalum metal
+
+FY 2023
+Potential
+Potential
+acquisitions
+disposals
+—
+0.09
+
+FY 2024
+Potential
+Potential
+acquisitions
+disposals
+24.00
+0.09
+
+Events, Trends, and Issues: U.S. tantalum apparent consumption was estimated to be 370 tons, a 65% decrease
+from that in 2022, and estimated U.S. imports for consumption decreased by 39% compared with those in 2022. The
+significant decrease in U.S. tantalum imports in 2023 is a reflection of a broader trend in the global market, primarily
+owing to a decrease in consumer electronics and data center demand. Additionally, the trade has been affected by
+increased stockpiles after the global coronavirus disease 2019 (COVID-19) pandemic, owing to double ordering
+influenced by logistics and lead times during the pandemic. Concurrently, estimated U.S. exports increased by 3% in
+2023, highlighting a disparity between import and export trends. The value of waste and scrap imports had the most
+significant increase of 24% compared with that in 2022. In 2023, the average monthly price for tantalum ore was
+valued at $190 per kilogram of Ta2O5 content, a decrease of 8% compared with that in 2022.
+Prepared by Chad A. Friedline [(703) 648–7713, cfriedline@usgs.gov]
+
+177
+
+TANTALUM
+In October, the United States updated the Export Administration Regulations, which introduced new classifications
+and broadened restrictions on controlled semiconductor manufacturing items. It also added new license exceptions
+and detailed compliance guidance, refined controls on United States persons in technology development in China,
+and expanded geographical destination controls.
+
+Also in October, the United States and several additional entities signed an agreement on the development of the
+Lobito Corridor and the Zambia-Lobito Rail Line connecting Congo (Kinshasa) and Zambia to Angola’s Port of Lobito.
+When complete, the project is expected to reduce transportation time, lower costs, and decrease the carbon footprint
+associated with exporting metals and other products.
+World Mine Production and Reserves: Reserves for Australia and China were revised based on Government
+reports.
+
+United States
+Australia
+Brazil
+Burundi
+China
+Congo (Kinshasa)
+Nigeria
+Russia
+Rwanda
+Other
+World total (rounded)
+
+Mine production
+2022
+2023e
+—
+—
+46
+43
+e
+370
+360
+e
+59
+36
+e
+78
+79
+e
+890
+980
+e
+110
+110
+e
+31
+20
+e
+347
+520
+e
+120
+260
+1,990
+2,400
+
+Reserves9
+—
+110,000
+40,000
+NA
+240,000
+NA
+NA
+NA
+NA
+NA
+NA
+
+10
+
+World Resources:9 Identified world resources of tantalum, most of which are in Australia, Brazil, Canada, and China,
+are considered adequate to supply projected needs. The United States has about 55,000 tons of tantalum resources
+in identified deposits, most of which were considered subeconomic at 2023 prices for tantalum.
+Substitutes: The following materials can be substituted for tantalum, but a performance loss or higher costs may
+ensue: niobium and tungsten in carbides; aluminum, ceramics, and niobium in electronic capacitors; glass,
+molybdenum, nickel, niobium, platinum, stainless steel, titanium, and zirconium in corrosion-resistant applications;
+and hafnium, iridium, molybdenum, niobium, rhenium, and tungsten in high-temperature applications.
+
+Estimated. NA Not available. — Zero.
+Imports and exports include the estimated tantalum content of synthetic tantalum-niobium concentrates, niobium and tantalum ores and
+concentrates, tantalum waste and scrap, unwrought tantalum alloys and powder, and other tantalum articles. Synthetic concentrates and niobium
+ores and concentrates were assumed to contain 50% Ta2O5. Tantalum ores and concentrates were assumed to contain 32% Ta2O5. Niobium ores
+and concentrates were assumed to contain 28% Ta2O5. Ta2O5 is 81.897% tantalum.
+2
+Defined as change in total inventory from prior yearend inventory. If negative, increase in inventory. Beginning in 2023, Government stock changes
+no longer available.
+3
+Defined for 2019–22 as production + imports − exports ± adjustments for Government and industry stock changes. Beginning in 2023,
+Government stock changes no longer included.
+4
+Decrease in apparent consumption is due to a decline in imports for consumption caused by stockpiling in 2022.
+5
+Sources: CRU Group (2019–21) and the Institute for Rare Earths and Metals (2022–23).
+6
+Defined for 2019–22 as imports − exports ± adjustments for Government and industry stock changes. Beginning in 2023, Government stock
+changes no longer included.
+7
+Includes Hong Kong.
+8
+See Appendix B for definitions.
+9
+See Appendix C for resource and reserve definitions and information concerning data sources.
+10
+For Australia, Joint Ore Reserves Committee-compliant or equivalent reserves were 28,000 tons.
+e
+1
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2024
+
+

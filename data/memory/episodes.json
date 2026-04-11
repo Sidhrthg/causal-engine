@@ -1,0 +1,31 @@
+[
+  {
+    "episode_id": "e6c4171d",
+    "query": "What caused the graphite supply shock in 2023?",
+    "answer": "Based on the provided source documents, I cannot definitively identify what caused a graphite supply shock specifically in 2023, as the documents do not contain comprehensive information about 2023 graphite supply conditions.\n\nHowever, the documents do identify several factors that were affecting graphite supply around that timeframe:\n\n**Ukraine-Russia Conflict Impact:**\nAccording to [3], \"In February, Ukraine halted graphite production, citing Russian military action. Operations recommenced in August, although future production was uncertain as the conflict continued. Additionally, the United States and many other countries have suspended normal trade relations with Russia, removing supplies of Russian graphite from much of the global market. Leading up to the conflict, Ukraine and Russia were considered among the top 10 producers of graphite.\"\n\n**Market Context:**\nThe documents show that by 2021, China dominated global graphite production with an estimated 79% of total world output [1], and this dominance had \"slowed down the diversification of the supply chain\" [1].\n\nThe documents do not contain enough information to conclusively determine what specifically caused a graphite supply shock in 2023, as they primarily cover events through 2022 and do not provide detailed 2023 supply data or identify any major supply disruptions that occurred specifically in 2023.",
+    "sources": [
+      {
+        "source": "usgs/graphite_mcs_2022.txt",
+        "text_preview": "Events, Trends, and Issues: U.S. natural graphite exports decreased each year from 2017 to 2019, remained\nessentially unchanged in 2020, and then increased by 41% in 2021. This was still an overall 40...",
+        "similarity": 0.004021350217104164
+      },
+      {
+        "source": "usgs/antimony_mcs_2023.txt",
+        "text_preview": "ANTIMONY\nEvents, Trends, and Issues: China continued to be the leading global antimony producer in 2022 and accounted for\n55% of global mine production. The supply of antimony raw materials and downst...",
+        "similarity": 0.003832101269876246
+      },
+      {
+        "source": "usgs/graphite_mcs_2023.txt",
+        "text_preview": "GRAPHITE (NATURAL)\nNorth America produced only 1.2% of the world\u2019s graphite supply with production in Canada and Mexico. Three\ncompanies were developing graphite-mining projects in the United States\u2014t...",
+        "similarity": 0.0012237013249984234
+      }
+    ],
+    "faithfulness": -1.0,
+    "relevance": -1.0,
+    "user_rating": 1.0,
+    "correction": "",
+    "timestamp": "2026-03-05T12:38:44",
+    "backend": "hipporag",
+    "tags": []
+  }
+]

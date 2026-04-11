@@ -1,0 +1,228 @@
+TELLURIUM
+(Data in metric tons of contained tellurium unless otherwise noted)
+Domestic Production and Use: Tellurium is primarily recovered as a byproduct of the electrolytic refining of copper,
+where it accumulates in the residues of copper anodes. In 2022, two electrolytic copper refineries operated in the
+United States, one in Texas and one in Utah, and produced copper telluride from tellurium-bearing anode slimes.
+Copper telluride from the Utah facility was processed by another company in Utah, and copper telluride from the
+Texas facility was thought to be exported. Downstream companies refined imported commercial-grade tellurium to
+produce high-purity tellurium, tellurium compounds for specialty applications, and tellurium dioxide. Domestic tellurium
+production, consumption, and stocks were withheld to avoid disclosing company proprietary data.
+Tellurium was predominantly used in the production of cadmium telluride (CdTe) for thin-film solar cells. Another
+important end use was for the production of bismuth telluride (BiTe), which is used in thermoelectric devices for both
+cooling and energy generation. Metallurgical uses were as an alloying additive in steel to improve machining
+characteristics, as a minor additive in copper alloys to improve machinability without reducing conductivity, in lead
+alloys to improve resistance to vibration and fatigue, in cast iron to help control the depth of chill, and in malleable iron
+as a carbide stabilizer. It was used in the chemical industry as a vulcanizing agent and accelerator in the processing
+of rubber and as a component of catalysts for synthetic fiber production. Other uses included those in photoreceptor
+and thermoelectric devices, blasting caps, and as a pigment to produce various colors in glass and ceramics.
+Salient Statistics—United States:
+Production, refinery1
+Imports for consumption
+Exports
+Consumption, apparent3
+Price, average, dollars per kilogram:
+United States4
+Europe5
+Stocks, producer, yearend
+Net import reliance6 as a percentage of apparent consumption
+
+2018
+W
+192
+4
+W
+
+2019
+W
+59
+1
+W
+
+2020
+W
+12
+(2)
+W
+
+2021
+W
+42
+2
+W
+
+2022e
+W
+50
+(2)
+W
+
+79.55
+73.67
+W
+>95
+
+68.11
+60.45
+W
+>95
+
+59.37
+56.05
+W
+>95
+
+69.72
+67.26
+W
+>95
+
+70
+66
+W
+>75
+
+Recycling: For traditional metallurgical and chemical uses, there was little or no scrap from which to extract
+secondary tellurium because these uses of tellurium are highly dispersive or dissipative. A very small amount of
+tellurium was recovered from scrapped selenium-tellurium photoreceptors employed in older photocopiers in Europe.
+A plant in the United States recycled tellurium from CdTe solar cells, but the amount recycled was limited because
+most CdTe solar cells were relatively new and had not reached the end of their useful life.
+Import Sources (2018–21): Canada, 52%; Germany, 24%; China,7 12%; Philippines, 8%; and other, 4%.
+Tariff:
+
+Item
+
+Tellurium
+
+Number
+2804.50.0020
+
+Normal Trade Relations
+12–31–22
+Free.
+
+Depletion Allowance: 14% (domestic and foreign).
+Government Stockpile: None.
+Events, Trends, and Issues: The estimated tellurium content of copper telluride recovered from domestic copper
+anode slimes increased in 2022. In May, a company in the United States began operating a new tellurium circuit with
+an annual production capacity of 20 tons at its electrolytic copper refinery in Utah. The company produced copper
+telluride that was processed by another company in Utah and primarily supplied to the U.S. solar industry. The
+leading U.S. manufacturer of solar modules announced plans to expand the capacity of its existing production
+facilities and to build a fourth facility, contingent upon permitting and regulatory approvals. The company expected to
+increase its total annual capacity in the United States to approximately 10 gigawatts of solar modules by 2025.
+In 2022, the annual average price for tellurium in the United States was an estimated $70 per kilogram, essentially
+unchanged from $69.72 per kilogram in 2021. Production costs for tellurium increased from those in 2021, but the
+higher costs were likely partially offset by increased supply in the United States. The supply of tellurium is directly
+affected by the supply of the materials from which it is a byproduct, primarily copper.
+
+Prepared by Daniel M. Flanagan [(703) 648–7726, dflanagan@usgs.gov]
+
+TELLURIUM
+In June 2022, the Government of China released a development plan for renewable energy and set goals of
+generating 25% of energy consumption and installing 1.2 billion kilowatts of capacity for wind and solar power by
+2030. If realized, the proposals would likely increase the demand for tellurium from the solar industry for thin-film
+CdTe solar panels. China was the leading producer of refined tellurium in 2022 and accounted for 53% of estimated
+global output. Estimated end uses for tellurium in global consumption were solar power cells, 40%; thermoelectric
+production, 30%; metallurgy, 15%; rubber applications, 5%; and other, 10%.
+World Refinery Production and Reserves: The values shown for reserves reflect the estimated tellurium content of
+copper reserves, with the exception of China and Sweden. Reserves for Sweden were reported by the only tellurium
+producer in the country. Reserves for China were revised based on Government reports, and reserves for Russia and
+South Africa were revised based on company reports. These estimates assume that more than one-half of the
+tellurium contained in unrefined copper anodes is recoverable.
+
+United States
+Bulgaria
+Canada
+China
+Japan
+Russia
+South Africa
+Sweden
+Uzbekistan
+Other countries11
+World total (rounded)12
+
+Refinery productione, 8
+2021
+2022
+W
+W
+4
+4
+44
+50
+330
+340
+68
+70
+70
+80
+4
+4
+1041
+40
+48
+50
+NA
+NA
+610
+640
+
+Reserves9
+3,500
+NA
+800
+3,000
+—
+4,500
+800
+670
+NA
+19,000
+32,000
+
+World Resources:9 Reserves for tellurium are based on identified copper deposits and average tellurium content.
+More than 90% of tellurium has been produced from anode slimes as a byproduct of electrolytic copper refining, and
+the remainder was derived from skimmings at lead refineries and from flue dusts and gases generated during the
+smelting of bismuth, copper, and lead-zinc ores. Other potential sources of tellurium include bismuth telluride and
+gold telluride ores.
+Substitutes: Several materials can replace tellurium in most of its uses, but usually with losses in efficiency or
+product characteristics. Amorphous silicon and copper-indium-gallium selenide are the two principal competitors of
+CdTe in thin-film photovoltaic solar cells. Bismuth selenide and organic polymers can be used to substitute for some
+BiTe thermal devices. Bismuth, calcium, lead, phosphorus, selenium, and sulfur can be used in place of tellurium in
+many free-machining steels. Several of the chemical process reactions catalyzed by tellurium can be carried out with
+other catalysts or by means of noncatalyzed processes. In rubber compounding, sulfur and (or) selenium can act as
+vulcanization agents in place of tellurium. The selenides and sulfides of niobium and tantalum can serve as electricalconducting solid lubricants in place of tellurides of those metals.
+
+Estimated. NA Not available. W Withheld to avoid disclosing company proprietary data. — Zero.
+Refined tellurium production and estimated tellurium content of copper telluride recovered from copper anode slimes.
+2
+Less than ½ unit. Export data reported by the U.S. Census Bureau in 2020 were adjusted by the U.S. Geological Survey.
+3
+Production + imports – exports ± adjustments for industry stock changes.
+4
+Average annual price for 99.95%-minimum-purity tellurium, free on board, U.S. warehouse. Source: Argus Media group, Argus Metals
+International.
+5
+Average annual price for 99.99%-maximum-purity tellurium, in warehouse, Rotterdam. Source: Argus Media group, Argus Metals International.
+6
+Defined as imports – exports ± adjustments for industry stock changes.
+7
+Includes Hong Kong.
+8
+Insofar as possible, data relate to refinery output only; countries that produced tellurium contained in blister copper, copper concentrates, copper
+ores, and (or) refinery residues but did not recover refined tellurium from these materials were excluded to avoid double counting.
+9
+See Appendix C for resource and reserve definitions and information concerning data sources.
+10
+Reported.
+11
+In addition to the countries listed, Australia, Belgium, Chile, Colombia, Germany, Kazakhstan, Mexico, the Philippines, and Poland may have
+produced refined tellurium, but output was not reported, and available information was inadequate to make reliable production estimates.
+12
+Excludes U.S. production.
+e
+1
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2023
+
+

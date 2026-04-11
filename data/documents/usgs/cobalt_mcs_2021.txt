@@ -1,0 +1,323 @@
+COBALT
+(Data in metric tons of cobalt content unless otherwise noted)
+Domestic Production and Use: In 2020, the nickel-copper Eagle Mine in Michigan produced cobalt-bearing nickel
+concentrate. In Missouri, a company produced nickel-copper-cobalt concentrate from historic mine tailings. Most U.S.
+cobalt supply comprised imports and secondary (scrap) materials. Approximately six companies in the United States
+produced cobalt chemicals. About 43% of the cobalt consumed in the United States was used in superalloys, mainly
+in aircraft gas turbine engines; 10% in cemented carbides for cutting and wear-resistant applications; 16% in various
+other metallic applications; and 31% in a variety of chemical applications. The total estimated value of cobalt
+consumed in 2020 was $300 million.
+Salient Statistics—United States:
+Production:e
+Mine
+Secondary1
+Imports for consumption
+Exports
+Consumption (includes secondary):
+Reported
+Apparent2
+Price, average, dollars per pound:
+U.S. spot, cathode3
+London Metal Exchange (LME), cash
+Stocks, yearend:
+Industry4
+LME, U.S. warehouse
+Net import reliance5 as a percentage of
+apparent consumption
+
+2016
+
+2017
+
+2018
+
+2019
+
+2020e
+
+690
+2,750
+12,800
+4,160
+
+640
+2,750
+11,900
+5,690
+
+480
+2,750
+11,900
+6,950
+
+500
+2,750
+13,900
+4,070
+
+600
+2,100
+10,000
+3,500
+
+9,010
+11,500
+
+9,240
+8,950
+
+9,290
+7,700
+
+9,050
+12,500
+
+7,300
+8,700
+
+12.01
+11.57
+
+26.97
+25.28
+
+37.43
+32.94
+
+16.95
+14.88
+
+16.00
+14.00
+
+969
+195
+
+1,020
+160
+
+1,060
+130
+
+1,090
+102
+
+1,000
+80
+
+76
+
+69
+
+64
+
+78
+
+76
+
+Recycling: In 2020, cobalt contained in purchased scrap represented an estimated 29% of cobalt reported
+consumption.
+Import Sources (2016–19): Cobalt contained in metal, oxide, and salts: Norway, 20%; Canada, 14%; Japan, 13%;
+Finland, 10%; and other, 43%.
+Tariff:
+
+Item
+
+Number
+
+Cobalt ores and concentrates
+Chemical compounds:
+Cobalt oxides and hydroxides
+Cobalt chlorides
+Cobalt sulfates
+Cobalt carbonates
+Cobalt acetates
+Unwrought cobalt, alloys
+Unwrought cobalt, other
+Cobalt mattes and other intermediate
+products; cobalt powders
+Cobalt waste and scrap
+Wrought cobalt and cobalt articles
+
+2605.00.0000
+
+Normal Trade Relations
+12–31–20
+Free.
+
+2822.00.0000
+2827.39.6000
+2833.29.1000
+2836.99.1000
+2915.29.3000
+8105.20.3000
+8105.20.6000
+
+0.1% ad val.
+4.2% ad val.
+1.4% ad val.
+4.2% ad val.
+4.2% ad val.
+4.4% ad val.
+Free.
+
+8105.20.9000
+8105.30.0000
+8105.90.0000
+
+Free.
+Free.
+3.7% ad val.
+
+Depletion Allowance: 22% (domestic), 14% (foreign).
+Government Stockpile:6 See the Lithium chapter for statistics on lithium-cobalt oxide and lithium-nickel-cobaltaluminum oxide.
+
+Material
+Cobalt
+Cobalt alloys, gross weight7
+
+Inventory
+as of 9–30–20
+302
+3
+
+FY 2020
+Potential
+Potential
+acquisitions
+disposals
+—
+—
+—
+—
+
+Prepared by Kim B. Shedd [(703) 648–4974, kshedd@usgs.gov]
+
+FY 2021
+Potential
+Potential
+acquisitions
+disposals
+—
+—
+50
+—
+
+COBALT
+Events, Trends, and Issues: Congo (Kinshasa) continued to be the world’s leading source of mined cobalt,
+supplying approximately 70% of world cobalt mine production. With the exception of production in Morocco and
+artisanally mined cobalt in Congo (Kinshasa), most cobalt is mined as a byproduct of copper or nickel. China was the
+world’s leading producer of refined cobalt, most of which was produced from partially refined cobalt imported from
+Congo (Kinshasa). China was the world’s leading consumer of cobalt, with more than 80% of its consumption being
+used by the rechargeable battery industry.
+Cobalt mine and refinery production were forecast to decrease in 2020. Estimated annual average cobalt prices
+declined from those of 2019. Cobalt production in Madagascar was suspended to prevent the spread of COVID-19.
+Increased production from recently started operations in Congo (Kinshasa) was more than offset by reduced
+production at other operations in response to low prices and restrictions resulting from the COVID-19 pandemic.
+World Mine Production and Reserves: Reserves for multiple countries were revised based on industry reports.
+
+United States
+Australia
+Canada
+China
+Congo (Kinshasa)
+Cuba
+Madagascar
+Morocco
+Papua New Guinea
+Philippines
+Russia
+South Africa
+Other countries
+World total (rounded)
+
+Mine production
+2019
+2020e
+500
+600
+5,740
+5,700
+3,340
+3,200
+2,500
+2,300
+100,000
+95,000
+3,800
+3,600
+3,400
+700
+2,300
+1,900
+2,910
+2,800
+5,100
+4,700
+6,300
+6,300
+2,100
+1,800
+6,320
+6,400
+144,000 140,000
+
+Reserves8
+53,000
+91,400,000
+
+220,000
+80,000
+3,600,000
+500,000
+100,000
+14,000
+51,000
+260,000
+250,000
+40,000
+560,000
+7,100,000
+
+World Resources:8 Identified cobalt resources of the United States are estimated to be about 1 million tons. Most of
+these resources are in Minnesota, but other important occurrences are in Alaska, California, Idaho, Michigan,
+Missouri, Montana, Oregon, and Pennsylvania. With the exception of resources in Idaho and Missouri, any future
+cobalt production from these deposits would be as a byproduct of another metal. Identified world terrestrial cobalt
+resources are about 25 million tons. The vast majority of these resources are in sediment-hosted stratiform copper
+deposits in Congo (Kinshasa) and Zambia; nickel-bearing laterite deposits in Australia and nearby island countries
+and Cuba; and magmatic nickel-copper sulfide deposits hosted in mafic and ultramafic rocks in Australia, Canada,
+Russia, and the United States. More than 120 million tons of cobalt resources have been identified in manganese
+nodules and crusts on the floor of the Atlantic, Indian, and Pacific Oceans.
+Substitutes: Depending on the application, substitution for cobalt could result in a loss in product performance or an
+increase in cost. The cobalt contents of lithium-ion batteries, the leading global use for cobalt, are being reduced;
+potential commercially available cobalt-free substitutes use iron and phosphorus. Potential substitutes in other
+applications include barium or strontium ferrites, neodymium-iron-boron, or nickel-iron alloys in magnets; cerium, iron,
+lead, manganese, or vanadium in paints; cobalt-iron-copper or iron-copper in diamond tools; copper-iron-manganese
+for curing unsaturated polyester resins; iron, iron-cobalt-nickel, nickel, ceramic-metallic composites (cermets), or
+ceramics in cutting and wear-resistant materials; nickel-based alloys or ceramics in jet engines; nickel in petroleum
+catalysts; rhodium in hydroformylation catalysts; and titanium-based alloys in prosthetics.
+e
+
+Estimated.
+Estimated from consumption of purchased scrap.
+2
+Defined as secondary production + imports – exports + adjustments for Government and industry stock changes for refined cobalt.
+3
+As reported by Platts Metals Week. Cobalt cathode is refined cobalt metal produced by an electrolytic process.
+4
+Stocks held by consumers and processors; excludes stocks held by trading companies and held for investment purposes.
+5
+Defined as imports – exports + adjustments for Government and industry stock changes for refined cobalt.
+6
+See Appendix B for definitions.
+7
+Inventory is cobalt alloys; potential acquisitions are samarium-cobalt alloy; excludes potential disposals of nickel-base and aerospace alloys.
+8
+See Appendix C for resource and reserve definitions and information concerning data sources.
+9
+For Australia, Joint Ore Reserves Committee-compliant reserves were 640,000 tons.
+1
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2021
+
+

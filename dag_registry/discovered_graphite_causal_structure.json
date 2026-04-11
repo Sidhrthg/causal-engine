@@ -1,98 +1,130 @@
 {
   "nodes": [
-    "China implementing export quotas on rare earth elements and other critical minerals, including graphite",
-    "China implementing export restrictions on critical minerals including graphite",
+    "2-3 year adjustment periods for new supply capacity",
+    "China's export quotas reduced by 30-40% compared to 2009 levels",
+    "Environmental compliance standards raised for mining operations",
+    "Licensing requirements tightened for mineral exports",
     "demand shocks (financial crisis)",
-    "environmental compliance standards raised for mining operations",
-    "export quotas reduced by 30-40% compared to 2009 levels",
     "growing dependence on imports from China and other suppliers",
-    "licensing requirements tightened for mineral exports",
+    "increased operational costs for graphite mining companies",
     "limited domestic production capacity",
-    "natural graphite imports to the United States increased significantly in 2008",
-    "significant market responsiveness in graphite markets",
+    "market shocks",
+    "natural graphite imports to the United States increased significantly",
+    "reduced access to export markets for graphite producers",
+    "reduced export supply of graphite",
+    "significant market responsiveness",
+    "spot price increases of 25-40% above 2007 levels",
     "strong industrial demand from steel and automotive sectors",
+    "supply chain constraints and export quota discussions in China",
     "supply shocks (export restrictions)"
   ],
   "edges": [
     {
       "from": "demand shocks (financial crisis)",
-      "to": "significant market responsiveness in graphite markets",
+      "to": "significant market responsiveness",
       "mechanism": "market adjustment to changed demand conditions",
-      "confidence": "MEDIUM",
+      "confidence": "HIGH",
       "source": "trade_reports/graphite_trade_analysis_2005_2012.txt",
       "evidence": "The data suggests that graphite markets exhibit significant responsiveness to both demand shocks (financial crisis) and supply shocks (export restrictions)",
       "validated": true
     },
     {
       "from": "supply shocks (export restrictions)",
-      "to": "significant market responsiveness in graphite markets",
+      "to": "significant market responsiveness",
       "mechanism": "market adjustment to constrained supply conditions",
-      "confidence": "MEDIUM",
+      "confidence": "HIGH",
       "source": "trade_reports/graphite_trade_analysis_2005_2012.txt",
       "evidence": "The data suggests that graphite markets exhibit significant responsiveness to both demand shocks (financial crisis) and supply shocks (export restrictions)",
       "validated": true
     },
     {
-      "from": "China implementing export quotas on rare earth elements and other critical minerals, including graphite",
-      "to": "export quotas reduced by 30-40% compared to 2009 levels",
-      "mechanism": "direct policy implementation setting quantitative limits on exports",
+      "from": "market shocks",
+      "to": "2-3 year adjustment periods for new supply capacity",
+      "mechanism": "time required for capacity expansion and market rebalancing",
       "confidence": "HIGH",
-      "source": "policy/china_export_policy_2010.txt",
-      "evidence": "In 2010, China implemented significant export quotas on rare earth elements and other critical minerals, including graphite. Key policy measures included: - Export quotas reduced by 30-40% compared to 2009 levels",
+      "source": "trade_reports/graphite_trade_analysis_2005_2012.txt",
+      "evidence": "with adjustment periods of 2-3 years for new supply capacity",
       "validated": true
     },
     {
-      "from": "China implementing export restrictions on critical minerals including graphite",
-      "to": "licensing requirements tightened for mineral exports",
-      "mechanism": "policy implementation establishing stricter administrative controls on export permissions",
+      "from": "China's export quotas reduced by 30-40% compared to 2009 levels",
+      "to": "reduced export supply of graphite",
+      "mechanism": "direct administrative limitation on the quantity of graphite that could be exported",
       "confidence": "HIGH",
       "source": "policy/china_export_policy_2010.txt",
-      "evidence": "In 2010, China implemented significant export quotas on rare earth elements and other critical minerals, including graphite. Key policy measures included: - Licensing requirements tightened for mineral exports",
+      "evidence": "Export quotas reduced by 30-40% compared to 2009 levels",
       "validated": true
     },
     {
-      "from": "China implementing export restrictions on critical minerals including graphite",
-      "to": "environmental compliance standards raised for mining operations",
-      "mechanism": "policy implementation establishing higher regulatory requirements for mining activities",
+      "from": "Licensing requirements tightened for mineral exports",
+      "to": "reduced access to export markets for graphite producers",
+      "mechanism": "increased administrative barriers making it more difficult for companies to obtain export permits",
       "confidence": "HIGH",
       "source": "policy/china_export_policy_2010.txt",
-      "evidence": "In 2010, China implemented significant export quotas on rare earth elements and other critical minerals, including graphite. Key policy measures included: - Environmental compliance standards raised for mining operations",
+      "evidence": "Licensing requirements tightened for mineral exports",
       "validated": true
     },
     {
-      "from": "strong industrial demand from steel and automotive sectors",
-      "to": "natural graphite imports to the United States increased significantly in 2008",
-      "mechanism": "increased demand from key industrial sectors drives higher import volumes to meet consumption needs",
+      "from": "Environmental compliance standards raised for mining operations",
+      "to": "increased operational costs for graphite mining companies",
+      "mechanism": "higher regulatory requirements forcing mining operations to invest in environmental compliance measures",
+      "confidence": "HIGH",
+      "source": "policy/china_export_policy_2010.txt",
+      "evidence": "Environmental compliance standards raised for mining operations",
+      "validated": true
+    },
+    {
+      "from": "supply chain constraints and export quota discussions in China",
+      "to": "spot price increases of 25-40% above 2007 levels",
+      "mechanism": "supply disruption in the dominant supplier market creating upward pressure on prices",
       "confidence": "HIGH",
       "source": "usgs/graphite_2008_summary.txt",
-      "evidence": "Natural graphite imports to the United States increased significantly in 2008, reaching approximately 53 million USD, up from a baseline of 32-37 million USD in prior years. This increase was driven by several factors: 1. Strong industrial demand from steel and automotive sectors",
+      "evidence": "Price volatility was observed in Q3 2008, with spot prices increasing 25-40% above 2007 levels due to supply chain constraints and export quota discussions in China.",
       "validated": true
     },
     {
       "from": "limited domestic production capacity",
-      "to": "natural graphite imports to the United States increased significantly in 2008",
-      "mechanism": "insufficient domestic supply capacity forces reliance on foreign sources to meet demand",
+      "to": "growing dependence on imports from China and other suppliers",
+      "mechanism": "insufficient domestic supply forces reliance on foreign sources to meet demand",
+      "confidence": "MEDIUM",
+      "source": "usgs/graphite_2008_summary.txt",
+      "evidence": "Limited domestic production capacity... Growing dependence on imports from China and other suppliers",
+      "validated": true
+    },
+    {
+      "from": "strong industrial demand from steel and automotive sectors",
+      "to": "natural graphite imports to the United States increased significantly",
+      "mechanism": "increased industrial demand drives up import volumes to meet consumption needs",
       "confidence": "HIGH",
       "source": "usgs/graphite_2008_summary.txt",
-      "evidence": "Natural graphite imports to the United States increased significantly in 2008, reaching approximately 53 million USD, up from a baseline of 32-37 million USD in prior years. This increase was driven by several factors: 2. Limited domestic production capacity",
+      "evidence": "Natural graphite imports to the United States increased significantly in 2008... This increase was driven by several factors: 1. Strong industrial demand from steel and automotive sectors",
+      "validated": true
+    },
+    {
+      "from": "limited domestic production capacity",
+      "to": "natural graphite imports to the United States increased significantly",
+      "mechanism": "insufficient domestic supply forces increased reliance on imports to meet demand",
+      "confidence": "HIGH",
+      "source": "usgs/graphite_2008_summary.txt",
+      "evidence": "Natural graphite imports to the United States increased significantly in 2008... This increase was driven by several factors: ...2. Limited domestic production capacity",
       "validated": true
     },
     {
       "from": "growing dependence on imports from China and other suppliers",
-      "to": "natural graphite imports to the United States increased significantly in 2008",
-      "mechanism": "increased reliance on foreign suppliers directly translates to higher import volumes",
+      "to": "natural graphite imports to the United States increased significantly",
+      "mechanism": "increased reliance on foreign suppliers leads to higher import volumes",
       "confidence": "HIGH",
       "source": "usgs/graphite_2008_summary.txt",
-      "evidence": "Natural graphite imports to the United States increased significantly in 2008, reaching approximately 53 million USD, up from a baseline of 32-37 million USD in prior years. This increase was driven by several factors: 3. Growing dependence on imports from China and other suppliers",
+      "evidence": "Natural graphite imports to the United States increased significantly in 2008... This increase was driven by several factors: ...3. Growing dependence on imports from China and other suppliers",
       "validated": true
     }
   ],
   "metadata": {
-    "total_edges": 8,
-    "validated_edges": 8,
+    "total_edges": 11,
+    "validated_edges": 11,
     "sources": [
-      "policy/china_export_policy_2010.txt",
       "usgs/graphite_2008_summary.txt",
+      "policy/china_export_policy_2010.txt",
       "trade_reports/graphite_trade_analysis_2005_2012.txt"
     ]
   }

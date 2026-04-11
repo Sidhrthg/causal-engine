@@ -1,0 +1,12 @@
+CEPII Trade Flow Data — Graphite
+Source file: BACI_HS92_Y2023_V202601
+Total records: 1241
+
+Year 2023: 1241 bilateral flows, total value 664,228 kUSD, total quantity 451,085 tonnes
+  Top exporters: China (366,769 kUSD), Mozambique (69,150 kUSD), 450 (45,530 kUSD), Germany (28,074 kUSD), South Korea (26,577 kUSD)
+  Top importers: USA (156,569 kUSD), South Korea (103,836 kUSD), Japan (73,346 kUSD), Poland (52,982 kUSD), Germany (52,248 kUSD)
+  China → USA: 109,095 kUSD  27,125 t
+  China → South Korea: 100,829 kUSD  51,299 t
+  China → Japan: 65,675 kUSD  32,303 t
+  Mozambique → China: 28,239 kUSD  55,497 t
+  South Korea → Poland: 25,253 kUSD  4,669 t

@@ -1,0 +1,12 @@
+CEPII Trade Flow Data — Graphite
+Source file: BACI_HS92_Y2018_V202601
+Total records: 1134
+
+Year 2018: 1134 bilateral flows, total value 532,904 kUSD, total quantity 505,932 tonnes
+  Top exporters: China (300,418 kUSD), Brazil (33,873 kUSD), Germany (33,276 kUSD), 450 (22,884 kUSD), Mozambique (22,333 kUSD)
+  Top importers: Japan (113,881 kUSD), South Korea (79,250 kUSD), USA (59,290 kUSD), Germany (55,800 kUSD), China (28,422 kUSD)
+  China → Japan: 106,511 kUSD  54,215 t
+  China → South Korea: 65,691 kUSD  54,850 t
+  China → USA: 23,818 kUSD  16,255 t
+  China → Germany: 23,119 kUSD  23,306 t
+  China → 699: 20,660 kUSD  32,452 t

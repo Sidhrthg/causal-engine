@@ -1,24 +1,35 @@
 """Natural language interface to the causal engine."""
 
 import os
+import sys
 import yaml
 import json
 import argparse
 from pathlib import Path
 from datetime import datetime
-from anthropic import Anthropic
+
+# Ensure project root on path for src.llm.chat
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from dotenv import load_dotenv
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+
+from src.llm.chat import chat_completion, is_chat_available
 
 
 class CausalEngineInterface:
-    """LLM-powered query interface for scenario generation and execution."""
+    """LLM-powered query interface for scenario generation and execution. Uses LLM_BACKEND (anthropic, openai, vllm)."""
     
     def __init__(self, api_key: str = None):
-        self.api_key = api_key or os.getenv('ANTHROPIC_API_KEY')
-        if not self.api_key:
-            raise ValueError("ANTHROPIC_API_KEY not set")
-        
-        self.client = Anthropic(api_key=self.api_key)
-        
+        backend = (os.getenv("LLM_BACKEND") or "anthropic").strip().lower()
+        if backend == "anthropic" and not (api_key or os.getenv("ANTHROPIC_API_KEY")):
+            raise ValueError("ANTHROPIC_API_KEY not set (or set LLM_BACKEND=vllm for local vLLM)")
+        if not is_chat_available(backend):
+            raise ValueError(
+                f"LLM backend {backend!r} not available. "
+                "For anthropic: set ANTHROPIC_API_KEY. For vllm: start vLLM server and set VLLM_BASE_URL (default http://localhost:8000/v1), VLLM_MODEL."
+            )
+        self.api_key = api_key
         # Load baseline config as template
         baseline_path = Path("scenarios/graphite_baseline.yaml")
         if baseline_path.exists():
@@ -151,13 +162,11 @@ Rules:
 Return ONLY valid YAML, no explanation.
 """
         
-        response = self.client.messages.create(
-            model="claude-sonnet-4-20250514",
+        yaml_text = chat_completion(
+            [{"role": "user", "content": prompt}],
             max_tokens=2048,
-            messages=[{"role": "user", "content": prompt}]
+            api_key=self.api_key,
         )
-        
-        yaml_text = response.content[0].text
         
         # Clean up markdown if present
         if "```yaml" in yaml_text:
@@ -194,13 +203,11 @@ Explain the results in 2-3 sentences:
 Be concise and specific to the numbers.
 """
         
-        response = self.client.messages.create(
-            model="claude-sonnet-4-20250514",
+        return chat_completion(
+            [{"role": "user", "content": prompt}],
             max_tokens=512,
-            messages=[{"role": "user", "content": prompt}]
+            api_key=self.api_key,
         )
-        
-        return response.content[0].text
     
     def _load_csv(self, path: Path) -> dict:
         """Load CSV as dict for serialization."""
@@ -219,38 +226,51 @@ Be concise and specific to the numbers.
 
 
 def main():
+    import traceback
+
     parser = argparse.ArgumentParser(description="Query the causal engine in natural language")
     parser.add_argument("query", help="Natural language query")
-    parser.add_argument("--no-execute", action="store_true", 
+    parser.add_argument("--no-execute", action="store_true",
                        help="Generate scenario only, don't execute")
     parser.add_argument("--api-key", help="Anthropic API key (or set ANTHROPIC_API_KEY env var)")
-    
+
     args = parser.parse_args()
-    
-    interface = CausalEngineInterface(api_key=args.api_key)
-    
+
+    try:
+        interface = CausalEngineInterface(api_key=args.api_key)
+    except ValueError as e:
+        print(f"❌ Configuration: {e}")
+        print("   Set ANTHROPIC_API_KEY in your environment or pass --api-key.")
+        sys.exit(1)
+
     print(f"\n🤖 Processing query: {args.query}\n")
-    
-    result = interface.query(args.query, execute=not args.no_execute)
-    
+
+    try:
+        result = interface.query(args.query, execute=not args.no_execute)
+    except Exception as e:
+        traceback.print_exc()
+        sys.exit(1)
+
     print("=" * 60)
     print("SCENARIO GENERATED:")
     print("=" * 60)
-    print(yaml.dump(result['scenario'], default_flow_style=False))
-    
-    if result['executed']:
+    print(yaml.dump(result.get("scenario", {}), default_flow_style=False))
+
+    if result.get("executed"):
+        metrics = result.get("results", {}).get("metrics", {})
         print("\n" + "=" * 60)
         print("RESULTS:")
         print("=" * 60)
-        print(json.dumps(result['results']['metrics'], indent=2))
-        
+        print(json.dumps(metrics, indent=2))
         print("\n" + "=" * 60)
         print("EXPLANATION:")
         print("=" * 60)
-        print(result['explanation'])
+        print(result.get("explanation", "(No explanation generated)"))
         print()
     else:
         print("\nScenario generated but not executed (use without --no-execute to run)")
+        if result.get("error"):
+            print(f"Error: {result['error']}")
 
 
 if __name__ == "__main__":

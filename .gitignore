@@ -7,3 +7,7 @@ outputs/
 __pycache__/
 *.pyc
 .venv/
+
+# Local env (API keys)
+.env
+.env.local

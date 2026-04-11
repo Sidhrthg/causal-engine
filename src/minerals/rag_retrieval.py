@@ -20,6 +20,8 @@ try:
 except ImportError:
     Anthropic = None
 
+from src.llm.chat import chat_completion, is_chat_available
+
 
 class DocumentChunk:
     """Represents a chunk of a document."""
@@ -171,8 +173,16 @@ class SimpleRAGRetriever:
 
     def _ingest_file(self, file_path: Path):
         """Ingest a single file and create chunks."""
-        with open(file_path, "r", encoding="utf-8") as f:
-            content = f.read()
+        for encoding in ("utf-8", "latin-1", "cp1252"):
+            try:
+                with open(file_path, "r", encoding=encoding) as f:
+                    content = f.read()
+                break
+            except UnicodeDecodeError:
+                continue
+        else:
+            with open(file_path, "r", encoding="utf-8", errors="replace") as f:
+                content = f.read()
 
         # Extract metadata from path
         try:
@@ -376,7 +386,7 @@ class SimpleRAGRetriever:
         return True
 
     def _llm_rerank(self, query: str, candidate_indices: List[int], top_k: int) -> List[Dict]:
-        """Use LLM to re-rank candidates by relevance."""
+        """Use LLM to re-rank candidates by relevance. Uses the configured LLM_BACKEND."""
         candidates = [self.chunks[i] for i in candidate_indices[:20]]
 
         candidates_text = "\n\n---\n\n".join(
@@ -394,14 +404,14 @@ Chunks:
 JSON scores:"""
 
         try:
-            response = self.client.messages.create(
-                model="claude-sonnet-4-20250514",
+            if not is_chat_available():
+                raise RuntimeError("No LLM backend configured")
+            scores_text = chat_completion(
+                [{"role": "user", "content": prompt}],
                 max_tokens=200,
-                messages=[{"role": "user", "content": prompt}],
-            )
-
-            scores_text = response.content[0].text.strip()
-            json_match = re.search(r"\[[\d,\s]+\]", scores_text)
+                api_key=self.api_key,
+            ).strip()
+            json_match = re.search(r"\[[\d,\s.]+\]", scores_text)
             if json_match:
                 scores = json.loads(json_match.group())
             else:

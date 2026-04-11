@@ -1,0 +1,215 @@
+62
+
+GALLIUM
+(Data in kilograms of gallium content unless otherwise noted)
+Domestic Production and Use: No domestic primary (low-grade, unrefined) gallium has been recovered since 1987.
+Globally, primary gallium is recovered as a byproduct of processing bauxite and zinc ores. One company in Utah
+recovered and refined high-purity gallium from imported low-grade primary gallium metal and new scrap. Imports of
+gallium metal and gallium arsenide (GaAs) wafers were valued at about $700,000 and $170 million, respectively.
+GaAs was used to manufacture integrated circuits (ICs) and optoelectronic devices, which include laser diodes, lightemitting diodes (LEDs), photodetectors, and solar cells. Gallium nitride (GaN) principally was used to manufacture
+optoelectronic devices. ICs accounted for 73% of domestic gallium consumption, optoelectronic devices accounted
+for 25%, and research and development accounted for 2%. About 81% of the gallium consumed in the United States
+was contained in GaAs, GaN, and gallium phosphide (GaP) wafers. Gallium metal, triethyl gallium, and trimethyl
+gallium, used in the epitaxial layering process to fabricate epiwafers for the production of LEDs and ICs, accounted
+for most of the remainder. Optoelectronic devices were used in aerospace applications, consumer goods, industrial
+equipment, medical equipment, and telecommunications equipment. Uses of ICs included defense applications, highperformance computers, and telecommunications equipment.
+Salient Statistics—United States:
+Production, primary
+Imports for consumption:
+Metal
+Gallium arsenide wafers (gross weight)
+Exports
+Consumption, reported
+Price, imports, dollars per kilogram:
+High-purity, refined1
+Low-purity, primary2
+Stocks, consumer, yearend
+Net import reliance3 as a percentage
+of reported consumption
+
+2015
+—
+
+2016
+—
+
+2017
+—
+
+2018
+—
+
+2019e
+—
+
+28,600
+10,500
+2,690,000 1,290,000
+NA
+NA
+29,700
+18,100
+
+20,200
+804,000
+NA
+17,900
+
+32,000
+446,000
+NA
+15,000
+
+3,000
+340,000
+NA
+15,000
+
+317
+188
+3,280
+
+690
+125
+2,720
+
+477
+124
+2,840
+
+508
+185
+2,920
+
+570
+150
+1,920
+
+100
+
+100
+
+100
+
+100
+
+100
+
+Recycling: Old scrap, none. Substantial quantities of new scrap generated in the manufacture of GaAs-based
+devices were reprocessed to recover high-purity gallium at one facility in Utah.
+Import Sources (2015–18): Metal: China4, 50%; United Kingdom, 18%; Germany, 10%; Ukraine, 9%; and other,
+13%.
+Tariff: Item
+Gallium arsenide wafers, doped
+Gallium metal
+
+Number
+3818.00.0010
+8112.92.1000
+
+Normal Trade Relations
+12–31–19
+Free.
+3.0% ad val.
+
+Depletion Allowance: 14% (Domestic and foreign).
+Government Stockpile: None.
+Events, Trends, and Issues: Imports of gallium metal and GaAs wafers continued to account for all U.S.
+consumption of gallium. In 2019, gallium metal imports decreased by about 90% from those of 2018, most likely
+owing to the introduction of higher import tariffs on gallium from China and the 300% increase of gallium imports from
+China in 2018 before the tariffs were introduced. Gallium stockpiling in 2018 may have been prompted by the
+discussion of China’s potential tariffs.
+Primary low-grade (99.99%-pure) gallium prices in China decreased by about 7% in 2019. Low-grade gallium prices
+worldwide continued to decline as China’s primary low-grade gallium production continued to exceed worldwide
+consumption despite reduced production. The average monthly price for low-grade gallium in China decreased to
+$145 per kilogram throughout 2019 from approximately $155 per kilogram at yearend 2018. China’s primary lowgrade gallium production capacity has expanded to approximately 600 tons per year since 2016 from 140 tons per
+year in 2010. China accounted for more than 80% of worldwide low-grade gallium capacity.
+
+Prepared by Brian W. Jaskula [(703) 648–4908, bjaskula@usgs.gov]
+
+63
+
+GALLIUM
+Low-grade primary gallium producers outside of China most likely restricted output owing to a large surplus of primary
+gallium. These producers included Japan, the Republic of Korea, Russia, and Ukraine. Germany and Kazakhstan
+ceased primary production in 2016 and 2013, respectively.
+Primary high-purity refined gallium production in 2019 was estimated to be about 205 tons. China, Japan, Slovakia,
+and the United States were the known principal producers of high-purity refined gallium. The United Kingdom ceased
+high-purity gallium production in 2018. Gallium was recovered from new scrap in Canada, China, Germany, Japan,
+Slovakia, and the United States. World primary low-grade gallium production capacity in 2019 was estimated to be
+720 tons per year; high-purity refinery capacity, 330 tons per year; and secondary capacity, 270 tons per year.
+In 2018, the value of worldwide radio frequency (RF) GaAs device consumption increased slightly to $8.9 billion
+owing to a growing wireless telecommunications infrastructure in Asia; growth of third- and fourth-generation (3G and
+4G) “smartphones,” which employ up to 10 times the amount of GaAs in standard cellular handsets; and robust use in
+military radar and communications applications. Global GaAs wafer consumption by volume increased by 17% in
+2019, with an estimated 50% and 40% of wafers used in LED and RF applications, respectively. Countries within the
+Asia and the Pacific region dominated the GaAs wafer market. Owing to their large power-handling capabilities, highswitching frequencies, and higher voltage capabilities, GaN-based products, which historically have been used in
+defense applications, continued to be used in cable television transmission, commercial wireless infrastructure, power
+electronics, and satellite markets. The GaN RF device market was estimated to be $750 million in 2019, an increase
+of 15% from the revised $650 million in 2018.
+The global high-power LED market was estimated to be $13.3 billion in 2019, an increase of 5.3% from that in 2018.
+LED manufacturing capacity in Asia increased significantly in 2018 and 2019 owing to China’s Government-instituted
+incentives to increase LED production. China’s increased LED production outpaced worldwide consumption and LED
+prices declined.
+World Production and Reserves:
+United States
+China
+Japan
+Korea, Republic of
+Russia
+Ukraine
+World total (rounded)
+
+Primary production
+2018
+2019e
+—
+—
+397,000
+310,000
+3,000
+3,000
+3,000
+3,000
+6,000
+4,000
+4,000
+4,000
+413,000
+320,000
+
+Reserves5
+Quantitative estimates of reserves are not
+available.
+
+World Resources: Gallium occurs in very small concentrations in ores of other metals. Most gallium is produced as a
+byproduct of processing bauxite and the remainder is produced from zinc-processing residues. The average gallium
+content of bauxite is 50 parts per million. U.S. bauxite deposits consist mainly of subeconomic resources that are not
+generally suitable for alumina production owing to their high silica content. Some domestic zinc ores contain up to 50
+parts per million gallium and could be a significant resource, although no gallium is currently recovered from domestic
+ores. Gallium contained in world resources of bauxite is estimated to exceed 1 million tons, and a considerable
+quantity could be contained in world zinc resources. However, less than 10% of the gallium in bauxite and zinc
+resources is potentially recoverable.
+Substitutes: Liquid crystals made from organic compounds are used in visual displays as substitutes for LEDs.
+Silicon-based complementary metal-oxide semiconductor power amplifiers compete with GaAs power amplifiers in
+midtier 3G cellular handsets. Indium phosphide components can be substituted for GaAs-based infrared laser diodes
+in some specific-wavelength applications, and helium-neon lasers compete with GaAs in visible laser diode
+applications. Silicon is the principal competitor with GaAs in solar-cell applications. GaAs-based ICs are used in many
+defense-related applications because of their unique properties, and no effective substitutes exist for GaAs in these
+applications. GaAs in heterojunction bipolar transistors is being replaced in some applications by silicon-germanium.
+eEstimated. NA Not available. — Zero.
+
+Estimated based on the average values of U.S. imports for 99.9999%- and 99.99999%-pure gallium.
+Estimated based on the average values of U.S. imports for 99.99%-pure gallium.
+3
+Defined as imports – exports. Excludes gallium arsenide wafers.
+4
+Includes Hong Kong.
+5
+See Appendix C for resource and reserve definitions and information concerning data sources.
+1
+2
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2020
+
+

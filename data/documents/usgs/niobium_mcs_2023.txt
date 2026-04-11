@@ -1,0 +1,251 @@
+NIOBIUM (COLUMBIUM)
+(Data in metric tons of contained niobium unless otherwise noted)
+Domestic Production and Use: Significant U.S. niobium mine production has not been reported since 1959.
+Companies in the United States produced niobium-containing materials from imported niobium concentrates, oxides,
+and ferroniobium. Niobium was consumed mostly in the form of ferroniobium by the steel industry and as niobium
+alloys and metal by the aerospace industry. Major end-use distribution of domestic niobium consumption was
+estimated as follows: steels, about 75%, and superalloys, about 25%. The estimated value of niobium consumption
+was $440 million, as measured by the value of imports.
+Salient Statistics—United States:
+Production, mine
+Imports for consumption1
+Exports1
+Shipments from Government stockpile2
+Consumption:e
+Apparent3
+Reported4
+Price, average unit value, ferroniobium, dollars per kilogram5
+Net import reliance3 as a percentage of apparent consumption
+
+2018
+—
+11,200
+955
+−76
+
+2019
+—
+10,100
+668
+−84
+
+2020
+—
+7,200
+793
+−88
+
+2021
+—
+8,290
+1,010
+−1
+
+2022e
+—
+8,800
+1,200
+0
+
+10,100
+6,850
+21
+100
+
+9,360
+6,680
+22
+100
+
+6,320
+6,040
+20
+100
+
+7,280
+6,140
+20
+100
+
+7,600
+5,600
+24
+100
+
+Recycling: Niobium was recycled when niobium-bearing steels and superalloys were recycled; scrap recovery,
+specifically for niobium content, was negligible. The amount of niobium recycled is not available, but it may be as
+much as 20% of apparent consumption.
+Import Sources (2018–21): Niobium and tantalum ores and concentrates: Australia, 42%; Rwanda, 21%; Congo
+(Kinshasa), 12%; Mozambique, 7%; and other, 18%. Niobium oxide: Brazil, 72%; Estonia, 5%; China, 2%; Germany,
+1%; and other, 20%. Ferroniobium and niobium metal: Brazil, 67%; Canada, 28%; Russia, 3%, Germany, 1%, and
+other, 1%. Total imports: Brazil, 66%; Canada, 25%; and other, 9%. Of U.S. niobium material imports (by contained
+weight), 74% was ferroniobium, 16% was niobium metal, 9% was niobium oxide, and 1% was niobium ores and
+concentrates.
+Tariff:
+
+Item
+
+Number
+
+Synthetic tantalum-niobium concentrates
+Niobium ores and concentrates
+Niobium oxide
+Ferroniobium:
+Less than 0.02% phosphorus or sulfur, or
+less than 0.4% silicon
+Other
+Niobium:
+Waste and scrap6
+Powders and unwrought metal
+Other6
+
+2615.90.3000
+2615.90.6030
+2825.90.1500
+
+Normal Trade Relations
+12–31–22
+Free.
+Free.
+3.7% ad valorem.
+
+7202.93.4000
+
+5% ad valorem.
+
+7202.93.8000
+
+5% ad valorem.
+
+8112.92.0700
+8112.92.4000
+8112.99.9100
+
+Free.
+4.9% ad valorem.
+4% ad valorem.
+
+Depletion Allowance: 22% (domestic), 14% (foreign).
+Government Stockpile:7
+
+Material
+Ferroniobium (gross weight)
+Niobium metal (gross weight)
+
+Inventory
+as of 9–30–22
+544
+10
+
+FY 2022
+Potential
+Potential
+acquisitions
+disposals
+—
+—
+—
+—
+
+Prepared by Chad A. Friedline [(703) 648–7713, cfriedline@usgs.gov]
+
+FY 2023
+Potential
+Potential
+acquisitions
+disposals
+—
+—
+—
+—
+
+NIOBIUM (COLUMBIUM)
+Events, Trends, and Issues: In 2022, U.S. niobium apparent consumption (measured in niobium content) was
+estimated to be 7,600 tons, a 4% increase from that in 2021. One domestic company developing its Elk Creek project
+in Nebraska announced the results of its 2022 feasibility study. According to the study, the mining and processing
+operation is expected to produce 7,350 tons per year of ferroniobium, 102 tons per year of scandium trioxide, and
+12,060 tons per year of titanium dioxide over a 38-year mine life. The project would be the only niobium mine and
+primary niobium-processing facility in the United States, with construction to begin after financing is received as
+required permits have been obtained.
+Brazil continued to be the world's leading niobium producer, accounting for approximately 89% of global production,
+followed by Canada with about 8%. According to international trade statistics under the Harmonized Tariff Schedule
+of the United States code 7202.93 (ferroniobium), Brazil's total exports were 56,700 tons from January through
+August 2022, 6% less than during the same period in 2021. Most of Brazil's exports were sent to China, followed by
+the Netherlands and Singapore.
+In 2022, a leading niobium producer in Brazil announced plans to invest $1.7 billion in its production assets to double
+its sales volume by 2030. The company completed its most recent facility upgrades in late 2021, increasing its total
+production capacity of ferroniobium to 150,000 metric tons per year (approximately 98,000 tons per year of niobium
+content). The completion of those projects would provide a significant increase in production in Brazil over the next
+decade.
+World Mine Production and Reserves: Reserves for the United States were revised based on company reports.
+
+United States
+Brazil
+Canada
+Congo (Kinshasa)
+Russia
+Rwanda
+Other countries
+World total (rounded)
+
+Mine production
+2021
+2022e
+—
+—
+78,700
+71,000
+7,500
+6,500
+580
+600
+450
+450
+158
+210
+170
+190
+87,600
+79,000
+
+Reserves8
+210,000
+16,000,000
+1,600,000
+NA
+NA
+NA
+NA
+>17,000,000
+
+World Resources:8 World resources of niobium are more than adequate to supply projected needs. Most of the
+world’s identified resources of niobium occur as pyrochlore in carbonatite (igneous rocks that contain more than
+50%-by-volume carbonate minerals) deposits and are outside the United States.
+Substitutes: The following materials can be substituted for niobium, but a performance loss or higher cost may
+ensue: ceramic matrix composites, molybdenum, tantalum, and tungsten in high-temperature (superalloy)
+applications; molybdenum, tantalum, and titanium as alloying elements in stainless and high-strength steels; and
+molybdenum and vanadium as alloying elements in high-strength low-alloy steels.
+
+Estimated. NA Not available. — Zero.
+Imports and exports include the estimated niobium content of ferroniobium, niobium and tantalum ores and concentrates, niobium oxide, and
+niobium powders and unwrought metal.
+2
+Defined as change in total inventory from prior yearend inventory. If negative, increase in inventory.
+3
+Defined as imports – exports ± adjustments for Government stock changes.
+4
+Only includes ferroniobium and nickel niobium.
+5
+Unit value is weighted average unit value of gross weight of U.S. ferroniobium trade (imports plus exports.)
+6
+This category includes niobium-containing material and other material.
+7
+See Appendix B for definitions.
+8
+See Appendix C for resource and reserve definitions and information concerning data sources.
+e
+1
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2023
+
+

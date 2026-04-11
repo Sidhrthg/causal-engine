@@ -1,0 +1,349 @@
+124
+
+PLATINUM-GROUP METALS
+(Palladium, platinum, iridium, osmium, rhodium, and ruthenium)
+(Data in kilograms of platinum-group-metal content unless otherwise noted)
+Domestic Production and Use: One company in Montana produced over 15,000 kilograms of platinum-group
+metals (PGMs) with an estimated value of about $680 million. Small quantities of primary PGMs also were recovered
+as byproducts of copper-nickel mining in Michigan; however, this material was sold to foreign companies for refining.
+The leading domestic use for PGMs was in catalytic converters to decrease harmful emissions from automobiles.
+Platinum-group metals are also used in catalysts for bulk-chemical production and petroleum refining; dental and
+medical devices; electronic applications, such as in computer hard disks, hybridized integrated circuits, and multilayer
+ceramic capacitors; glass manufacturing; investment; jewelry; and laboratory equipment.
+Salient Statistics—United States:
+Mine production:1
+Palladium
+Platinum
+Imports for consumption:2
+Palladium
+Platinum
+PGM waste and scrap
+Iridium
+Osmium
+Rhodium
+Ruthenium
+Exports:3
+Palladium
+Platinum
+PGM waste and scrap
+Rhodium
+Other PGMs
+Consumption, apparent4, 5
+Palladium
+Platinum
+Price, dollars per troy ounce:6
+Palladium
+Platinum
+Iridium
+Rhodium
+Ruthenium
+Employment, mine, number1
+Net import reliance 5, 7 as a percentage of
+apparent consumption:
+Palladium
+Platinum
+
+2015
+
+2016
+
+2017
+
+2018
+
+2019e
+
+12,500
+3,670
+
+13,100
+3,890
+
+13,600
+3,980
+
+14,300
+4,160
+
+12,000
+3,600
+
+85,300
+42,700
+123,000
+1,010
+8
+10,600
+8,230
+
+80,400
+42,300
+154,000
+1,300
+27
+10,700
+8,410
+
+86,000
+53,200
+354,000
+1,420
+856
+11,600
+14,600
+
+92,900
+58,500
+40,700
+1,020
+25
+14,500
+17,900
+
+76,000
+38,000
+38,000
+910
+—
+14,000
+9,900
+
+23,000
+14,400
+246,000
+759
+781
+
+17,500
+14,000
+48,100
+794
+736
+
+52,300
+16,700
+55,500
+844
+939
+
+53,300
+18,900
+31,800
+2,010
+2,600
+
+50,000
+17,000
+19,000
+1,600
+1,300
+
+117,000
+40,800
+
+118,000
+43,200
+
+89,300
+51,500
+
+95,900
+53,800
+
+80,000
+33,000
+
+694.99
+1,056.09
+544.19
+954.90
+47.63
+1,439
+
+617.39
+989.52
+586.90
+696.84
+42.00
+1,432
+
+874.30
+951.23
+908.35
+1,112.59
+76.86
+1,432
+
+1,036.43
+882.66
+1,293.27
+2,225.30
+244.41
+1,628
+
+1,500.00
+850.00
+1,500.00
+3,300.00
+270.00
+1,400
+
+53
+66
+
+53
+66
+
+38
+71
+
+41
+74
+
+32
+64
+
+Recycling: About 116,000 kilograms of palladium and platinum was recovered globally from new and old scrap in
+2018, including about 49,000 kilograms recovered from automobile catalytic converters in the United States.
+Import Sources (2015–18): Palladium: South Africa, 33%; Russia, 33%; Germany, 7%; Italy, 7%; and other, 20%.
+Platinum: South Africa, 46%; Germany, 16%; Italy, 7%; Russia, 6%; and other, 25%.
+Tariff: All unwrought and semimanufactured forms of PGMs are imported duty free. See footnotes for specific
+Harmonized Tariff Schedule of the United States codes.
+Depletion Allowance: 22% (Domestic), 14% (Foreign).
+
+Prepared by Ruth F. Schulte [(703) 648–4963, rschulte@usgs.gov]
+
+125
+
+PLATINUM-GROUP METALS
+Government Stockpile:8
+Material
+Iridium
+Platinum
+
+Inventory
+As of 9–30–19
+15
+261
+
+FY 2019
+Potential
+Potential
+Acquisitions Disposals
+—
+15
+—
+261
+
+FY 2020
+Potential
+Potential
+Acquisitions Disposals
+—
+15
+—
+261
+
+Events, Trends, and Issues: Progress continued at a domestic mine expansion project; full production from the
+project was expected by late 2021. Based on platinum content, imports of PGM waste and scrap decreased by 89%
+in 2018 compared with imports in 2017 and remained at similarly low levels in 2019; however, imports of PGM waste
+and scrap based on gross weight only decreased by 12% during the same time period. This indicates that imported
+PGM waste and scrap has increased in content of PGMs other than platinum.
+Production of PGMs in South Africa, the world’s leading supplier of mined material, decreased by 4% compared with
+that of 2018 owing to increased labor costs, increased costs for electricity, an unreliable supply of electricity, and
+challenges related to deep-level mining.
+The estimated annual average prices of iridium, palladium, rhodium, and ruthenium increased by 15%, 41%, 50%,
+and 8%, respectively, compared with those of 2018. The estimated average annual price of platinum was 3% lower
+than that of 2018, continuing a 5-year trend of declining prices. The price of palladium remained higher than that of
+platinum in 2019, with palladium prices exceeding a previous high of $1,036.82 in January 2013 and platinum prices
+decreasing to their lowest level in a decade.
+World Mine Production and Reserves:
+
+United States
+Canada
+Russia
+South Africa
+Zimbabwe
+Other countries
+World total (rounded)
+
+Mine production
+Palladium
+Platinum
+2018
+2019e
+2018
+2019e
+14,300
+12,000
+4,160
+3,600
+20,000
+20,000
+7,400
+7,400
+90,000
+86,000
+22,000
+22,000
+80,600
+80,000
+137,000
+130,000
+12,000
+12,000
+15,000
+15,000
+2,920
+3,000
+4,470
+4,300
+220,000
+210,000
+190,000
+180,000
+
+PGM
+Reserves9
+900,000
+310,000
+3,900,000
+63,000,000
+1,200,000
+NA
+69,000,000
+
+World Resources: World resources of PGMs are estimated to total more than 100 million kilograms. The largest
+reserves are in the Bushveld Complex in South Africa.
+Substitutes: Palladium has been substituted for platinum in most gasoline-engine catalytic converters because of the
+historically lower price for palladium relative to that of platinum. About 25% of palladium can routinely be substituted
+for platinum in diesel catalytic converters; the proportion can be as much as 50% in some applications. For some
+industrial end uses, one PGM can substitute for another, but with losses in efficiency.
+
+Estimated. NA Not available. — Zero.
+Estimates from published sources.
+2
+Includes data for the following Harmonized Tariff Schedule of the United States codes: 7110.11.0010, 7110.11.0020, 7110.11.0050,
+7110.19.0000, 7110.21.0000, 7110.29.0000, 7110.31.0000, 7110.39.0000, 7110.41.0010, 7110.41.0020, 7110.41.0030, 7110.49.0010,
+7112.92.0000, and 7118.90.0020.
+3
+Includes data for the following Schedule B codes: 7110.11.0000, 7110.19.0000, 7110.21.0000, 7110.29.0000, 7110.31.0000, 7110.39.0000,
+7110.41.0000, 7110.49.0000, and 7112.92.0000.
+4
+Defined as primary production + secondary production + imports – exports.
+5
+Excludes imports and (or) exports of waste and scrap.
+6
+Engelhard Corp. unfabricated metal.
+7
+Defined as imports – exports.
+8
+See Appendix B for definitions.
+9
+See Appendix C for resource and reserve definitions and information concerning data sources.
+e
+1
+
+U.S. Geological Survey, Mineral Commodity Summaries, January 2020
+
+

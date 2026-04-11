@@ -1,0 +1,12 @@
+CEPII Trade Flow Data — Lithium
+Source file: BACI_HS92_Y1995_V202601
+Total records: 282
+
+Year 1995: 282 bilateral flows, total value 94,519 kUSD, total quantity 28,700 tonnes
+  Top exporters: Chile (38,510 kUSD), USA (22,712 kUSD), China (11,644 kUSD), Germany (10,210 kUSD), Netherlands (2,954 kUSD)
+  Top importers: USA (18,174 kUSD), Japan (16,280 kUSD), Germany (15,462 kUSD), 251 (5,741 kUSD), 826 (5,463 kUSD)
+  Chile → USA: 17,694 kUSD  6,259 t
+  Chile → Germany: 9,484 kUSD  3,234 t
+  USA → Japan: 7,826 kUSD  2,153 t
+  Chile → Japan: 5,122 kUSD  1,532 t
+  USA → 826: 3,398 kUSD  967 t

@@ -1,0 +1,39 @@
+Lithium Global Trade — 2012 (CEPII data)
+Total world trade: 420.9 million USD, 81.6 thousand tonnes
+Number of bilateral trade relationships: 571
+
+Top exporters by value:
+  Chile: 298.7 MUSD (71.0% of world exports)
+  Argentina: 43.0 MUSD (10.2% of world exports)
+  China: 19.3 MUSD (4.6% of world exports)
+  Belgium: 16.1 MUSD (3.8% of world exports)
+  USA: 13.9 MUSD (3.3% of world exports)
+  Germany: 12.2 MUSD (2.9% of world exports)
+  826: 6.1 MUSD (1.5% of world exports)
+  South Korea: 2.1 MUSD (0.5% of world exports)
+  705: 2.1 MUSD (0.5% of world exports)
+  Netherlands: 1.1 MUSD (0.3% of world exports)
+
+Top importers by value:
+  Japan: 66.2 MUSD (15.7% of world imports)
+  South Korea: 66.0 MUSD (15.7% of world imports)
+  China: 60.3 MUSD (14.3% of world imports)
+  USA: 53.4 MUSD (12.7% of world imports)
+  Germany: 51.2 MUSD (12.2% of world imports)
+  Belgium: 30.6 MUSD (7.3% of world imports)
+  251: 15.5 MUSD (3.7% of world imports)
+  Russia: 9.4 MUSD (2.2% of world imports)
+  Canada: 8.4 MUSD (2.0% of world imports)
+  Turkey: 7.8 MUSD (1.8% of world imports)
+
+Top bilateral trade corridors:
+  Chile→South Korea: 63.0 MUSD
+  Chile→China: 53.4 MUSD
+  Chile→Japan: 47.9 MUSD
+  Chile→Germany: 38.1 MUSD
+  Chile→Belgium: 28.8 MUSD
+  Chile→USA: 26.0 MUSD
+  Argentina→USA: 24.7 MUSD
+  USA→Germany: 10.4 MUSD
+  Argentina→Japan: 8.6 MUSD
+  Chile→Russia: 7.6 MUSD

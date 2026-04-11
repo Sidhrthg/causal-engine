@@ -1,0 +1,12 @@
+CEPII Trade Flow Data — Graphite
+Source file: BACI_HS92_Y2021_V202601
+Total records: 1189
+
+Year 2021: 1189 bilateral flows, total value 580,382 kUSD, total quantity 481,028 tonnes
+  Top exporters: China (273,443 kUSD), 450 (48,489 kUSD), Japan (38,267 kUSD), Germany (37,453 kUSD), Brazil (28,557 kUSD)
+  Top importers: South Korea (107,367 kUSD), Japan (81,878 kUSD), USA (67,784 kUSD), Germany (54,033 kUSD), Poland (36,408 kUSD)
+  China → South Korea: 92,182 kUSD  49,499 t
+  China → Japan: 74,272 kUSD  42,460 t
+  China → USA: 31,046 kUSD  16,277 t
+  South Korea → Poland: 25,711 kUSD  5,377 t
+  Japan → Hungary: 21,424 kUSD  2,585 t

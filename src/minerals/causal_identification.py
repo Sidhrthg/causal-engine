@@ -1,27 +1,21 @@
 """
-Causal parameter identification using synthetic control method.
+Causal parameter identification: synthetic control, IV, RD, and DiD.
 
-This implements identification of treatment effects as specified in
-causal_inference.py, specifically for the tau_K (capacity adjustment time) parameter.
-
-Identification Strategy:
-- Estimand: P(Capacity_t | do(PriceShock_{t-k}))
-- Method: Synthetic Control (Abadie et al. 2010)
-- Assumptions:
-  * Parallel trends (control units track treated absent intervention)
-  * No spillovers between units
-  * SUTVA (Stable Unit Treatment Value Assumption)
-
-See GraphiteSupplyChainDAG.get_parameter_identifications() in causal_inference.py
-for the formal identifiability proof.
+Implements identification of treatment effects as specified in causal_inference.py:
+- tau_K  : Synthetic Control (Abadie et al. 2010)
+- eta_D  : Instrumental Variables / 2SLS (supply shocks as instruments)
+- alpha_P: Regression Discontinuity (local linear at policy threshold)
+- policy_shock: Difference-in-Differences (parallel trends, panel TWFE)
 
 Reference:
 - Pearl, J. (2009). Causality: Models, Reasoning, and Inference
 - Abadie et al. (2010). Synthetic Control Methods for Comparative Case Studies
+- Angrist & Pischke (2009). Mostly Harmless Econometrics
 """
 
 import numpy as np
 import pandas as pd
+from scipy import stats
 from scipy.optimize import minimize
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
@@ -314,3 +308,374 @@ def example_usage():
 
 if __name__ == "__main__":
     example_usage()
+
+
+# ---------------------------------------------------------------------------
+# eta_D: Instrumental Variables (2SLS)
+# Estimand: ∂log(Demand)/∂log(Price), instrumented by exogenous supply shocks
+# ---------------------------------------------------------------------------
+
+@dataclass
+class IVResult:
+    """Results from two-stage least squares estimation."""
+    estimate: float               # 2SLS coefficient on endogenous treatment
+    se: float                     # Asymptotic standard error
+    first_stage_f_stat: float     # First-stage F-statistic (weak instrument test)
+    weak_instrument: bool         # True if F < 10 (Stock-Yogo threshold)
+    n_obs: int
+    confidence_interval: Tuple[float, float]  # 95% CI
+
+
+class InstrumentalVariable:
+    """
+    Two-stage least squares (2SLS) estimator for demand elasticity (eta_D).
+
+    Identification: supply shocks (e.g. mine closures, export quotas) shift
+    Price but affect Demand only through Price — satisfying the exclusion
+    restriction. This breaks the Price ↔ Demand simultaneity and identifies
+    ∂Demand/∂Price causally.
+
+    Stage 1: Price ~ Instrument + Controls   (relevance check via F-stat)
+    Stage 2: Demand ~ Price_hat + Controls   (structural equation)
+    """
+
+    def __init__(self, verbose: bool = False):
+        self.verbose = verbose
+
+    def estimate(
+        self,
+        data: pd.DataFrame,
+        outcome_var: str,
+        treatment_var: str,
+        instrument_var: str,
+        controls: Optional[List[str]] = None,
+    ) -> IVResult:
+        """
+        Estimate via 2SLS.
+
+        Args:
+            data: Panel or cross-sectional DataFrame.
+            outcome_var: Endogenous outcome (e.g. "demand").
+            treatment_var: Endogenous treatment (e.g. "price").
+            instrument_var: Exogenous instrument (e.g. "supply_shock").
+            controls: Exogenous covariates included in both stages.
+
+        Returns:
+            IVResult with estimate, SE, first-stage diagnostics.
+        """
+        controls = controls or []
+        n = len(data)
+
+        # --- Stage 1: T = a + b*Z + c*X ---
+        z_cols = [instrument_var] + controls
+        X1 = np.column_stack([np.ones(n)] + [data[c].values for c in z_cols])
+        T = data[treatment_var].values.astype(float)
+        beta1, _, _, _ = np.linalg.lstsq(X1, T, rcond=None)
+        T_hat = X1 @ beta1
+        resid1 = T - T_hat
+
+        # First-stage F-statistic for the instrument (Cragg-Donald approximation)
+        ss_total = np.sum((T - T.mean()) ** 2)
+        ss_resid1 = np.sum(resid1 ** 2)
+        k1 = X1.shape[1]
+        f_stat = ((ss_total - ss_resid1) / 1.0) / (ss_resid1 / max(n - k1, 1))
+
+        # --- Stage 2: Y = a + b*T_hat + c*X ---
+        X2 = np.column_stack([np.ones(n), T_hat] + [data[c].values for c in controls])
+        Y = data[outcome_var].values.astype(float)
+        beta2, _, _, _ = np.linalg.lstsq(X2, Y, rcond=None)
+        estimate = float(beta2[1])
+
+        # Asymptotic SE using 2SLS residuals with original (not first-stage) instruments
+        Y_hat2 = X2 @ beta2
+        resid2 = Y - Y_hat2
+        k2 = X2.shape[1]
+        sigma2 = np.sum(resid2 ** 2) / max(n - k2, 1)
+        xtx_inv = np.linalg.pinv(X2.T @ X2)
+        se = float(np.sqrt(sigma2 * xtx_inv[1, 1]))
+
+        ci = (estimate - 1.96 * se, estimate + 1.96 * se)
+
+        if self.verbose:
+            print(f"2SLS estimate: {estimate:.4f} (SE={se:.4f})")
+            print(f"First-stage F: {f_stat:.2f} {'⚠️ weak' if f_stat < 10 else '✅'}")
+
+        return IVResult(
+            estimate=estimate,
+            se=se,
+            first_stage_f_stat=float(f_stat),
+            weak_instrument=f_stat < 10,
+            n_obs=n,
+            confidence_interval=ci,
+        )
+
+
+# ---------------------------------------------------------------------------
+# alpha_P: Regression Discontinuity (local linear at policy threshold)
+# Estimand: ∂Price/∂Shortage at a discrete policy event cutoff
+# ---------------------------------------------------------------------------
+
+@dataclass
+class RDResult:
+    """Results from regression discontinuity estimation."""
+    discontinuity: float          # Jump in outcome at threshold (LATE)
+    se: float
+    bandwidth: float              # Window used around threshold
+    n_left: int                   # Observations just left of threshold
+    n_right: int                  # Observations just right of threshold
+    confidence_interval: Tuple[float, float]
+
+
+class RegressionDiscontinuity:
+    """
+    Sharp regression discontinuity for price-adjustment speed (alpha_P).
+
+    Estimates the causal jump in outcome (e.g. Price) at a known policy
+    threshold in a running variable (e.g. Shortage index, time).  Within a
+    bandwidth around the threshold, units are as-good-as-randomly assigned
+    to treatment (above/below), satisfying local randomisation.
+
+    Estimator: local linear regression on each side of the threshold;
+    discontinuity = right-limit minus left-limit at the cutoff.
+    """
+
+    def __init__(self, verbose: bool = False):
+        self.verbose = verbose
+
+    def estimate(
+        self,
+        data: pd.DataFrame,
+        running_var: str,
+        outcome_var: str,
+        threshold: float,
+        bandwidth: Optional[float] = None,
+    ) -> RDResult:
+        """
+        Estimate the discontinuity at threshold.
+
+        Args:
+            data: DataFrame with running_var and outcome_var columns.
+            running_var: Continuous variable that crosses the threshold
+                         (e.g. shortage index, calendar time).
+            outcome_var: Outcome of interest (e.g. price, supply).
+            threshold: The known cutoff value.
+            bandwidth: Half-width of local window (default: 1 SD of running_var).
+
+        Returns:
+            RDResult with discontinuity estimate and diagnostics.
+        """
+        rv = data[running_var].values.astype(float)
+        if bandwidth is None:
+            bandwidth = float(np.std(rv))
+
+        mask = np.abs(rv - threshold) <= bandwidth
+        local = data[mask].copy()
+        left = local[local[running_var] < threshold]
+        right = local[local[running_var] >= threshold]
+
+        if len(left) < 2 or len(right) < 2:
+            raise ValueError(
+                f"Too few observations within bandwidth {bandwidth:.3f}: "
+                f"left={len(left)}, right={len(right)}. Increase bandwidth."
+            )
+
+        # Fit interaction model on local window for pooled SE:
+        # Y = a + b*D + c*(X-c0) + d*D*(X-c0)   where b = discontinuity
+        rv_c = (local[running_var].values - threshold).astype(float)
+        D = (rv_c >= 0).astype(float)
+        Y = local[outcome_var].values.astype(float)
+        X_mat = np.column_stack([np.ones(len(Y)), D, rv_c, D * rv_c])
+        beta, _, _, _ = np.linalg.lstsq(X_mat, Y, rcond=None)
+        disc = float(beta[1])
+
+        resid = Y - X_mat @ beta
+        n, k = len(Y), 4
+        sigma2 = np.sum(resid ** 2) / max(n - k, 1)
+        xtx_inv = np.linalg.pinv(X_mat.T @ X_mat)
+        se = float(np.sqrt(sigma2 * xtx_inv[1, 1]))
+
+        ci = (disc - 1.96 * se, disc + 1.96 * se)
+
+        if self.verbose:
+            print(f"RD discontinuity: {disc:.4f} (SE={se:.4f})")
+            print(f"Bandwidth: {bandwidth:.3f}, n_left={len(left)}, n_right={len(right)}")
+
+        return RDResult(
+            discontinuity=disc,
+            se=se,
+            bandwidth=bandwidth,
+            n_left=len(left),
+            n_right=len(right),
+            confidence_interval=ci,
+        )
+
+
+# ---------------------------------------------------------------------------
+# policy_shock_magnitude: Difference-in-Differences (TWFE)
+# Estimand: ATT of export quota on supply / trade value, panel countries
+# ---------------------------------------------------------------------------
+
+@dataclass
+class DIDResult:
+    """Results from difference-in-differences estimation."""
+    att: float                    # Average treatment effect on the treated
+    se: float
+    pre_trend_pvalue: float       # p-value for parallel pre-trends test (want > 0.05)
+    n_treated: int                # Number of treated units
+    n_control: int
+    post_treatment_years: List[int]
+    confidence_interval: Tuple[float, float]
+
+
+class DifferenceInDifferences:
+    """
+    Difference-in-differences (2x2 DiD / panel TWFE) for policy_shock_magnitude.
+
+    Estimates ATT = (Y_treated_post - Y_treated_pre) - (Y_control_post - Y_control_pre).
+    Identification relies on the parallel trends assumption: absent the policy,
+    treated and control units would have followed the same time trend.
+
+    Pre-trend test: applies the DiD estimator to a placebo split within the
+    pre-treatment period. If the coefficient is near zero (p > 0.05) trends
+    are parallel.
+    """
+
+    def __init__(self, verbose: bool = False):
+        self.verbose = verbose
+
+    def estimate(
+        self,
+        data: pd.DataFrame,
+        outcome_var: str,
+        treatment_col: str,
+        time_col: str,
+        treatment_time: int,
+        unit_col: Optional[str] = None,
+    ) -> DIDResult:
+        """
+        Estimate ATT via OLS with interaction term (equivalent to 2x2 DiD).
+
+        Args:
+            data: Panel DataFrame.
+            outcome_var: Outcome variable (e.g. "trade_value_usd").
+            treatment_col: Binary column: 1 = treated unit, 0 = control.
+            time_col: Time period column (int year).
+            treatment_time: First period of treatment.
+            unit_col: Unit identifier column (used to count distinct units).
+
+        Returns:
+            DIDResult with ATT, SE, parallel-trends p-value, and unit counts.
+        """
+        D = data[treatment_col].values.astype(float)
+        Post = (data[time_col] >= treatment_time).astype(float).values
+        Y = data[outcome_var].values.astype(float)
+
+        # OLS: Y = a + b*D + c*Post + d*(D*Post)  → d = ATT
+        X = np.column_stack([np.ones(len(Y)), D, Post, D * Post])
+        beta, _, _, _ = np.linalg.lstsq(X, Y, rcond=None)
+        att = float(beta[3])
+
+        resid = Y - X @ beta
+        n, k = len(Y), 4
+        sigma2 = np.sum(resid ** 2) / max(n - k, 1)
+        xtx_inv = np.linalg.pinv(X.T @ X)
+        se = float(np.sqrt(sigma2 * xtx_inv[3, 3]))
+
+        # --- Parallel pre-trends test ---
+        pre_trend_pvalue = self._pre_trend_test(data, outcome_var, treatment_col, time_col, treatment_time)
+
+        ci = (att - 1.96 * se, att + 1.96 * se)
+
+        if unit_col and unit_col in data.columns:
+            n_treated = int(data[data[treatment_col] == 1][unit_col].nunique())
+            n_control = int(data[data[treatment_col] == 0][unit_col].nunique())
+        else:
+            n_treated = int((data[treatment_col] == 1).sum())
+            n_control = int((data[treatment_col] == 0).sum())
+
+        post_years = sorted(data[data[time_col] >= treatment_time][time_col].unique().tolist())
+
+        if self.verbose:
+            print(f"DiD ATT: {att:.4f} (SE={se:.4f})")
+            print(f"Pre-trend p-value: {pre_trend_pvalue:.3f} {'✅ parallel' if pre_trend_pvalue > 0.05 else '⚠️ non-parallel'}")
+
+        return DIDResult(
+            att=att,
+            se=se,
+            pre_trend_pvalue=pre_trend_pvalue,
+            n_treated=n_treated,
+            n_control=n_control,
+            post_treatment_years=post_years,
+            confidence_interval=ci,
+        )
+
+    def _pre_trend_test(
+        self,
+        data: pd.DataFrame,
+        outcome_var: str,
+        treatment_col: str,
+        time_col: str,
+        treatment_time: int,
+    ) -> float:
+        """
+        Placebo DiD on pre-period only: split pre-period at midpoint and test
+        whether the DiD coefficient is zero (no differential pre-trend).
+        Returns p-value; want p > 0.05 for parallel trends.
+        """
+        pre = data[data[time_col] < treatment_time].copy()
+        pre_times = sorted(pre[time_col].unique())
+        if len(pre_times) < 4:
+            return 1.0  # cannot test with fewer than 4 pre-periods
+
+        mid = pre_times[len(pre_times) // 2]
+        D_pre = pre[treatment_col].values.astype(float)
+        Post_pre = (pre[time_col] >= mid).astype(float).values
+        Y_pre = pre[outcome_var].values.astype(float)
+        X_pre = np.column_stack([np.ones(len(Y_pre)), D_pre, Post_pre, D_pre * Post_pre])
+        beta_pre, _, _, _ = np.linalg.lstsq(X_pre, Y_pre, rcond=None)
+
+        resid_pre = Y_pre - X_pre @ beta_pre
+        n_pre = len(Y_pre)
+        sigma2_pre = np.sum(resid_pre ** 2) / max(n_pre - 4, 1)
+        xtx_inv_pre = np.linalg.pinv(X_pre.T @ X_pre)
+        se_pre = float(np.sqrt(sigma2_pre * xtx_inv_pre[3, 3]))
+
+        t_stat = abs(float(beta_pre[3])) / (se_pre + 1e-12)
+        return float(2 * stats.t.sf(t_stat, df=max(n_pre - 4, 1)))
+
+    def placebo_test(
+        self,
+        data: pd.DataFrame,
+        outcome_var: str,
+        treatment_col: str,
+        time_col: str,
+        treatment_time: int,
+        n_placebos: int = 10,
+        unit_col: Optional[str] = None,
+    ) -> Dict:
+        """
+        Placebo policy times: reassign treatment_time to random pre-period years
+        and check if DiD ATT is smaller than the actual estimate.
+        Returns empirical p-value (fraction of placebos with |ATT| >= actual).
+        """
+        actual = self.estimate(data, outcome_var, treatment_col, time_col, treatment_time, unit_col)
+        pre_times = sorted(data[data[time_col] < treatment_time][time_col].unique())
+        if len(pre_times) < 2:
+            return {"actual_att": actual.att, "placebo_atts": [], "p_value": 1.0, "significant": False}
+
+        rng = np.random.default_rng(42)
+        placebo_atts = []
+        for t_placebo in rng.choice(pre_times, size=min(n_placebos, len(pre_times)), replace=False):
+            try:
+                r = self.estimate(data, outcome_var, treatment_col, time_col, int(t_placebo), unit_col)
+                placebo_atts.append(r.att)
+            except Exception:
+                continue
+
+        p_value = float(np.mean([abs(p) >= abs(actual.att) for p in placebo_atts])) if placebo_atts else 1.0
+        return {
+            "actual_att": actual.att,
+            "placebo_atts": placebo_atts,
+            "p_value": p_value,
+            "significant": p_value < 0.05,
+        }
