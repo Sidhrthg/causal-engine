@@ -374,11 +374,19 @@ class InstrumentalVariable:
         T_hat = X1 @ beta1
         resid1 = T - T_hat
 
-        # First-stage F-statistic for the instrument (Cragg-Donald approximation)
-        ss_total = np.sum((T - T.mean()) ** 2)
+        # Partial F-statistic for the excluded instrument (Stock-Yogo weak instrument test).
+        # Compare full model (instrument + controls) vs restricted model (controls only).
+        # This correctly isolates the instrument's predictive power regardless of controls.
         ss_resid1 = np.sum(resid1 ** 2)
         k1 = X1.shape[1]
-        f_stat = ((ss_total - ss_resid1) / 1.0) / (ss_resid1 / max(n - k1, 1))
+        if controls:
+            X1_restr = np.column_stack([np.ones(n)] + [data[c].values for c in controls])
+            beta1_restr, _, _, _ = np.linalg.lstsq(X1_restr, T, rcond=None)
+            ss_restr = np.sum((T - X1_restr @ beta1_restr) ** 2)
+            f_stat = ((ss_restr - ss_resid1) / 1.0) / (ss_resid1 / max(n - k1, 1))
+        else:
+            ss_total = np.sum((T - T.mean()) ** 2)
+            f_stat = ((ss_total - ss_resid1) / 1.0) / (ss_resid1 / max(n - k1, 1))
 
         # --- Stage 2: Y = a + b*T_hat + c*X ---
         X2 = np.column_stack([np.ones(n), T_hat] + [data[c].values for c in controls])
@@ -386,9 +394,11 @@ class InstrumentalVariable:
         beta2, _, _, _ = np.linalg.lstsq(X2, Y, rcond=None)
         estimate = float(beta2[1])
 
-        # Asymptotic SE using 2SLS residuals with original (not first-stage) instruments
-        Y_hat2 = X2 @ beta2
-        resid2 = Y - Y_hat2
+        # Asymptotic SE: use structural residuals with original T (not T_hat) to get
+        # correct sigma^2. Using T_hat inflates sigma^2 by Var(first-stage noise)*beta^2,
+        # causing SE overestimation (~1.26x for typical instruments).
+        X2_orig = np.column_stack([np.ones(n), T] + [data[c].values for c in controls])
+        resid2 = Y - X2_orig @ beta2
         k2 = X2.shape[1]
         sigma2 = np.sum(resid2 ** 2) / max(n - k2, 1)
         xtx_inv = np.linalg.pinv(X2.T @ X2)

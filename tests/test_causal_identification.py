@@ -208,6 +208,47 @@ def test_iv_with_controls(iv_data):
     assert res.n_obs == len(iv_data)
 
 
+def test_iv_se_accuracy_large_sample():
+    """SE should match asymptotic formula: sigma_e / (pi * sqrt(n)).
+    Regression test for bug where T_hat residuals inflated sigma^2 ~1.6x,
+    causing SE overestimation of ~1.26x."""
+    rng = np.random.default_rng(42)
+    n = 10_000
+    Z = rng.normal(0, 1, n)
+    T = 2.0 * Z + rng.normal(0, 0.5, n)   # pi = 2.0 (first stage slope)
+    Y = -1.5 * T + rng.normal(0, 1, n)    # sigma_e = 1.0
+    df = pd.DataFrame({"y": Y, "t": T, "z": Z})
+    res = InstrumentalVariable().estimate(df, "y", "t", "z")
+    # Asymptotic SE = sigma_e / (pi * sqrt(n)) = 1.0 / (2.0 * 100) = 0.005
+    true_se = 1.0 / (2.0 * np.sqrt(n))
+    assert abs(res.se - true_se) < 0.001, (
+        f"SE {res.se:.5f} too far from true {true_se:.5f}; "
+        "likely using T_hat instead of T for residuals"
+    )
+
+
+def test_iv_f_stat_not_inflated_by_strong_controls():
+    """Partial F-stat for the instrument must not be inflated by unrelated controls.
+    Regression test for bug where overall model F was used instead of partial F,
+    masking weak instruments when controls are strong predictors of treatment."""
+    rng = np.random.default_rng(7)
+    n = 300
+    Z = rng.normal(0, 0.01, n)            # near-useless instrument
+    ctrl = rng.normal(0, 1, n)
+    T = 0.01 * Z + 2.0 * ctrl + rng.normal(0, 0.3, n)   # ctrl drives T, Z does not
+    Y = -T + rng.normal(0, 1, n)
+    df = pd.DataFrame({"y": Y, "t": T, "z": Z, "ctrl": ctrl})
+    res = InstrumentalVariable().estimate(df, "y", "t", "z", controls=["ctrl"])
+    # Partial F for the instrument should be small (<10), not the overall model F (~12000)
+    assert res.weak_instrument, (
+        f"F-stat={res.first_stage_f_stat:.1f} should flag weak instrument; "
+        "likely computing overall model F instead of partial F"
+    )
+    assert res.first_stage_f_stat < 10, (
+        f"Partial F-stat {res.first_stage_f_stat:.1f} should be < 10 for near-useless instrument"
+    )
+
+
 # ---------------------------------------------------------------------------
 # RegressionDiscontinuity (local linear)
 # ---------------------------------------------------------------------------
