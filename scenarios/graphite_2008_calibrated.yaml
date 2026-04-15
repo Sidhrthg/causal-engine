@@ -22,7 +22,7 @@ shocks:
     start_year: 2009
     end_year: 2009
     magnitude: -0.40
-    demand_destruction: 0.40
+    demand_destruction: -0.40
 
   - type: policy_shock
     start_year: 2010
@@ -31,10 +31,10 @@ shocks:
     quota_reduction: 0.35
 
 parameters:
-  eta_D: -0.8          # UPDATED: Was -0.25, now -0.8 (from RAG)
+  eta_D: -0.25
   eta_K: 0.4
-  tau_K: 5.0           # UPDATED: Was 3.0, now 5.0 (from RAG: 4-6 years)
-  alpha_P: 3.0         # UPDATED: Was 0.8, now 3.0 (from RAG: 2.5-4.0)
+  tau_K: 3.0
+  alpha_P: 0.8
   beta_u: 0.1
   lambda_cover: 0.6
   cover_star: 0.2

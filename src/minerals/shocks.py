@@ -44,8 +44,6 @@ def apply_shocks(t: float, shocks: List[ShockConfig]) -> Dict[str, float]:
             elif shock.type == "macro_demand_shock":
                 demand_destruction = shock.demand_destruction if shock.demand_destruction is not None else shock.magnitude
                 shock_impacts["demand_shock"] *= 1.0 + demand_destruction
-            elif shock.type == "demand_surge":
-                shock_impacts["demand_shock"] *= 1.0 + shock.magnitude
             elif shock.type == "capacity_reduction":
                 shock_impacts["capacity_shock"] *= 1.0 - shock.magnitude
             elif shock.type == "capex_shock":

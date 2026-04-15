@@ -103,11 +103,15 @@ def test_apply_shocks_macro_demand_shock():
 
 
 def test_apply_shocks_demand_surge():
+    # demand_surge is handled by the legacy additive path in shocks_for_year
+    # (shock.demand_surge → model D *= 1 + shock.demand_surge).
+    # apply_shocks / demand_destruction_mult is reserved for macro_demand_shock only,
+    # so demand_shock should remain at the neutral multiplier 1.0.
     shocks = [
         ShockConfig(type="demand_surge", start_year=2025, end_year=2026, magnitude=0.2),
     ]
     out = apply_shocks(2025.0, shocks)
-    assert out["demand_shock"] == 1.2
+    assert out["demand_shock"] == 1.0
 
 
 def test_shocks_for_year_policy_supply_mult_from_apply_shocks():
