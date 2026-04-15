@@ -594,14 +594,19 @@ class TestEpisodeLithium2022Boom:
       CEPII Chile: implied price -72 % (41.57 → 11.68 USD/t),
       qty +20 % (201k → 242k t).
 
-    Shocks modelled:
-      - demand_surge 2022: +30 % (EV boom)
-      - demand_reversion_rate 0.60: captures post-boom order cancellations
-      - No supply restriction (Chile lithium supply expanded 2022-2024)
+    The model is run as-is with default parameters — no modifications to fit
+    the lithium data.  Tests check whether the existing price elasticity
+    (eta_D) and inventory dynamics are sufficient to reproduce the qualitative
+    directional pattern.
 
-    Parameters: stable defaults (alpha_P=0.8, eta_D=-0.25, tau_K=3.0).
-    Note: The model is normalised (P_ref=1.0) so we compare *directional*
-    and *sign* changes, not absolute price levels.
+    Known model limitation documented here:
+    The model cannot reproduce the 2022→2024 price *collapse* (-72 %) because
+    it has no mechanism for new supply entry at falling cost (the Chile lithium
+    boom was driven by brine expansion, not price-elastic capacity alone).
+    The post-surge demand cooling seen in CEPII is partly a buyer-side
+    inventory correction; the model's eta_D only captures ongoing price
+    sensitivity, not one-off inventory liquidation.  This is a structural gap,
+    not patched by adding parameters.
     """
 
     @pytest.fixture(scope="class")
@@ -622,7 +627,6 @@ class TestEpisodeLithium2022Boom:
                 u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
                 tau_K=3.0, eta_K=0.40, retire_rate=0.0, eta_D=-0.25,
                 demand_growth=DemandGrowthConfig(type="constant", g=1.0),
-                demand_reversion_rate=0.60,   # post-boom demand cooling
                 alpha_P=0.80,
                 cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
             ),
@@ -640,98 +644,71 @@ class TestEpisodeLithium2022Boom:
         return _cepii_chile_lithium()
 
     def test_cepii_price_surges_2022(self, cepii_li):
-        """Verify CEPII Chile implied price more than doubled in 2022 (ground truth)."""
+        """Ground truth: CEPII Chile implied price more than doubled in 2022."""
         pct = (cepii_li.loc[2022, "implied_price"] - cepii_li.loc[2021, "implied_price"]) / cepii_li.loc[2021, "implied_price"]
         assert pct > 2.0, f"CEPII lithium price should surge >200 % in 2022, got {pct:.1%}"
 
     def test_cepii_price_collapses_2024(self, cepii_li):
-        """Verify CEPII Chile implied price fell sharply by 2024 (ground truth)."""
+        """Ground truth: CEPII Chile implied price fell >50 % from 2022 peak by 2024."""
         pct = (cepii_li.loc[2024, "implied_price"] - cepii_li.loc[2022, "implied_price"]) / cepii_li.loc[2022, "implied_price"]
         assert pct < -0.50, f"CEPII lithium price should fall >50 % from 2022 peak by 2024, got {pct:.1%}"
 
+    def test_shortage_in_surge_year(self, model_df):
+        """
+        Demand surge in 2022 should create a positive shortage.
+        Causal path: demand_surge → D > Q_eff → shortage > 0.
+        """
+        assert model_df.loc[2022, "shortage"] > 0, (
+            f"Shortage should be > 0 in 2022 EV demand surge: "
+            f"{model_df.loc[2022, 'shortage']:.4f}"
+        )
+
     def test_price_rises_after_demand_surge(self, model_df):
         """
-        EV demand surge in 2022 → P_2023 > P_2021 (1-year price recording lag).
-        Core causal transmission: demand ↑ → shortage ↑ → P ↑.
+        P_2023 > P_2021: shortage in 2022 → price signal in 2023 (1-year recording lag).
+        This is what the existing model predicts without modification.
         """
         assert model_df.loc[2023, "P"] > model_df.loc[2021, "P"], (
             f"P_2023 should exceed P_2021 after 2022 demand surge: "
             f"P_2021={model_df.loc[2021,'P']:.4f}, P_2023={model_df.loc[2023,'P']:.4f}"
         )
 
-    def test_shortage_in_surge_year(self, model_df):
-        """Demand surge in 2022 should create a positive shortage."""
-        assert model_df.loc[2022, "shortage"] > 0, (
-            f"Shortage should be > 0 in 2022 EV demand surge: "
-            f"{model_df.loc[2022, 'shortage']:.4f}"
-        )
-
-    def test_demand_cools_after_surge(self, model_df):
-        """
-        With demand_reversion_rate=0.60, demand D should fall from its 2022 peak
-        in 2023 and 2024 as the post-boom overhang unwinds.
-        """
-        assert model_df.loc[2023, "D"] < model_df.loc[2022, "D"], (
-            f"Demand should cool in 2023 after surge: "
-            f"D_2022={model_df.loc[2022,'D']:.2f}, D_2023={model_df.loc[2023,'D']:.2f}"
-        )
-        assert model_df.loc[2024, "D"] < model_df.loc[2022, "D"], (
-            f"Demand should remain below 2022 peak in 2024: "
-            f"D_2022={model_df.loc[2022,'D']:.2f}, D_2024={model_df.loc[2024,'D']:.2f}"
-        )
-
-    def test_sign_match_2021_2022_surge(self, model_df, cepii_li):
-        """Model and CEPII agree: price higher after 2022 demand surge."""
+    def test_sign_match_surge_direction(self, model_df, cepii_li):
+        """Model and CEPII agree: price is higher after the 2022 demand surge."""
         model_pct = (model_df.loc[2023, "P"] - model_df.loc[2021, "P"]) / model_df.loc[2021, "P"]
         data_pct  = (cepii_li.loc[2022, "implied_price"] - cepii_li.loc[2021, "implied_price"]) / cepii_li.loc[2021, "implied_price"]
         assert _sign_match(model_pct, data_pct), (
             f"Sign mismatch: model 2021→2023 {model_pct:+.1%}, CEPII 2021→2022 {data_pct:+.1%}"
         )
 
-    def test_demand_reversion_prolongs_shortage(self):
+    def test_demand_falls_after_surge_via_price_elasticity(self, model_df):
         """
-        Causal intervention test: do(demand_reversion_rate=0.60) vs do(=0.0).
-
-        With rate=0.60, the surge carry-over keeps demand elevated for 1-2 years
-        after the shock year ends.  This extends the shortage window and raises
-        avg_price compared to the no-reversion case where demand snaps back to
-        baseline immediately.
-
-        The mechanism: carry-over demand > baseline → Q_eff may fall short of D
-        in post-surge years → total_shortage and avg_price are higher at rate=0.60.
+        After the surge, rising P suppresses D via eta_D (price elasticity).
+        This is the model's existing mechanism — no new parameters needed.
+        D_2023 should be lower than D_2022 because P_2023 > P_2022.
         """
-        from src.minerals.schema import (
-            BaselineConfig, DemandGrowthConfig, OutputsConfig,
-            ParametersConfig, PolicyConfig, ScenarioConfig,
-            ShockConfig, TimeConfig,
-        )
-        base = dict(
-            name="reversion_compare",
-            commodity="lithium",
-            seed=0,
-            time=TimeConfig(dt=1.0, start_year=2021, end_year=2025),
-            baseline=BaselineConfig(P_ref=1.0, P0=1.0, K0=100.0, I0=20.0, D0=100.0),
-            policy=PolicyConfig(),
-            shocks=[ShockConfig(type="demand_surge", start_year=2022, end_year=2022, magnitude=0.30)],
-            outputs=OutputsConfig(metrics=["total_shortage", "peak_shortage", "avg_price", "final_inventory_cover"]),
+        assert model_df.loc[2023, "D"] < model_df.loc[2022, "D"], (
+            f"Price elasticity should reduce demand in 2023 after price rises: "
+            f"D_2022={model_df.loc[2022,'D']:.2f}, D_2023={model_df.loc[2023,'D']:.2f}, "
+            f"P_2022={model_df.loc[2022,'P']:.4f}, P_2023={model_df.loc[2023,'P']:.4f}"
         )
 
-        results = {}
-        for rate in [0.0, 0.60]:
-            cfg = ScenarioConfig(
-                parameters=ParametersConfig(
-                    eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-                    tau_K=3.0, eta_K=0.40, retire_rate=0.0, eta_D=-0.25,
-                    demand_growth=DemandGrowthConfig(type="constant", g=1.0),
-                    demand_reversion_rate=rate,
-                    alpha_P=0.80, cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
-                ),
-                **base,
-            )
-            df, metrics = run_scenario(cfg)
-            results[rate] = metrics
+    def test_model_limitation_price_collapse_not_reproduced(self, model_df, cepii_li):
+        """
+        Documents a known structural gap: the model does NOT reproduce the
+        2022→2024 price collapse (-72 % in CEPII).
 
-        assert results[0.60]["avg_price"] > results[0.0]["avg_price"], (
-            f"Demand carry-over (rate=0.60) should raise avg_price vs immediate snap-back (rate=0.0): "
-            f"rate=0.0 → {results[0.0]['avg_price']:.4f}, rate=0.60 → {results[0.60]['avg_price']:.4f}"
+        The model predicts continued price pressure because it has no mechanism
+        for cost-curve supply expansion (Chile brine mining at falling unit cost)
+        or buyer-side inventory liquidation.  This test records the gap rather
+        than masking it with an added parameter.
+        """
+        model_pct = (model_df.loc[2024, "P"] - model_df.loc[2022, "P"]) / model_df.loc[2022, "P"]
+        data_pct  = (cepii_li.loc[2024, "implied_price"] - cepii_li.loc[2022, "implied_price"]) / cepii_li.loc[2022, "implied_price"]
+        # CEPII shows collapse; model does not — document that they disagree
+        assert data_pct < -0.50, f"CEPII should show price collapse by 2024: got {data_pct:.1%}"
+        # This assertion is expected to fail if the model ever gains a supply-expansion mechanism
+        assert model_pct > 0, (
+            f"Known gap: model P rises 2022→2024 ({model_pct:+.1%}) while CEPII collapses "
+            f"({data_pct:+.1%}). Model lacks cost-curve supply expansion mechanism."
         )

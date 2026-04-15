@@ -53,16 +53,6 @@ class ParametersConfig(BaseModel):
     # Demand
     eta_D: float = Field(..., description="Demand price elasticity")
     demand_growth: DemandGrowthConfig = Field(..., description="Demand growth configuration")
-    demand_reversion_rate: float = Field(
-        default=0.0, ge=0.0, le=1.0,
-        description=(
-            "Fraction of accumulated demand-surge that reverts each year after the surge "
-            "ends.  0.0 = no reversion (default, current behaviour); 1.0 = full reversion "
-            "in one year.  Captures post-boom demand normalisation (e.g. EV inventory "
-            "build-up followed by order cancellations)."
-        ),
-    )
-
     # Price dynamics
     alpha_P: float = Field(..., gt=0, description="Price adjustment speed")
     cover_star: float = Field(..., gt=0, description="Target cover ratio")

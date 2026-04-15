@@ -413,7 +413,6 @@ def validate_historical():
                 eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
                 tau_K=3.0, eta_K=0.40, retire_rate=0.0, eta_D=-0.25,
                 demand_growth=DemandGrowthConfig(type="constant", g=1.0),
-                demand_reversion_rate=0.60,
                 alpha_P=0.80, cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
             ),
             policy=PolicyConfig(),
