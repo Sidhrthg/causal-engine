@@ -562,3 +562,176 @@ class TestCausalMechanismInvariants:
             f"60 % restriction should raise avg_price more than 30 %: "
             f"{avg_prices[0.30]:.4f} → {avg_prices[0.60]:.4f}"
         )
+
+
+# -----------------------------------------------------------------------
+# Lithium — 2022 EV demand boom + 2024 price correction
+# -----------------------------------------------------------------------
+
+LITHIUM_DATA_PATH = "data/canonical/cepii_lithium.csv"
+
+
+def _cepii_chile_lithium() -> pd.DataFrame:
+    """Return per-year Chile lithium export totals with implied price proxy."""
+    df = pd.read_csv(LITHIUM_DATA_PATH)
+    chile = (
+        df[df["exporter"] == "Chile"]
+        .groupby("year")
+        .agg(value_kusd=("value_kusd", "sum"), qty_tonnes=("quantity_tonnes", "sum"))
+        .reset_index()
+    )
+    chile["implied_price"] = chile["value_kusd"] / chile["qty_tonnes"]
+    return chile.set_index("year")
+
+
+class TestEpisodeLithium2022Boom:
+    """
+    2021→2022: EV-driven lithium demand surge.
+      CEPII Chile: implied price +473 % (7.25 → 41.57 USD/t),
+      qty +48 % (136k → 201k t).
+
+    2022→2024: demand cooling + high-cost new supply entry.
+      CEPII Chile: implied price -72 % (41.57 → 11.68 USD/t),
+      qty +20 % (201k → 242k t).
+
+    Shocks modelled:
+      - demand_surge 2022: +30 % (EV boom)
+      - demand_reversion_rate 0.60: captures post-boom order cancellations
+      - No supply restriction (Chile lithium supply expanded 2022-2024)
+
+    Parameters: stable defaults (alpha_P=0.8, eta_D=-0.25, tau_K=3.0).
+    Note: The model is normalised (P_ref=1.0) so we compare *directional*
+    and *sign* changes, not absolute price levels.
+    """
+
+    @pytest.fixture(scope="class")
+    def model_df(self) -> pd.DataFrame:
+        from src.minerals.schema import (
+            BaselineConfig, DemandGrowthConfig, OutputsConfig,
+            ParametersConfig, PolicyConfig, ScenarioConfig,
+            ShockConfig, TimeConfig,
+        )
+        cfg = ScenarioConfig(
+            name="lithium_ev_boom_2022",
+            commodity="lithium",
+            seed=42,
+            time=TimeConfig(dt=1.0, start_year=2019, end_year=2025),
+            baseline=BaselineConfig(P_ref=1.0, P0=1.0, K0=108.695652, I0=20.0, D0=100.0),
+            parameters=ParametersConfig(
+                eps=1e-9,
+                u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
+                tau_K=3.0, eta_K=0.40, retire_rate=0.0, eta_D=-0.25,
+                demand_growth=DemandGrowthConfig(type="constant", g=1.0),
+                demand_reversion_rate=0.60,   # post-boom demand cooling
+                alpha_P=0.80,
+                cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
+            ),
+            policy=PolicyConfig(),
+            shocks=[
+                ShockConfig(type="demand_surge", start_year=2022, end_year=2022, magnitude=0.30),
+            ],
+            outputs=OutputsConfig(metrics=["total_shortage", "peak_shortage", "avg_price", "final_inventory_cover"]),
+        )
+        df, _ = run_scenario(cfg)
+        return df.set_index("year")
+
+    @pytest.fixture(scope="class")
+    def cepii_li(self) -> pd.DataFrame:
+        return _cepii_chile_lithium()
+
+    def test_cepii_price_surges_2022(self, cepii_li):
+        """Verify CEPII Chile implied price more than doubled in 2022 (ground truth)."""
+        pct = (cepii_li.loc[2022, "implied_price"] - cepii_li.loc[2021, "implied_price"]) / cepii_li.loc[2021, "implied_price"]
+        assert pct > 2.0, f"CEPII lithium price should surge >200 % in 2022, got {pct:.1%}"
+
+    def test_cepii_price_collapses_2024(self, cepii_li):
+        """Verify CEPII Chile implied price fell sharply by 2024 (ground truth)."""
+        pct = (cepii_li.loc[2024, "implied_price"] - cepii_li.loc[2022, "implied_price"]) / cepii_li.loc[2022, "implied_price"]
+        assert pct < -0.50, f"CEPII lithium price should fall >50 % from 2022 peak by 2024, got {pct:.1%}"
+
+    def test_price_rises_after_demand_surge(self, model_df):
+        """
+        EV demand surge in 2022 → P_2023 > P_2021 (1-year price recording lag).
+        Core causal transmission: demand ↑ → shortage ↑ → P ↑.
+        """
+        assert model_df.loc[2023, "P"] > model_df.loc[2021, "P"], (
+            f"P_2023 should exceed P_2021 after 2022 demand surge: "
+            f"P_2021={model_df.loc[2021,'P']:.4f}, P_2023={model_df.loc[2023,'P']:.4f}"
+        )
+
+    def test_shortage_in_surge_year(self, model_df):
+        """Demand surge in 2022 should create a positive shortage."""
+        assert model_df.loc[2022, "shortage"] > 0, (
+            f"Shortage should be > 0 in 2022 EV demand surge: "
+            f"{model_df.loc[2022, 'shortage']:.4f}"
+        )
+
+    def test_demand_cools_after_surge(self, model_df):
+        """
+        With demand_reversion_rate=0.60, demand D should fall from its 2022 peak
+        in 2023 and 2024 as the post-boom overhang unwinds.
+        """
+        assert model_df.loc[2023, "D"] < model_df.loc[2022, "D"], (
+            f"Demand should cool in 2023 after surge: "
+            f"D_2022={model_df.loc[2022,'D']:.2f}, D_2023={model_df.loc[2023,'D']:.2f}"
+        )
+        assert model_df.loc[2024, "D"] < model_df.loc[2022, "D"], (
+            f"Demand should remain below 2022 peak in 2024: "
+            f"D_2022={model_df.loc[2022,'D']:.2f}, D_2024={model_df.loc[2024,'D']:.2f}"
+        )
+
+    def test_sign_match_2021_2022_surge(self, model_df, cepii_li):
+        """Model and CEPII agree: price higher after 2022 demand surge."""
+        model_pct = (model_df.loc[2023, "P"] - model_df.loc[2021, "P"]) / model_df.loc[2021, "P"]
+        data_pct  = (cepii_li.loc[2022, "implied_price"] - cepii_li.loc[2021, "implied_price"]) / cepii_li.loc[2021, "implied_price"]
+        assert _sign_match(model_pct, data_pct), (
+            f"Sign mismatch: model 2021→2023 {model_pct:+.1%}, CEPII 2021→2022 {data_pct:+.1%}"
+        )
+
+    def test_demand_reversion_prolongs_shortage(self):
+        """
+        Causal intervention test: do(demand_reversion_rate=0.60) vs do(=0.0).
+
+        With rate=0.60, the surge carry-over keeps demand elevated for 1-2 years
+        after the shock year ends.  This extends the shortage window and raises
+        avg_price compared to the no-reversion case where demand snaps back to
+        baseline immediately.
+
+        The mechanism: carry-over demand > baseline → Q_eff may fall short of D
+        in post-surge years → total_shortage and avg_price are higher at rate=0.60.
+        """
+        from src.minerals.schema import (
+            BaselineConfig, DemandGrowthConfig, OutputsConfig,
+            ParametersConfig, PolicyConfig, ScenarioConfig,
+            ShockConfig, TimeConfig,
+        )
+        base = dict(
+            name="reversion_compare",
+            commodity="lithium",
+            seed=0,
+            time=TimeConfig(dt=1.0, start_year=2021, end_year=2025),
+            baseline=BaselineConfig(P_ref=1.0, P0=1.0, K0=100.0, I0=20.0, D0=100.0),
+            policy=PolicyConfig(),
+            shocks=[ShockConfig(type="demand_surge", start_year=2022, end_year=2022, magnitude=0.30)],
+            outputs=OutputsConfig(metrics=["total_shortage", "peak_shortage", "avg_price", "final_inventory_cover"]),
+        )
+
+        results = {}
+        for rate in [0.0, 0.60]:
+            cfg = ScenarioConfig(
+                parameters=ParametersConfig(
+                    eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
+                    tau_K=3.0, eta_K=0.40, retire_rate=0.0, eta_D=-0.25,
+                    demand_growth=DemandGrowthConfig(type="constant", g=1.0),
+                    demand_reversion_rate=rate,
+                    alpha_P=0.80, cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
+                ),
+                **base,
+            )
+            df, metrics = run_scenario(cfg)
+            results[rate] = metrics
+
+        assert results[0.60]["avg_price"] > results[0.0]["avg_price"], (
+            f"Demand carry-over (rate=0.60) should raise avg_price vs immediate snap-back (rate=0.0): "
+            f"rate=0.0 → {results[0.0]['avg_price']:.4f}, rate=0.60 → {results[0.60]['avg_price']:.4f}"
+        )

@@ -16,6 +16,7 @@ class State:
     K: float
     I: float
     P: float
+    demand_surge_residual: float = 0.0  # accumulated surge not yet reverted
 
 
 @dataclass
@@ -49,13 +50,32 @@ def step(cfg: ScenarioConfig, s: State, shock: ShockSignals, rng: np.random.Gene
     g_t = g ** s.t_index
 
     # 3) demand with elasticity, policies, demand surge, and macro demand destruction
+    #
+    # Demand reversion: when demand_reversion_rate > 0, the accumulated surge from
+    # previous years decays geometrically.  This captures post-boom normalisation
+    # (e.g. EV inventory over-ordering followed by order cancellations).
+    #
+    # Accumulated surge from prior years (not the current shock year):
+    residual = s.demand_surge_residual
+    if shock.demand_surge > 0.0:
+        # Active surge year: full surge applies; set residual to surge magnitude so
+        # it can be carried forward in subsequent years (only when rate > 0).
+        effective_demand_surge = shock.demand_surge
+        residual_new = shock.demand_surge if p.demand_reversion_rate > 0.0 else 0.0
+    else:
+        # Surge has ended: decay the residual by reversion_rate.
+        # When rate=0, residual_new=0 → no carry-over (original behaviour).
+        # When rate=0.5, residual decays by 50 % per year → gradual demand cooling.
+        residual_new = residual * (1.0 - p.demand_reversion_rate)
+        effective_demand_surge = residual_new
+
     D = (
         b.D0
         * g_t
         * (max(s.P, eps) / b.P_ref) ** p.eta_D
         * (1.0 - pol.substitution)
         * (1.0 - pol.efficiency)
-        * (1.0 + shock.demand_surge)
+        * (1.0 + effective_demand_surge)
         * shock.demand_destruction_mult
     )
     D = max(D, eps)
@@ -99,6 +119,7 @@ def step(cfg: ScenarioConfig, s: State, shock: ShockSignals, rng: np.random.Gene
         K=float(K_next),
         I=float(I_next),
         P=float(P_next),
+        demand_surge_residual=float(residual_new),
     )
     res = StepResult(Q=float(Q), Q_eff=float(Q_eff), D=float(D), shortage=float(shortage), tight=float(tight), cover=float(cover))
     return s_next, res

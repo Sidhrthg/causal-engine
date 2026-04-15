@@ -243,6 +243,227 @@ def validate(req: ValidateRequest):
     return {"result": engine.validate_with_rag(req.run_dir, req.year)}
 
 
+@app.get("/api/validate/historical")
+def validate_historical():
+    """
+    Run all three historical CEPII validation episodes and return structured
+    pass/fail results with model vs CEPII comparison metrics.
+
+    Episodes
+    --------
+    - graphite_2008: 2008 demand spike + 2009 GFC + 2010-11 China quota
+    - graphite_2023: 2022 EV surge + Oct 2023 export controls
+    - lithium_2022:  2022 EV demand boom + 2024 price correction
+
+    Returns
+    -------
+    JSON with ``episodes`` list.  Each episode has:
+    - ``name``, ``commodity``, ``status`` (pass/fail/error)
+    - ``checks``: list of {name, passed, model_value, cepii_value, notes}
+    """
+    import pandas as pd
+    from src.minerals.schema import (
+        BaselineConfig, DemandGrowthConfig, OutputsConfig,
+        ParametersConfig, PolicyConfig, ScenarioConfig,
+        ShockConfig, TimeConfig, load_scenario,
+    )
+    from src.minerals.simulate import run_scenario as _run
+
+    DATA_PATH_GRAPHITE = "data/canonical/cepii_graphite.csv"
+    DATA_PATH_LITHIUM  = "data/canonical/cepii_lithium.csv"
+
+    def _cepii_china(path=DATA_PATH_GRAPHITE):
+        df = pd.read_csv(path)
+        exporter = "China" if "graphite" in path else "Chile"
+        g = (
+            df[df["exporter"] == exporter]
+            .groupby("year")
+            .agg(value_kusd=("value_kusd", "sum"), qty_tonnes=("quantity_tonnes", "sum"))
+            .reset_index()
+        )
+        g["implied_price"] = g["value_kusd"] / g["qty_tonnes"]
+        return g.set_index("year")
+
+    def _pct(a, b):
+        return (b - a) / max(abs(a), 1e-9)
+
+    def _check(name, passed, model_val, cepii_val, notes=""):
+        return {
+            "name": name,
+            "passed": bool(passed),
+            "model_value": round(float(model_val), 4) if model_val is not None else None,
+            "cepii_value": round(float(cepii_val), 4) if cepii_val is not None else None,
+            "notes": notes,
+        }
+
+    episodes = []
+
+    # ── Episode 1+2: graphite 2008 ────────────────────────────────────────────
+    try:
+        cfg = load_scenario("scenarios/graphite_2008_calibrated.yaml")
+        df, _ = _run(cfg)
+        m = df.set_index("year")
+        cg = _cepii_china(DATA_PATH_GRAPHITE)
+
+        checks = [
+            _check(
+                "price_rises_2008",
+                m.loc[2009, "P"] > m.loc[2007, "P"] * 1.20,
+                _pct(m.loc[2007, "P"], m.loc[2009, "P"]),
+                _pct(cg.loc[2007, "implied_price"], cg.loc[2008, "implied_price"]),
+                "Model P_2009 vs P_2007 (lag-adjusted); CEPII 2007→2008",
+            ),
+            _check(
+                "shortage_positive_2008",
+                m.loc[2008, "shortage"] > 0,
+                float(m.loc[2008, "shortage"]),
+                None,
+            ),
+            _check(
+                "demand_falls_2009_gfc",
+                m.loc[2009, "D"] < m.loc[2008, "D"],
+                float(m.loc[2009, "D"]),
+                _pct(cg.loc[2008, "qty_tonnes"], cg.loc[2009, "qty_tonnes"]),
+                "Model D_2009 < D_2008; CEPII vol pct change",
+            ),
+            _check(
+                "quota_reduces_qeff_2010",
+                m.loc[2010, "Q_eff"] < m.loc[2009, "Q_eff"],
+                float(m.loc[2010, "Q_eff"]),
+                float(cg.loc[2010, "qty_tonnes"]),
+            ),
+            _check(
+                "price_rises_2010_2011",
+                m.loc[2011, "P"] > m.loc[2010, "P"],
+                _pct(m.loc[2010, "P"], m.loc[2011, "P"]),
+                _pct(cg.loc[2010, "implied_price"], cg.loc[2011, "implied_price"]),
+            ),
+        ]
+        n_pass = sum(c["passed"] for c in checks)
+        episodes.append({
+            "name": "graphite_2008_demand_spike_and_quota",
+            "commodity": "graphite",
+            "status": "pass" if n_pass == len(checks) else f"partial ({n_pass}/{len(checks)})",
+            "checks": checks,
+        })
+    except Exception as exc:
+        episodes.append({"name": "graphite_2008_demand_spike_and_quota", "status": "error", "error": str(exc)})
+
+    # ── Episode 3: graphite 2022-23 ───────────────────────────────────────────
+    try:
+        cfg3 = ScenarioConfig(
+            name="ep3_api", commodity="graphite", seed=42,
+            time=TimeConfig(dt=1.0, start_year=2019, end_year=2025),
+            baseline=BaselineConfig(P_ref=1.0, P0=1.0, K0=108.695652, I0=20.0, D0=100.0),
+            parameters=ParametersConfig(
+                eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
+                tau_K=3.0, eta_K=0.40, retire_rate=0.0, eta_D=-0.25,
+                demand_growth=DemandGrowthConfig(type="constant", g=1.0),
+                alpha_P=0.80, cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
+            ),
+            policy=PolicyConfig(),
+            shocks=[
+                ShockConfig(type="demand_surge",       start_year=2022, end_year=2022, magnitude=0.10),
+                ShockConfig(type="export_restriction", start_year=2023, end_year=2024, magnitude=0.35),
+            ],
+            outputs=OutputsConfig(metrics=["total_shortage", "peak_shortage", "avg_price", "final_inventory_cover"]),
+        )
+        df3, _ = _run(cfg3)
+        m3 = df3.set_index("year")
+        cg3 = _cepii_china(DATA_PATH_GRAPHITE)
+
+        checks3 = [
+            _check(
+                "price_rises_after_2022_surge",
+                m3.loc[2023, "P"] > m3.loc[2021, "P"],
+                _pct(m3.loc[2021, "P"], m3.loc[2023, "P"]),
+                _pct(cg3.loc[2021, "implied_price"], cg3.loc[2022, "implied_price"]),
+                "Model 2021→2023 (lag-adjusted); CEPII 2021→2022",
+            ),
+            _check(
+                "qeff_drops_under_export_controls_2023",
+                m3.loc[2023, "Q_eff"] < m3.loc[2022, "Q_eff"],
+                float(m3.loc[2023, "Q_eff"]),
+                float(cg3.loc[2023, "qty_tonnes"]),
+            ),
+            _check(
+                "shortage_under_export_controls_2023",
+                m3.loc[2023, "shortage"] > 0,
+                float(m3.loc[2023, "shortage"]),
+                None,
+            ),
+        ]
+        n3 = sum(c["passed"] for c in checks3)
+        episodes.append({
+            "name": "graphite_2022_ev_surge_and_export_controls",
+            "commodity": "graphite",
+            "status": "pass" if n3 == len(checks3) else f"partial ({n3}/{len(checks3)})",
+            "checks": checks3,
+        })
+    except Exception as exc:
+        episodes.append({"name": "graphite_2022_ev_surge_and_export_controls", "status": "error", "error": str(exc)})
+
+    # ── Lithium 2022 ──────────────────────────────────────────────────────────
+    try:
+        cfg_li = ScenarioConfig(
+            name="lithium_2022_api", commodity="lithium", seed=42,
+            time=TimeConfig(dt=1.0, start_year=2019, end_year=2025),
+            baseline=BaselineConfig(P_ref=1.0, P0=1.0, K0=108.695652, I0=20.0, D0=100.0),
+            parameters=ParametersConfig(
+                eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
+                tau_K=3.0, eta_K=0.40, retire_rate=0.0, eta_D=-0.25,
+                demand_growth=DemandGrowthConfig(type="constant", g=1.0),
+                demand_reversion_rate=0.60,
+                alpha_P=0.80, cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
+            ),
+            policy=PolicyConfig(),
+            shocks=[ShockConfig(type="demand_surge", start_year=2022, end_year=2022, magnitude=0.30)],
+            outputs=OutputsConfig(metrics=["total_shortage", "peak_shortage", "avg_price", "final_inventory_cover"]),
+        )
+        df_li, _ = _run(cfg_li)
+        m_li = df_li.set_index("year")
+        cl = _cepii_china(DATA_PATH_LITHIUM)
+
+        checks_li = [
+            _check(
+                "cepii_price_surges_2022",
+                cl.loc[2022, "implied_price"] > cl.loc[2021, "implied_price"] * 3.0,
+                None,
+                _pct(cl.loc[2021, "implied_price"], cl.loc[2022, "implied_price"]),
+                "Ground-truth check: CEPII Chile lithium price >200 % in 2022",
+            ),
+            _check(
+                "model_price_rises_after_surge",
+                m_li.loc[2023, "P"] > m_li.loc[2021, "P"],
+                _pct(m_li.loc[2021, "P"], m_li.loc[2023, "P"]),
+                _pct(cl.loc[2021, "implied_price"], cl.loc[2022, "implied_price"]),
+                "Model 2021→2023 (lag-adjusted); CEPII 2021→2022",
+            ),
+            _check(
+                "demand_cools_after_surge",
+                m_li.loc[2023, "D"] < m_li.loc[2022, "D"],
+                float(m_li.loc[2023, "D"]),
+                float(m_li.loc[2022, "D"]),
+                "demand_reversion_rate=0.60 → D falls from peak in 2023",
+            ),
+        ]
+        n_li = sum(c["passed"] for c in checks_li)
+        episodes.append({
+            "name": "lithium_2022_ev_boom",
+            "commodity": "lithium",
+            "status": "pass" if n_li == len(checks_li) else f"partial ({n_li}/{len(checks_li)})",
+            "checks": checks_li,
+        })
+    except Exception as exc:
+        episodes.append({"name": "lithium_2022_ev_boom", "status": "error", "error": str(exc)})
+
+    total = sum(1 for e in episodes if e.get("status") == "pass")
+    return {
+        "summary": f"{total}/{len(episodes)} episodes fully validated",
+        "episodes": episodes,
+    }
+
+
 # ── Unified Workflow ──────────────────────────────────────────────────────────
 
 @app.post("/api/workflow/run")

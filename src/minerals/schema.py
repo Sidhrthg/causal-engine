@@ -1,7 +1,7 @@
 """Schema validation for scenario configuration files."""
 
 from pydantic import BaseModel, Field, field_validator, model_validator
-from typing import Optional, List, Dict, Any, Literal
+from typing import ClassVar, Optional, List, Dict, Any, Literal
 from pathlib import Path
 import yaml
 
@@ -38,22 +38,31 @@ class DemandGrowthConfig(BaseModel):
 class ParametersConfig(BaseModel):
     """Model parameters."""
     eps: float = Field(default=1e-9, gt=0, description="Small positive constant")
-    
+
     # Utilization
     u0: float = Field(..., description="Base utilization rate")
     beta_u: float = Field(..., description="Utilization price elasticity")
     u_min: float = Field(..., ge=0, le=1, description="Minimum utilization")
     u_max: float = Field(..., ge=0, le=1, description="Maximum utilization")
-    
+
     # Capacity dynamics
     tau_K: float = Field(..., gt=0, description="Capacity adjustment time (years)")
     eta_K: float = Field(..., description="Capacity price elasticity")
     retire_rate: float = Field(..., ge=0, description="Capacity retirement rate per year")
-    
+
     # Demand
     eta_D: float = Field(..., description="Demand price elasticity")
     demand_growth: DemandGrowthConfig = Field(..., description="Demand growth configuration")
-    
+    demand_reversion_rate: float = Field(
+        default=0.0, ge=0.0, le=1.0,
+        description=(
+            "Fraction of accumulated demand-surge that reverts each year after the surge "
+            "ends.  0.0 = no reversion (default, current behaviour); 1.0 = full reversion "
+            "in one year.  Captures post-boom demand normalisation (e.g. EV inventory "
+            "build-up followed by order cancellations)."
+        ),
+    )
+
     # Price dynamics
     alpha_P: float = Field(..., gt=0, description="Price adjustment speed")
     cover_star: float = Field(..., gt=0, description="Target cover ratio")
@@ -113,13 +122,18 @@ class ScenarioConfig(BaseModel):
     shocks: List[ShockConfig] = Field(default_factory=list, description="Shock list")
     outputs: OutputsConfig = Field(..., description="Output configuration")
     
+    SUPPORTED_COMMODITIES: ClassVar[set] = {"graphite", "lithium", "cobalt", "nickel", "copper"}
+
     @field_validator("commodity")
     @classmethod
     def validate_commodity(cls, v: str) -> str:
         """Validate commodity type."""
-        if v.lower() != "graphite":
-            raise ValueError(f"Unsupported commodity: {v}. Only 'graphite' is supported.")
-        return v.lower()
+        v_lower = v.lower()
+        if v_lower not in cls.SUPPORTED_COMMODITIES:
+            raise ValueError(
+                f"Unsupported commodity: {v}. Supported: {sorted(cls.SUPPORTED_COMMODITIES)}"
+            )
+        return v_lower
     
     @property
     def years(self) -> List[int]:

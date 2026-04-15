@@ -118,7 +118,7 @@ def test_scenario_config_unsupported_commodity():
     with pytest.raises(ValueError, match="Unsupported commodity"):
         ScenarioConfig(
             name="test",
-            commodity="lithium",
+            commodity="unobtainium",
             seed=42,
             time=TimeConfig(dt=1.0, start_year=2024, end_year=2030),
             baseline=BaselineConfig(P_ref=1.0, P0=1.0, K0=100.0, I0=20.0, D0=100.0),
