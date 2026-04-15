@@ -6,10 +6,13 @@ Run with:
     uvicorn api:app --host 0.0.0.0 --port 8000 --reload
 """
 
+import math
 import shutil
 import tempfile
 from pathlib import Path
 from typing import Optional
+
+import numpy as np
 
 import matplotlib
 matplotlib.use("Agg")
@@ -241,6 +244,38 @@ def refresh_dag_image():
 @app.post("/api/validate")
 def validate(req: ValidateRequest):
     return {"result": engine.validate_with_rag(req.run_dir, req.year)}
+
+
+@app.get("/api/validate/predictability")
+def validate_predictability():
+    """
+    Run the causal engine predictability evaluation across all CEPII episodes.
+
+    Returns structured metrics per episode:
+    - directional_accuracy: fraction of year-on-year price moves predicted correctly
+    - spearman_rho: rank correlation of price index trajectory
+    - log_price_rmse: RMSE of log-price index (scale-invariant)
+    - magnitude_ratio: median |model %Δ| / |CEPII %Δ| (1.0 = perfect)
+    - grade: A/B/C/F composite score
+    - known_gap: documented structural limitation for failing episodes
+    """
+    from src.minerals.predictability import run_predictability_evaluation
+    results = run_predictability_evaluation()
+    return {
+        "episodes": [r.to_dict() for r in results],
+        "summary": {
+            "n_episodes": len(results),
+            "grades": {r.name: r.grade for r in results},
+            "mean_directional_accuracy": round(
+                float(np.mean([r.directional_accuracy for r in results
+                                if not math.isnan(r.directional_accuracy)])), 3
+            ),
+            "mean_spearman_rho": round(
+                float(np.mean([r.spearman_rho for r in results
+                                if not math.isnan(r.spearman_rho)])), 3
+            ),
+        },
+    }
 
 
 @app.get("/api/validate/historical")
