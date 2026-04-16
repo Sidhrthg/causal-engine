@@ -25,7 +25,15 @@ def _active(shock: ShockConfig, year: int) -> bool:
 def apply_shocks(t: float, shocks: List[ShockConfig]) -> Dict[str, float]:
     """
     Apply shock multipliers for current time.
-    Returns dict with shock impacts (multipliers).
+    Returns dict with shock impacts (multipliers; 1.0 = no effect).
+
+    Keys:
+        export_restriction  — 1.0 - cumulative magnitude (multiplicative; 1.0 = no restriction)
+        demand_shock        — cumulative demand multiplier (macro_demand_shock only)
+        policy_shock        — cumulative supply quota multiplier
+        capacity_shock      — cumulative capacity multiplier
+    Note: shocks_for_year() uses export_restriction additively for the ShockSignals
+    struct; this key is kept here for direct callers / tests of apply_shocks.
     """
     shock_impacts = {
         "export_restriction": 1.0,
@@ -76,7 +84,9 @@ def shocks_for_year(shocks: List[ShockConfig], year: int) -> ShockSignals:
 
     export_restriction = min(max(export_restriction, 0.0), 0.95)
     capex_shock = min(max(capex_shock, 0.0), 0.95)
-    demand_surge = max(demand_surge, -0.95)
+    # demand_surge: clamped symmetric to [-0.95, 2.0] — allows up to 3x demand
+    # without an upper cap the multiplier (1+surge) can become unphysically large
+    demand_surge = min(max(demand_surge, -0.95), 2.0)
     stockpile_release = max(stockpile_release, -1000.0)
 
     return ShockSignals(

@@ -57,7 +57,7 @@ class SimulationRequest(BaseModel):
 
 class SimulationResponse(BaseModel):
     """Response model for intervention simulation."""
-    outcomes: dict[str, float] = Field(..., description="Dictionary of outcome metrics")
+    outcomes: dict[str, float | None] = Field(..., description="Dictionary of outcome metrics; percent_change is null when baseline mean is zero")
 
 
 @app.get("/")

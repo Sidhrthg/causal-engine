@@ -88,6 +88,7 @@ import dataclasses
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 
+import networkx as nx
 import numpy as np
 import pandas as pd
 
@@ -200,8 +201,9 @@ def _step_explicit_noise(
     dt = cfg.time.dt
     eps = p.eps
 
+    # u_val ∈ [u_min, u_max] ⊆ [0, 1] (schema enforces u_max ≤ 1), so Q ≤ K always.
     u_val = _clip(p.u0 + p.beta_u * float(np.log(max(s.P, eps) / b.P_ref)), p.u_min, p.u_max)
-    Q = min(s.K, s.K * u_val)
+    Q = s.K * u_val
 
     g_t = cfg.parameters.demand_growth.g ** s.t_index
 
@@ -436,13 +438,13 @@ def interventional_identifiability(
     return dag.is_identifiable(treatment, outcome)
 
 
-def mutilated_graph_for_do(dag: CausalDAG, node: str) -> CausalDAG:
+def mutilated_graph_for_do(dag: CausalDAG, node: str) -> nx.DiGraph:
     """
-    Layer 2 — Intervention: Return the DAG after do(node).
+    Layer 2 — Intervention: Return the mutilated directed graph after do(node).
 
     Graph surgery: remove all incoming edges to `node`.  The resulting
     mutilated graph has `node` as a root (no parents), representing the
-    forced intervention.
+    forced intervention.  Returns a plain nx.DiGraph (not a CausalDAG).
     """
     return dag.remove_incoming_edges(node)
 

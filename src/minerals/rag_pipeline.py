@@ -38,18 +38,11 @@ _DEFAULT_SYSTEM = (
 
 
 def _normalize_chunk(raw: Any) -> Dict:
-    """
-    Normalize one retrieval hit to a dict with float ``similarity``.
-
-    Accepts either a plain dict (HippoRAG / simple) or an object with
-    ``.text`` and ``.metadata`` (industrial).
-    """
+    """Normalize retriever output to ``{text, metadata, similarity}``."""
     if isinstance(raw, dict):
         meta = raw.get("metadata", {})
         if not isinstance(meta, dict):
             meta = {"source_file": str(meta)}
-        # Each backend names the score differently; try all known keys in order.
-        # HippoRAG buries it inside metadata["score"] rather than at top level.
         sim = (
             raw.get("similarity")
             or raw.get("hybrid_score")
@@ -62,7 +55,6 @@ def _normalize_chunk(raw: Any) -> Dict:
             "metadata": meta,
             "similarity": float(sim),
         }
-    # Handle object-style chunks (e.g. DocumentChunk from industrial backend)
     text = getattr(raw, "text", str(raw))
     meta = getattr(raw, "metadata", {})
     if not isinstance(meta, dict):
@@ -71,12 +63,7 @@ def _normalize_chunk(raw: Any) -> Dict:
 
 
 def _build_context(chunks: List[Dict], max_chars: int = 12_000) -> str:
-    """
-    Build the numbered ``[1] path`` block passed to the LLM.
-
-    Stops before ``max_chars``; may truncate the last chunk mid-text so the
-    prompt stays under budget.
-    """
+    """Numbered context block for the LLM, capped at ``max_chars``."""
     lines: List[str] = []
     total = 0
     for i, chunk in enumerate(chunks, 1):
@@ -86,8 +73,6 @@ def _build_context(chunks: List[Dict], max_chars: int = 12_000) -> str:
         body = chunk["text"].strip()
         entry = f"{header}\n{body}\n"
         if total + len(entry) > max_chars:
-            # Try to include a truncated version of the last chunk rather than
-            # dropping it entirely — keeps the citation number sequence intact.
             remaining = max_chars - total - len(header) - 10
             if remaining > 100:
                 entry = f"{header}\n{body[:remaining]}...\n"
@@ -114,9 +99,7 @@ class RAGPipeline:
         collection_name: ChromaDB collection name (industrial backend).
         embedding_model: Sentence-transformers model (industrial backend).
         memory_dir: Directory for episodic memory. Pass ``None`` to disable.
-        openai_model: LLM name passed to HippoRAG only; defaults to env
-            ``OPENAI_MODEL`` or ``gpt-4o-mini``. Should match the model used when
-            the HippoRAG index was built.
+        openai_model: HippoRAG LLM name (default ``OPENAI_MODEL`` or ``gpt-4o-mini``).
     """
 
     def __init__(
@@ -129,7 +112,6 @@ class RAGPipeline:
         memory_dir: Optional[str] = "data/memory",
         openai_model: Optional[str] = None,
     ):
-        """Wire up the chosen backend and optional episodic memory."""
         self.documents_dir = documents_dir
         self._retriever = None
         self.backend_name: str = "none"
@@ -147,15 +129,8 @@ class RAGPipeline:
         collection_name: str,
         embedding_model: str,
     ) -> None:
-        """
-        Set ``self._retriever`` and ``self.backend_name``.
-
-        Raises RuntimeError if every candidate backend fails (e.g. missing deps
-        or empty index).
-        """
-        # "auto" tries backends best-first; a named backend is tried exactly once.
         order = (
-            ["hipporag", "industrial", "simple"] if backend == "auto" else [backend]
+            ["raganything", "hipporag", "industrial", "simple"] if backend == "auto" else [backend]
         )
         for name in order:
             try:
@@ -167,7 +142,6 @@ class RAGPipeline:
                 logger.info(f"RAGPipeline: using backend '{name}'")
                 return
             except Exception as exc:
-                # Expected when a backend isn't installed or its index is missing.
                 logger.debug(f"RAGPipeline: backend '{name}' not available: {exc}")
         tried = ", ".join(order)
         raise RuntimeError(
@@ -185,12 +159,20 @@ class RAGPipeline:
         embedding_model: str,
         openai_model: str = "gpt-4o-mini",
     ):
-        """
-        Instantiate one backend by name.
+        if name == "raganything":
+            from src.minerals.raganything_retrieval import raganything_available, RAGAnythingRetriever
 
-        Imports are lazy so installing only ``simple`` deps does not require
-        chromadb or hipporag at import time.
-        """
+            if not raganything_available():
+                raise ImportError("raganything not installed")
+            from src.minerals.raganything_retrieval import DEFAULT_WORKING_DIR
+            graphml = Path(documents_dir) / "raganything_index" / "graph_chunk_entity_relation.graphml"
+            if not graphml.exists():
+                raise FileNotFoundError(f"RAGAnything index not found at {graphml}")
+            return RAGAnythingRetriever(
+                working_dir=str(Path(documents_dir) / "raganything_index"),
+                llm_model_name=openai_model,
+            )
+
         if name == "hipporag":
             from src.minerals.hipporag_retrieval import hipporag_available, HippoRAGRetriever
 
@@ -253,8 +235,6 @@ class RAGPipeline:
         if self._retriever is None:
             return []
 
-        # Retrieve more than top_k so the memory re-ranking step has room to
-        # promote boosted chunks that the retriever ranked lower.
         fetch_k = top_k * 2 if self.memory else top_k
         try:
             from src.minerals.rag_industrial import IndustrialRAG
@@ -269,13 +249,10 @@ class RAGPipeline:
 
         chunks = [_normalize_chunk(r) for r in raw]
 
-        # Boost chunks that appeared in past high-quality answers (feedback rating > 0).
-        # The boost is small (0.15×) so it nudges rather than overrides retrieval scores.
         if self.memory:
             boosts = self.memory.boosted_chunks()
             if boosts:
                 for chunk in chunks:
-                    # Use a short text prefix as a stable ID — avoids storing full text.
                     preview = chunk["text"][:200]
                     chunk_id = hashlib.md5(preview.encode()).hexdigest()[:16]
                     if chunk_id in boosts:
@@ -330,8 +307,6 @@ class RAGPipeline:
         chunks = self.retrieve(question, top_k=top_k, filters=filters)
         llm_ok = is_chat_available()
 
-        # Build the sources list before the early-return so callers always get
-        # a consistent shape back even when no chunks were found.
         sources = [
             {
                 "source": c["metadata"].get("source_file", c["metadata"].get("source", "?")),
@@ -352,13 +327,10 @@ class RAGPipeline:
                 "llm_available": llm_ok,
             }
 
-        # Prepend similar past Q&A pairs so the LLM sees worked examples.
         few_shot = ""
         if use_memory and self.memory:
             few_shot = self.memory.build_few_shot_context(question)
 
-        # Subtract the few-shot block from the document budget so the total
-        # prompt never exceeds max_context_chars.
         doc_budget = max_context_chars - len(few_shot)
         context = _build_context(chunks, max_chars=max(doc_budget, 2_000))
         sys_msg = system_prompt or _DEFAULT_SYSTEM
@@ -386,8 +358,6 @@ class RAGPipeline:
                 f"Retrieved context:\n{context}"
             )
 
-        # Persist this episode so future queries can use it as a few-shot example
-        # and so feedback() can mark it correct/incorrect.
         episode_id: Optional[str] = None
         if self.memory:
             episode_id = self.memory.store(
@@ -455,12 +425,7 @@ class RAGPipeline:
         return "Indexing not supported for this backend (HippoRAG: use scripts/index_hipporag.py)"
 
     def stats(self) -> Dict[str, Any]:
-        """
-        Corpus stats for the active backend plus an optional ``memory`` summary.
-
-        Industrial backend delegates to ``get_statistics()``; others report
-        ``total_chunks`` from ``len(retriever.chunks)``.
-        """
+        """Corpus stats and optional memory summary."""
         from src.minerals.rag_industrial import IndustrialRAG
 
         if isinstance(self._retriever, IndustrialRAG):

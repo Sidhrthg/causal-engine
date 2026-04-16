@@ -125,6 +125,60 @@ def _extract_ci(estimate) -> Tuple[float, float, Optional[str]]:
 
 
 # -------------------------------------------------------------
+# Bootstrap CI via plain OLS (pandas-version-independent)
+# -------------------------------------------------------------
+def _bootstrap_ci_ols(
+    df,
+    treatment: str,
+    outcome: str,
+    controls: List[str],
+    n_boot: int = 500,
+    alpha: float = 0.05,
+) -> Tuple[float, float, Optional[str]]:
+    """
+    Compute 95% CI for the ATE using bootstrap OLS, bypassing DoWhy's
+    CI machinery which breaks on pandas 3.0.
+
+    Model: outcome ~ 1 + treatment + controls (OLS).
+    Coefficient on treatment = ATE under backdoor adjustment.
+    Returns (lower, upper, reason) matching _extract_ci convention.
+    """
+    regressors = [treatment] + [c for c in controls if c in df.columns and c != treatment]
+    needed = [outcome] + regressors
+    missing = [c for c in needed if c not in df.columns]
+    if missing:
+        return (np.nan, np.nan, f"CI unavailable: missing columns {missing}")
+
+    sub = df[needed].dropna()
+    if len(sub) < len(regressors) + 2:
+        return (np.nan, np.nan, "CI unavailable: too few observations")
+
+    def _ols_ate(sample: "pd.DataFrame") -> float:
+        y = sample[outcome].values.astype(float)
+        X = np.column_stack([np.ones(len(sample))] + [sample[c].values.astype(float) for c in regressors])
+        try:
+            beta, _, _, _ = np.linalg.lstsq(X, y, rcond=None)
+            return float(beta[1])  # coefficient on treatment
+        except Exception:
+            return np.nan
+
+    rng = np.random.default_rng(42)
+    boot_ates = []
+    n = len(sub)
+    for _ in range(n_boot):
+        idx = rng.integers(0, n, size=n)
+        boot_ates.append(_ols_ate(sub.iloc[idx]))
+
+    boot_arr = np.array([v for v in boot_ates if not np.isnan(v)])
+    if len(boot_arr) < 10:
+        return (np.nan, np.nan, "CI unavailable: too many failed bootstrap resamples")
+
+    lo = float(np.percentile(boot_arr, 100 * alpha / 2))
+    hi = float(np.percentile(boot_arr, 100 * (1 - alpha / 2)))
+    return (lo, hi, None)
+
+
+# -------------------------------------------------------------
 # Main ATE estimation function
 # -------------------------------------------------------------
 def estimate_ate_drl(
@@ -153,27 +207,53 @@ def estimate_ate_drl(
         graph_path=graph_path,
     )
 
-    # Identify effect
+    # Identify the causal effect to get the backdoor adjustment set from the DAG.
     estimand = causal_model.identify_effect(
         proceed_when_unidentifiable=True
     )
 
-    # Estimate using linear regression
-    estimate = causal_model.estimate_effect(
-        estimand,
-        method_name="backdoor.linear_regression",
-        confidence_intervals=True,
-        test_significance=True,
-    )
-
-    # Extract estimate value
+    # DoWhy's estimate_effect / backdoor.linear_regression triggers an internal
+    # pandas groupby.apply() that crashes on pandas 3.0 (KeyError: 0 from
+    # index.get_loc inside LinearRegressionEstimator._estimate_effect_fn).
+    # Workaround: extract the DoWhy-identified adjustment set, then run our own
+    # OLS.  This is numerically identical to DoWhy's regression estimator but
+    # entirely pandas-version-independent.
     try:
-        ate_value = float(estimate.value)
+        adj_vars = list(estimand.backdoor_variables or [])
     except Exception:
-        ate_value = np.nan
+        adj_vars = []
 
-    # Extract CI
-    ate_ci_lower, ate_ci_upper, ci_reason = _extract_ci(estimate)
+    # Fall back to the caller-supplied controls if DoWhy's identification
+    # didn't produce an adjustment set (unidentifiable graph, empty DAG, etc.)
+    adjustment_controls = adj_vars if adj_vars else controls
+
+    # ATE via OLS: outcome ~ 1 + treatment + adjustment_controls
+    # Coefficient on treatment = backdoor-adjusted ATE.
+    regressors = [treatment] + [c for c in adjustment_controls if c in df.columns and c != treatment]
+    needed = [outcome] + regressors
+    sub = df[[c for c in needed if c in df.columns]].dropna()
+
+    if len(sub) < len(regressors) + 2:
+        ate_value = np.nan
+        logger.warning("Too few observations for OLS ATE estimation")
+    else:
+        y = sub[outcome].values.astype(float)
+        X = np.column_stack([np.ones(len(sub))] + [sub[c].values.astype(float) for c in regressors])
+        try:
+            beta, _, _, _ = np.linalg.lstsq(X, y, rcond=None)
+            ate_value = float(beta[1])
+        except Exception as e:
+            ate_value = np.nan
+            logger.warning(f"OLS ATE failed: {e}")
+
+    # Bootstrap 95% CI using the same OLS model.
+    ate_ci_lower, ate_ci_upper, ci_reason = _bootstrap_ci_ols(
+        df=df,
+        treatment=treatment,
+        outcome=outcome,
+        controls=adjustment_controls,
+        n_boot=500,
+    )
     ate_ci = (ate_ci_lower, ate_ci_upper)
 
     if ci_reason is None:

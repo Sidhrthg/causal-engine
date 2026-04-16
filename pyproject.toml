@@ -50,9 +50,16 @@ rag = [
 ui = [
     "gradio>=4.0.0",
 ]
-# Optional; strict deps (e.g. torch==2.5.1) may conflict. If so, install project without [hipporag] and skip.
+# Optional; strict deps (e.g. torch==2.5.1) may conflict. If so, install without [hipporag] and skip.
+# PyPI only ships 2.0.0ax pre-releases (no stable 2.0.0 yet); >=2.0.0 would resolve to nothing.
 hipporag = [
-    "hipporag>=2.0.0",
+    "hipporag>=2.0.0a2",
+]
+# Multimodal knowledge graph via LightRAG + MinerU parser.
+# Handles text, images, tables, equations from PDFs and Office docs.
+# Note: upgrades openai, torch, transformers — may break hipporag strict pins.
+raganything = [
+    "raganything>=1.2.0",
 ]
 
 [project.scripts]

@@ -43,9 +43,9 @@ def step(cfg: ScenarioConfig, s: State, shock: ShockSignals, rng: np.random.Gene
     eps = p.eps
 
     # 1) utilization and production
-    u = _clip(pol=1, lo=0, hi=1) if False else None  # no-op marker to prevent accidental refactor
+    # u_val ∈ [u_min, u_max] ⊆ [0, 1] (schema enforces u_max ≤ 1), so Q ≤ K always.
     u_val = _clip(p.u0 + p.beta_u * float(np.log(max(s.P, eps) / b.P_ref)), p.u_min, p.u_max)
-    Q = min(s.K, s.K * u_val)
+    Q = s.K * u_val
 
     # 2) demand growth (constant)
     g = cfg.parameters.demand_growth.g

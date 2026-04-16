@@ -3,7 +3,7 @@ data/raw/
 data/canonical/
 outputs/
 
-# HippoRAG build output (large parquet / vectors; rebuild with scripts/index_hipporag.py)
+# HippoRAG index (large parquets; not in repo)
 data/documents/hipporag_index/
 
 # Scenario suite outputs (large; regenerate locally)
@@ -17,3 +17,10 @@ __pycache__/
 # Local env (API keys)
 .env
 .env.local
+
+# Local Chroma DB
+data/chroma_db/
+
+# Editable install metadata
+causal_engine.egg-info/
+

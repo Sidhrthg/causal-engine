@@ -3,7 +3,8 @@ Data ingestion utilities for loading and preprocessing datasets.
 """
 
 from pathlib import Path
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
+import numpy as np
 import pandas as pd
 from src.config import Config
 from src.utils.logging_utils import get_logger
@@ -66,33 +67,75 @@ def load_dataset(
 def preprocess_dataset(
     df: pd.DataFrame,
     drop_na: bool = True,
-    normalize: bool = False
+    normalize: bool = False,
+    normalize_method: str = "zscore",
+    exclude_columns: Optional[List[str]] = None,
 ) -> pd.DataFrame:
     """
     Preprocess a dataset for causal analysis.
-    
+
     Args:
         df: Input DataFrame
         drop_na: Whether to drop rows with missing values
-        normalize: Whether to normalize numeric columns (TODO: implement)
-    
+        normalize: Whether to normalize numeric columns
+        normalize_method: ``"zscore"`` (subtract mean, divide by std) or
+            ``"minmax"`` (scale to [0, 1]).  Columns with zero variance are
+            left unchanged.
+        exclude_columns: Column names to skip during normalization (e.g.
+            binary treatment indicators or ID columns).
+
     Returns:
         Preprocessed DataFrame
     """
     logger.info("Preprocessing dataset")
-    
+
     df_processed = df.copy()
-    
+
     if drop_na:
         initial_rows = len(df_processed)
         df_processed = df_processed.dropna()
         dropped = initial_rows - len(df_processed)
         if dropped > 0:
             logger.warning(f"Dropped {dropped} rows with missing values")
-    
-    # TODO: Implement normalization logic
+
     if normalize:
-        logger.warning("Normalization not yet implemented")
-    
+        skip = set(exclude_columns or [])
+        numeric_cols = [
+            c for c in df_processed.select_dtypes(include=[np.number]).columns
+            if c not in skip
+        ]
+        if not numeric_cols:
+            logger.warning("normalize=True but no numeric columns found to normalize")
+        else:
+            if normalize_method == "zscore":
+                means = df_processed[numeric_cols].mean()
+                stds = df_processed[numeric_cols].std(ddof=0)
+                # Leave constant columns unchanged (std == 0)
+                non_constant = stds[stds > 0].index.tolist()
+                df_processed[non_constant] = (
+                    df_processed[non_constant] - means[non_constant]
+                ) / stds[non_constant]
+                logger.info(
+                    f"Z-score normalized {len(non_constant)} columns "
+                    f"(skipped {len(numeric_cols) - len(non_constant)} constant)"
+                )
+            elif normalize_method == "minmax":
+                mins = df_processed[numeric_cols].min()
+                maxs = df_processed[numeric_cols].max()
+                ranges = maxs - mins
+                non_constant = ranges[ranges > 0].index.tolist()
+                df_processed[non_constant] = (
+                    df_processed[non_constant] - mins[non_constant]
+                ) / ranges[non_constant]
+                logger.info(
+                    f"Min-max normalized {len(non_constant)} columns "
+                    f"(skipped {len(numeric_cols) - len(non_constant)} constant)"
+                )
+            else:
+                raise ValueError(
+                    f"Unknown normalize_method '{normalize_method}'. "
+                    "Use 'zscore' or 'minmax'."
+                )
+
     return df_processed
 

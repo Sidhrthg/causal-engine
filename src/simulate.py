@@ -8,7 +8,7 @@ Monte Carlo bootstrap provides 95% CIs on all estimates.
 """
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, List, Dict, Any, Union
+from typing import TYPE_CHECKING, List, Dict, Any, Optional, Union
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -45,7 +45,7 @@ class SimulationResult:
         raw_samples: Bootstrap distribution of the intervened outcome mean.
         metadata: Simulation provenance (method, identified estimand, etc.).
     """
-    outcomes: Dict[str, float]
+    outcomes: Dict[str, Optional[float]]
     raw_samples: "np.ndarray | None" = None
     metadata: Dict[str, Any] | None = None
 
@@ -195,9 +195,10 @@ def simulate_intervention(
 
     boot_arr = np.array(boot_means)
     difference = intervened_mean - baseline_mean
-    pct_change = (difference / baseline_mean * 100) if baseline_mean != 0 else float("inf")
+    pct_change: Optional[float] = (difference / baseline_mean * 100) if baseline_mean != 0 else None
 
-    logger.info(f"Intervened mean: {intervened_mean:.6f}, Δ={difference:.6f} ({pct_change:.2f}%)")
+    pct_str = f"{pct_change:.2f}%" if pct_change is not None else "undefined (baseline=0)"
+    logger.info(f"Intervened mean: {intervened_mean:.6f}, Δ={difference:.6f} ({pct_str})")
     logger.info(f"95% CI: [{np.percentile(boot_arr, 2.5):.6f}, {np.percentile(boot_arr, 97.5):.6f}]")
 
     outcomes = {

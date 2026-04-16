@@ -138,6 +138,8 @@ pip install -e ".[ui]"           # Gradio (legacy UI)
 pip install -e ".[hipporag]"     # optional graph-based RAG
 ```
 
+**HippoRAG (optional):** install + index build → **[docs/HIPPORAG.md](docs/HIPPORAG.md)**.
+
 **`.env` in project root:**
 
 ```bash

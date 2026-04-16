@@ -394,6 +394,202 @@ class CausalDAG:
         except ImportError:
             print("⚠️  matplotlib not installed, skipping visualization")
 
+    # ------------------------------------------------------------------
+    # Parameter identification / estimation (overridden by subclasses)
+    # ------------------------------------------------------------------
+
+    def get_parameter_identifications(self) -> "List[ParameterIdentification]":
+        """Return the list of parameter→strategy mappings for this DAG.
+
+        Override in subclasses to expose commodity-specific parameters.
+        """
+        return []
+
+    def estimate_parameter(
+        self,
+        parameter: str,
+        data: "pd.DataFrame",
+        **kwargs,
+    ):
+        """
+        Estimate a model parameter using its pre-specified identification strategy.
+
+        Dispatches to the appropriate estimator in causal_identification based on
+        the strategy returned by ``get_parameter_identifications()``.
+
+        Args:
+            parameter: Parameter name (must be in get_parameter_identifications()).
+            data: Panel / time-series DataFrame with required columns.
+            **kwargs: Forwarded to the estimator. Required kwargs per strategy:
+                INSTRUMENTAL_VARIABLE   → instrument_var (str)
+                SYNTHETIC_CONTROL       → treated_unit, control_units, treatment_time
+                REGRESSION_DISCONTINUITY→ threshold (float)
+                DIFFERENCE_IN_DIFFERENCES→ treatment_time (int)
+                BACKDOOR_ADJUSTMENT     → graph_dot or graph_path (optional)
+                FRONTDOOR_ADJUSTMENT    → mediators (list[str])
+
+        Returns:
+            IVResult | TreatmentEffect | RDResult | DIDResult | EstimationResult
+
+        Raises:
+            ValueError: If parameter is unknown or a required kwarg is missing.
+        """
+        from .causal_identification import (
+            InstrumentalVariable,
+            SyntheticControl,
+            RegressionDiscontinuity,
+            DifferenceInDifferences,
+        )
+
+        pid_map = {p.parameter: p for p in self.get_parameter_identifications()}
+        if parameter not in pid_map:
+            raise ValueError(
+                f"Unknown parameter '{parameter}'. Available: {sorted(pid_map)}"
+            )
+        pid = pid_map[parameter]
+        verbose = kwargs.pop("verbose", False)
+
+        if pid.strategy == IdentificationStrategy.INSTRUMENTAL_VARIABLE:
+            if "instrument_var" not in kwargs:
+                raise ValueError(f"estimate_parameter('{parameter}') requires instrument_var=<col>")
+            return InstrumentalVariable(verbose=verbose).estimate(
+                data=data,
+                outcome_var=kwargs.pop("outcome_var", pid.outcome),
+                treatment_var=kwargs.pop("treatment_var", pid.treatment),
+                instrument_var=kwargs.pop("instrument_var"),
+                controls=kwargs.pop("controls", None),
+            )
+
+        if pid.strategy == IdentificationStrategy.SYNTHETIC_CONTROL:
+            for req in ("treated_unit", "control_units", "treatment_time"):
+                if req not in kwargs:
+                    raise ValueError(f"estimate_parameter('{parameter}') requires {req}=<value>")
+            return SyntheticControl(verbose=verbose).estimate_treatment_effect(
+                data=data,
+                treated_unit=kwargs.pop("treated_unit"),
+                control_units=kwargs.pop("control_units"),
+                treatment_time=kwargs.pop("treatment_time"),
+                outcome_var=kwargs.pop("outcome_var", pid.outcome),
+                unit_col=kwargs.pop("unit_col", "country"),
+                time_col=kwargs.pop("time_col", "year"),
+            )
+
+        if pid.strategy == IdentificationStrategy.REGRESSION_DISCONTINUITY:
+            if "threshold" not in kwargs:
+                raise ValueError(f"estimate_parameter('{parameter}') requires threshold=<float>")
+            return RegressionDiscontinuity(verbose=verbose).estimate(
+                data=data,
+                running_var=kwargs.pop("running_var", pid.treatment),
+                outcome_var=kwargs.pop("outcome_var", pid.outcome),
+                threshold=kwargs.pop("threshold"),
+                bandwidth=kwargs.pop("bandwidth", None),
+            )
+
+        if pid.strategy == IdentificationStrategy.DIFFERENCE_IN_DIFFERENCES:
+            if "treatment_time" not in kwargs:
+                raise ValueError(f"estimate_parameter('{parameter}') requires treatment_time=<int>")
+            return DifferenceInDifferences(verbose=verbose).estimate(
+                data=data,
+                outcome_var=kwargs.pop("outcome_var", pid.outcome),
+                treatment_col=kwargs.pop("treatment_col", "treated"),
+                time_col=kwargs.pop("time_col", "year"),
+                treatment_time=kwargs.pop("treatment_time"),
+                unit_col=kwargs.pop("unit_col", "country"),
+            )
+
+        if pid.strategy == IdentificationStrategy.BACKDOOR_ADJUSTMENT:
+            from src.estimate import estimate_ate_drl
+            graph_dot = kwargs.pop("graph_dot", None)
+            graph_path = kwargs.pop("graph_path", None)
+            if not graph_dot and not graph_path:
+                edges_dot = " ".join(f"{u} -> {v};" for u, v in self.graph.edges())
+                graph_dot = f"digraph {{ {edges_dot} }}"
+            treatment_var = kwargs.pop("treatment_var", pid.treatment)
+            outcome_var = kwargs.pop("outcome_var", pid.outcome)
+            adj = self.find_backdoor_adjustment_set(treatment_var, outcome_var) or set()
+            controls = list(kwargs.pop("controls", adj))
+            return estimate_ate_drl(
+                df=data,
+                treatment=treatment_var,
+                outcome=outcome_var,
+                controls=controls,
+                graph_dot=graph_dot,
+                graph_path=graph_path,
+            )
+
+        if pid.strategy == IdentificationStrategy.FRONTDOOR_ADJUSTMENT:
+            import numpy as np
+            from src.estimate import EstimationResult
+            mediators = list(kwargs.pop("mediators", pid.adjustment_set or set()))
+            if not mediators:
+                raise ValueError(
+                    f"estimate_parameter('{parameter}') with FRONTDOOR_ADJUSTMENT "
+                    "requires mediators=[...] kwarg or adjustment_set on ParameterIdentification."
+                )
+            treatment_var = kwargs.pop("treatment_var", pid.treatment)
+            outcome_var = kwargs.pop("outcome_var", pid.outcome)
+            sub = data[[treatment_var, outcome_var] + mediators].dropna()
+            n = len(sub)
+            X = sub[treatment_var].values.astype(float)
+            Y = sub[outcome_var].values.astype(float)
+            M_col = mediators[0]
+            M = sub[M_col].values.astype(float)
+            # Frontdoor ATE = β₁ · β₂ where:
+            #   β₁ = coeff of X on M  (stage 1: M ~ intercept + X)
+            #   β₂ = coeff of M on Y  (stage 2: Y ~ intercept + M + X)
+            # Using M_hat in stage 2 alongside X causes perfect collinearity;
+            # the product β₁·β₂ is the correct linear estimator.
+            X1 = np.column_stack([np.ones(n), X])
+            b1, _, _, _ = np.linalg.lstsq(X1, M, rcond=None)
+            beta1 = float(b1[1])
+            X2 = np.column_stack([np.ones(n), M, X])
+            b2, _, _, _ = np.linalg.lstsq(X2, Y, rcond=None)
+            beta2 = float(b2[1])
+            ate = beta1 * beta2
+            rng = np.random.default_rng(42)
+            boot = []
+            for _ in range(500):
+                idx = rng.integers(0, n, size=n)
+                Xs, Ys, Ms = X[idx], Y[idx], M[idx]
+                X1s = np.column_stack([np.ones(n), Xs])
+                b1s, _, _, _ = np.linalg.lstsq(X1s, Ms, rcond=None)
+                X2s = np.column_stack([np.ones(n), Ms, Xs])
+                b2s, _, _, _ = np.linalg.lstsq(X2s, Ys, rcond=None)
+                boot.append(float(b1s[1]) * float(b2s[1]))
+            boot_arr = np.array(boot)
+            ci = (float(np.percentile(boot_arr, 2.5)), float(np.percentile(boot_arr, 97.5)))
+            return EstimationResult(
+                ate=ate,
+                ate_ci=ci,
+                method="frontdoor_two_stage_ols",
+                model_summary=(
+                    f"Frontdoor OLS | X={treatment_var}, M={M_col}, Y={outcome_var}, "
+                    f"β₁={beta1:.3f}, β₂={beta2:.3f}, ATE=β₁·β₂={ate:.3f}, N={n}"
+                ),
+            )
+
+        if pid.strategy == IdentificationStrategy.ID_ALGORITHM:
+            from src.estimate import estimate_ate_drl
+            treatment_var = kwargs.pop("treatment_var", pid.treatment)
+            outcome_var = kwargs.pop("outcome_var", pid.outcome)
+            non_desc_observed = (
+                self.observed_vars
+                - {treatment_var, outcome_var}
+                - self.get_descendants(treatment_var)
+            )
+            controls = list(kwargs.pop("controls", non_desc_observed))
+            edges_dot = " ".join(f"{u} -> {v};" for u, v in self.graph.edges())
+            graph_dot = kwargs.pop("graph_dot", f"digraph {{ {edges_dot} }}")
+            return estimate_ate_drl(
+                df=data,
+                treatment=treatment_var,
+                outcome=outcome_var,
+                controls=controls,
+                graph_dot=graph_dot,
+            )
+
+        raise NotImplementedError(f"No estimator wired for strategy '{pid.strategy.value}'")
+
 
 @dataclass
 class ParameterIdentification:
@@ -407,6 +603,7 @@ class ParameterIdentification:
     strategy: IdentificationStrategy
     data_requirements: List[str]
     identification_assumptions: List[str]
+    adjustment_set: Optional[Set[str]] = None  # mediators for FRONTDOOR; adj set for BACKDOOR
 
 
 class GraphiteSupplyChainDAG(CausalDAG):
@@ -588,99 +785,160 @@ class GraphiteSupplyChainDAG(CausalDAG):
         ]
 
 
-    def estimate_parameter(
+class CommoditySupplyChainDAG(CausalDAG):
+    """
+    Generic causal DAG for any critical-mineral supply chain.
+
+    Builds the same graph structure as GraphiteSupplyChainDAG but is not
+    tied to a specific commodity.  The node names are conceptual
+    (ExportPolicy, Price, etc.) and apply to any commodity; what varies
+    across commodities is which country is the dominant exporter (used
+    only in ``get_parameter_identifications()`` docstrings / data hints).
+
+    Parameters
+    ----------
+    commodity : str
+        Human-readable commodity name (e.g. "graphite", "lithium", "cobalt").
+        Used only in descriptions / logging; does not affect graph topology.
+    dominant_exporter : str
+        The country that dominates global supply (e.g. "China", "DRC",
+        "Australia").  Referenced in data-requirement hints for parameter
+        identification.
+    """
+
+    def __init__(
         self,
-        parameter: str,
-        data: "pd.DataFrame",
-        **kwargs,
-    ):
-        """
-        Estimate a model parameter using its pre-specified identification strategy.
+        commodity: str = "graphite",
+        dominant_exporter: str = "China",
+    ) -> None:
+        super().__init__()
+        self.commodity = commodity
+        self.dominant_exporter = dominant_exporter
+        self._build_structure()
 
-        Dispatches to the appropriate estimator in causal_identification based on
-        the strategy in get_parameter_identifications().
+    def _build_structure(self) -> None:
+        observed = [
+            "ExportPolicy",
+            "TradeValue",
+            "Price",
+            "Demand",
+            "GlobalDemand",
+            "SubstitutionSupply",
+            "FringeSupply",
+        ]
+        unobserved = [
+            "Supply",
+            "Shortage",
+            "Inventory",
+            "Capacity",
+            "SubstitutionCapacity",
+            "FringeCapacity",
+        ]
+        for var in observed:
+            self.add_node(var, observed=True)
+        for var in unobserved:
+            self.add_node(var, observed=False)
 
-        Args:
-            parameter: One of 'eta_D', 'tau_K', 'alpha_P', 'policy_shock_magnitude'.
-            data: Panel / time-series DataFrame with the required columns.
-            **kwargs: Forwarded to the estimator. Required kwargs per parameter:
-                eta_D               → instrument_var (str)
-                tau_K               → treated_unit, control_units, treatment_time
-                alpha_P             → threshold (float)
-                policy_shock_magnitude → treatment_time (int)
-              Optional for all: verbose (bool), outcome_var, treatment_var,
-              unit_col, time_col, controls, bandwidth.
+        # Observed causal paths
+        self.add_edge("ExportPolicy", "TradeValue")
+        self.add_edge("TradeValue", "Price")
+        self.add_edge("GlobalDemand", "Demand")
+        self.add_edge("Demand", "Price")
 
-        Returns:
-            IVResult | TreatmentEffect | RDResult | DIDResult
+        # Supply substitution
+        self.add_edge("ExportPolicy",         "SubstitutionSupply")
+        self.add_edge("Price",                "SubstitutionSupply")
+        self.add_edge("SubstitutionCapacity", "SubstitutionSupply")
 
-        Raises:
-            ValueError: If parameter is unknown or a required kwarg is missing.
-        """
-        from .causal_identification import (
-            InstrumentalVariable,
-            SyntheticControl,
-            RegressionDiscontinuity,
-            DifferenceInDifferences,
-        )
+        # Fringe / cost-curve supply
+        self.add_edge("Price",          "FringeSupply")
+        self.add_edge("FringeCapacity", "FringeSupply")
 
-        pid_map = {p.parameter: p for p in self.get_parameter_identifications()}
-        if parameter not in pid_map:
-            raise ValueError(
-                f"Unknown parameter '{parameter}'. Available: {sorted(pid_map)}"
-            )
-        pid = pid_map[parameter]
-        verbose = kwargs.pop("verbose", False)
+        # Unobserved structural mechanism
+        self.add_edge("Capacity",     "Supply")
+        self.add_edge("ExportPolicy", "Supply")
+        self.add_edge("Supply",       "Shortage")
+        self.add_edge("Demand",       "Shortage")
+        self.add_edge("Shortage",     "Price")
+        self.add_edge("TradeValue",   "Inventory")
+        self.add_edge("Inventory",    "Supply")
 
-        if pid.strategy == IdentificationStrategy.INSTRUMENTAL_VARIABLE:
-            if "instrument_var" not in kwargs:
-                raise ValueError("estimate_parameter('eta_D') requires instrument_var=<col>")
-            return InstrumentalVariable(verbose=verbose).estimate(
-                data=data,
-                outcome_var=kwargs.pop("outcome_var", pid.outcome),
-                treatment_var=kwargs.pop("treatment_var", pid.treatment),
-                instrument_var=kwargs.pop("instrument_var"),
-                controls=kwargs.pop("controls", None),
-            )
-
-        if pid.strategy == IdentificationStrategy.SYNTHETIC_CONTROL:
-            for req in ("treated_unit", "control_units", "treatment_time"):
-                if req not in kwargs:
-                    raise ValueError(f"estimate_parameter('tau_K') requires {req}=<value>")
-            return SyntheticControl(verbose=verbose).estimate_treatment_effect(
-                data=data,
-                treated_unit=kwargs.pop("treated_unit"),
-                control_units=kwargs.pop("control_units"),
-                treatment_time=kwargs.pop("treatment_time"),
-                outcome_var=kwargs.pop("outcome_var", pid.outcome),
-                unit_col=kwargs.pop("unit_col", "country"),
-                time_col=kwargs.pop("time_col", "year"),
-            )
-
-        if pid.strategy == IdentificationStrategy.REGRESSION_DISCONTINUITY:
-            if "threshold" not in kwargs:
-                raise ValueError("estimate_parameter('alpha_P') requires threshold=<float>")
-            return RegressionDiscontinuity(verbose=verbose).estimate(
-                data=data,
-                running_var=kwargs.pop("running_var", pid.treatment),
-                outcome_var=kwargs.pop("outcome_var", pid.outcome),
-                threshold=kwargs.pop("threshold"),
-                bandwidth=kwargs.pop("bandwidth", None),
-            )
-
-        if pid.strategy == IdentificationStrategy.DIFFERENCE_IN_DIFFERENCES:
-            if "treatment_time" not in kwargs:
-                raise ValueError("estimate_parameter('policy_shock_magnitude') requires treatment_time=<int>")
-            return DifferenceInDifferences(verbose=verbose).estimate(
-                data=data,
-                outcome_var=kwargs.pop("outcome_var", pid.outcome),
-                treatment_col=kwargs.pop("treatment_col", "treated"),
-                time_col=kwargs.pop("time_col", "year"),
-                treatment_time=kwargs.pop("treatment_time"),
-                unit_col=kwargs.pop("unit_col", "country"),
-            )
-
-        raise NotImplementedError(f"No estimator wired for strategy '{pid.strategy.value}'")
+    def get_parameter_identifications(self) -> List[ParameterIdentification]:
+        exp = self.dominant_exporter
+        com = self.commodity
+        return [
+            ParameterIdentification(
+                parameter="eta_D",
+                description=f"{com.title()} demand price elasticity",
+                estimand="∂log(Demand)/∂log(Price)",
+                treatment="Price",
+                outcome="Demand",
+                strategy=IdentificationStrategy.INSTRUMENTAL_VARIABLE,
+                data_requirements=[
+                    "Time series: Price and Demand",
+                    f"Instrument: {exp} supply shocks (exogenous policy changes)",
+                    "Controls: GlobalDemand (industrial production index)",
+                ],
+                identification_assumptions=[
+                    f"Instrument relevance: {exp} supply shocks affect Price",
+                    "Exclusion restriction: supply shocks affect Demand only through Price",
+                    "No unmeasured price-demand confounders given controls",
+                ],
+            ),
+            ParameterIdentification(
+                parameter="tau_K",
+                description=f"{com.title()} capacity adjustment time",
+                estimand="P(Capacity_t | do(PriceShock_{t-k}))",
+                treatment="PriceShock",
+                outcome="Capacity",
+                strategy=IdentificationStrategy.SYNTHETIC_CONTROL,
+                data_requirements=[
+                    "Panel data: Capacity across countries/regions",
+                    "Treatment: Price spike in treated region",
+                    "Controls: Similar untreated regions",
+                ],
+                identification_assumptions=[
+                    "Parallel trends: control regions track treated absent shock",
+                    "No spillovers between regions",
+                    "SUTVA",
+                ],
+            ),
+            ParameterIdentification(
+                parameter="alpha_P",
+                description=f"{com.title()} price adjustment speed",
+                estimand="∂Price/∂Shortage",
+                treatment="Shortage",
+                outcome="Price",
+                strategy=IdentificationStrategy.REGRESSION_DISCONTINUITY,
+                data_requirements=[
+                    "Time series: Price and estimated Shortage",
+                    "Policy events creating discrete shortage jumps",
+                ],
+                identification_assumptions=[
+                    "Local randomization around policy threshold",
+                    "No manipulation of running variable",
+                    "Continuity of other covariates",
+                ],
+            ),
+            ParameterIdentification(
+                parameter="policy_shock_magnitude",
+                description=f"Effect of {com} export quotas on supply",
+                estimand="P(Supply|do(ExportPolicy=quota)) - P(Supply|ExportPolicy=free)",
+                treatment="ExportPolicy",
+                outcome="Supply",
+                strategy=IdentificationStrategy.DIFFERENCE_IN_DIFFERENCES,
+                data_requirements=[
+                    "Panel data: Trade/supply before and after policy",
+                    f"Treatment: {exp} implementing quotas",
+                    "Control: Countries without policy change",
+                ],
+                identification_assumptions=[
+                    "Parallel trends pre-treatment",
+                    "No anticipation effects",
+                    "No concurrent shocks to treatment group",
+                ],
+            ),
+        ]
 
 
 def demonstrate_identifiability() -> None:

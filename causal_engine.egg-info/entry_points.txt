@@ -1,2 +1,0 @@
-[console_scripts]
-causal-engine = src.api:main

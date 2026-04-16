@@ -1,11 +1,9 @@
 """
-Optional HippoRAG-based retriever for graph-based, multi-hop retrieval.
+Optional HippoRAG retriever; same ``retrieve`` shape as SimpleRAGRetriever.
 
-Uses the same interface as SimpleRAGRetriever (retrieve returns list of
-{text, metadata}) so it can be swapped in for Just RAG and Validate with RAG.
-
-Requires: hipporag package (python3 -m pip install hipporag or pip install -e ".[hipporag]") and OPENAI_API_KEY or vLLM for indexing.
-Set USE_HIPPORAG=1 and build the index (script or Gradio) to use this backend.
+Needs ``hipporag``, OPENAI_API_KEY or vLLM, and a built index under
+``data/documents/hipporag_index/`` (see ``docs/HIPPORAG.md``). That directory is
+gitignored (large parquets); build locally after clone.
 """
 
 from __future__ import annotations
@@ -34,22 +32,15 @@ try:
     from hipporag import HippoRAG
     HIPPORAG_AVAILABLE = True
 except (ImportError, RuntimeError):
-    # Package missing or failed to load native deps — callers use SimpleRAGRetriever instead.
     HippoRAG = None  # type: ignore
     HIPPORAG_AVAILABLE = False
 
 
-# Where HippoRAG stores its graph + vectors; also holds our doc_meta.json (passage ↔ file map).
 DEFAULT_HIPPORAG_SAVE_DIR = "data/documents/hipporag_index"
 
 
 def _collect_docs_from_dir(documents_dir: Path) -> tuple[List[str], List[Dict[str, Any]]]:
-    """
-    Walk ``documents_dir`` for ``.txt`` / ``.md``, split into paragraphs, return parallel lists.
-
-    Skips paragraphs under 30 chars; keeps at most 50 paragraphs per file to cap index size.
-    Tries several encodings per file, then falls back to UTF-8 with replacement.
-    """
+    """Load .txt/.md under documents_dir; chunk by paragraph (max 50/file, min 30 chars)."""
     docs: List[str] = []
     meta: List[Dict[str, Any]] = []
     text_files = list(documents_dir.rglob("*.txt")) + list(documents_dir.rglob("*.md"))
@@ -72,11 +63,10 @@ def _collect_docs_from_dir(documents_dir: Path) -> tuple[List[str], List[Dict[st
         except ValueError:
             rel = file_path
         source_file = str(rel)
-        # Chunk by paragraph (HippoRAG prefers coherent passages)
         paragraphs = [p.strip() for p in re.split(r"\n\s*\n", content) if p.strip()]
         if not paragraphs:
             paragraphs = [content[:2000]] if content.strip() else []
-        for i, para in enumerate(paragraphs[:50]):  # cap per file to avoid huge index
+        for i, para in enumerate(paragraphs[:50]):
             if len(para) < 30:
                 continue
             docs.append(para)
@@ -85,17 +75,7 @@ def _collect_docs_from_dir(documents_dir: Path) -> tuple[List[str], List[Dict[st
 
 
 class HippoRAGRetriever:
-    """
-    Graph-based retriever using HippoRAG (optional).
-
-    Same contract as ``SimpleRAGRetriever``: ``retrieve(query, top_k)`` returns
-    ``[{"text": str, "metadata": dict}, ...]``. Use ``index()`` once to build
-    the graph from ``documents_dir``; query-time needs the same LLM/embed setup
-    as indexing (e.g. ``OPENAI_API_KEY`` or ``VLLM_BASE_URL``).
-
-    ``llm_model_name`` / ``embedding_model_name`` should match what was used when
-    the index under ``save_dir`` was built, or retrieval can misbehave.
-    """
+    """HippoRAG backend; ``retrieve`` matches SimpleRAGRetriever. Match LLM/embed names to the built index."""
 
     def __init__(
         self,
@@ -119,13 +99,11 @@ class HippoRAGRetriever:
         self._llm_base_url = llm_base_url
         self._embedding_base_url = embedding_base_url
         key = openai_api_key or os.getenv("OPENAI_API_KEY")
-        # HippoRAG reads the key from the environment internally.
         if key and not os.getenv("OPENAI_API_KEY"):
             os.environ["OPENAI_API_KEY"] = key
         self._load_or_init()
 
     def _read_doc_meta(self) -> None:
-        """Load ``doc_meta.json`` into ``_docs`` / ``_meta`` if present; no-op if missing."""
         mapping_path = self.save_dir / "doc_meta.json"
         if not mapping_path.exists():
             return
@@ -135,7 +113,6 @@ class HippoRAGRetriever:
         self._meta = data.get("meta", [])
 
     def _load_or_init(self) -> None:
-        """Reload passage list from disk, then construct the HippoRAG client for this save_dir."""
         self._read_doc_meta()
         self._hipporag = HippoRAG(
             save_dir=str(self.save_dir),
@@ -147,10 +124,7 @@ class HippoRAGRetriever:
 
     @property
     def chunks(self) -> List[Any]:
-        """
-        Same shape as ``SimpleRAGRetriever.chunks``: lightweight objects with
-        ``text`` and ``metadata`` (used by eval and question generation).
-        """
+        """Chunk-like objects with ``text`` and ``metadata`` (RAG eval)."""
         class PseudoChunk:
             def __init__(self, text: str, metadata: dict):
                 self.text = text
@@ -158,28 +132,17 @@ class HippoRAGRetriever:
         return [PseudoChunk(d, m) for d, m in zip(self._docs, self._meta)]
 
     def _find_doc_metadata(self, doc_text: str) -> Dict[str, Any]:
-        """
-        Map a HippoRAG-returned passage back to ``source_file`` / ``chunk_index``.
-
-        HippoRAG may return text that exactly matches a stored chunk or a longer
-        span; we try exact match first, then whether any indexed chunk is a substring.
-        """
-        # Exact match first
+        """Match returned text to indexed chunk for source_file metadata."""
         for i, d in enumerate(self._docs):
             if d == doc_text:
                 return dict(self._meta[i])
-        # Substring match: check if any indexed chunk is contained in the retrieved passage
         for i, d in enumerate(self._docs):
             if d in doc_text:
                 return dict(self._meta[i])
         return {"source_file": "?"}
 
     def index(self) -> str:
-        """
-        Scan ``documents_dir``, write ``doc_meta.json``, and run HippoRAG's ``index``.
-
-        Returns a short human-readable status (including emoji prefixes used by the UI).
-        """
+        """Build index from ``documents_dir``; returns status string for UI."""
         if not self.documents_dir.exists():
             return f"❌ Documents dir not found: {self.documents_dir}"
         docs, meta = _collect_docs_from_dir(self.documents_dir)
@@ -200,14 +163,9 @@ class HippoRAGRetriever:
         self,
         query: str,
         top_k: int = 5,
-        filters: Optional[Dict] = None,  # unused; kept for SimpleRAGRetriever API parity
+        filters: Optional[Dict] = None,
     ) -> List[Dict[str, Any]]:
-        """
-        Run graph-based retrieval for ``query``.
-
-        On failure, returns a single-item list whose ``text`` is an error message
-        (so callers don't crash). Caps HippoRAG at 20 hits per query internally.
-        """
+        """Graph retrieval; ``filters`` ignored (API parity with SimpleRAGRetriever)."""
         if not self._docs:
             self._read_doc_meta()
             if not self._docs:
@@ -219,21 +177,17 @@ class HippoRAGRetriever:
             )
         except Exception as e:
             return [{"text": f"[HippoRAG retrieve error: {e}]", "metadata": {"source_file": "?"}}]
-        # HippoRAG returns List[QuerySolution]; normalize to list of {text, metadata}
         out: List[Dict[str, Any]] = []
         if isinstance(retrieval_results, list) and len(retrieval_results) > 0:
             first_result = retrieval_results[0]
-            # HippoRAG >=2.0 returns QuerySolution objects with .docs and .doc_scores
             if hasattr(first_result, "docs") and isinstance(first_result.docs, list):
                 scores = getattr(first_result, "doc_scores", None)
                 for idx_r, doc_text in enumerate(first_result.docs[:top_k]):
                     score = float(scores[idx_r]) if scores is not None and idx_r < len(scores) else 0.0
-                    # Try to find source metadata by matching against indexed docs
                     meta = self._find_doc_metadata(doc_text)
                     meta["score"] = score
                     out.append({"text": doc_text, "metadata": meta})
             elif isinstance(first_result, list):
-                # Legacy list-of-strings format
                 for item in first_result[:top_k]:
                     if isinstance(item, str):
                         meta = self._find_doc_metadata(item)
@@ -245,7 +199,6 @@ class HippoRAGRetriever:
 
 
 def hipporag_available() -> bool:
-    """True if the ``hipporag`` package imported successfully."""
     return HIPPORAG_AVAILABLE
 
 
@@ -255,20 +208,7 @@ def get_retriever(
     index_path: Optional[str] = None,
     api_key: Optional[str] = None,
 ):
-    """
-    Pick a retriever: HippoRAG when the package is installed and
-    ``<documents_dir>/hipporag_index/doc_meta.json`` exists; otherwise
-    ``SimpleRAGRetriever``.
-
-    Args:
-        use_hipporag: If False, always use ``SimpleRAGRetriever``.
-        documents_dir: Root folder for corpus files (default ``data/documents``).
-        index_path: Path to ``index.json`` for the simple retriever.
-        api_key: Optional OpenAI key for the simple retriever's embeddings.
-
-    Returns:
-        An object with ``retrieve(query, top_k=...)`` and ``chunks``.
-    """
+    """HippoRAG if installed and ``hipporag_index/doc_meta.json`` exists; else SimpleRAGRetriever."""
     if use_hipporag and HIPPORAG_AVAILABLE:
         docs_dir = documents_dir or "data/documents"
         doc_meta = Path(docs_dir) / "hipporag_index" / "doc_meta.json"

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build HippoRAG graph index from data/documents. Run once before using HippoRAG retrieval."""
+"""CLI: build HippoRAG index under ``<docs-dir>/hipporag_index/``. See ``docs/HIPPORAG.md``."""
 
 import argparse
 import sys
