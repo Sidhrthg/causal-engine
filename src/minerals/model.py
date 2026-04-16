@@ -21,7 +21,10 @@ class State:
 @dataclass
 class StepResult:
     Q: float
-    Q_eff: float
+    Q_eff: float          # dominant-producer effective supply (after export restriction)
+    Q_sub: float          # substitution supply (non-dominant producers fill the gap)
+    Q_fringe: float       # fringe / cost-curve supply (high-cost entrants at elevated P)
+    Q_total: float        # Q_eff + Q_sub + Q_fringe
     D: float
     shortage: float
     tight: float
@@ -64,16 +67,59 @@ def step(cfg: ScenarioConfig, s: State, shock: ShockSignals, rng: np.random.Gene
     supply_mult = (1.0 - shock.export_restriction) * shock.policy_supply_mult * shock.capacity_supply_mult
     Q_eff = Q * supply_mult
 
+    # 4a) Supply substitution — Pearl L2 node: SubstitutionSupply
+    #
+    # When the dominant exporter restricts exports, non-dominant suppliers
+    # respond to the price signal and reroute supply to fill part of the gap.
+    #
+    # Structural equation (Pearl SCM):
+    #   Q_sub = export_restriction * Q
+    #           * clamp(0, substitution_cap, substitution_elasticity * max(0, P/P_ref - 1))
+    #
+    # Causal parents: ExportPolicy (via export_restriction), Price (via price premium)
+    # do(substitution_elasticity=0) → Q_sub=0 (graph surgery: sever Price→SubstitutionSupply)
+    # do(export_restriction=0)      → Q_sub=0 (no restriction → nothing to substitute)
+    if p.substitution_elasticity > 0.0 and shock.export_restriction > 0.0:
+        price_premium = max(0.0, s.P / b.P_ref - 1.0)
+        sub_rate = min(p.substitution_cap, p.substitution_elasticity * price_premium)
+        Q_sub = shock.export_restriction * Q * sub_rate
+    else:
+        Q_sub = 0.0
+
+    # 4b) Fringe / cost-curve supply — Pearl L2 node: FringeSupply
+    #
+    # High-cost producers (non-dominant, high marginal cost) enter the market
+    # only when price exceeds their cost of production (fringe_entry_price * P_ref).
+    # Supply grows linearly with the price premium above the entry threshold.
+    #
+    # Structural equation (Pearl SCM):
+    #   Q_fringe = fringe_K * clamp(0, 1, max(0, P/P_ref - entry) / entry)
+    #   where fringe_K = fringe_capacity_share * K0
+    #
+    # Causal parents: Price (via price premium above entry threshold)
+    # do(fringe_capacity_share=0) → Q_fringe=0 (no fringe capacity exists)
+    # do(fringe_entry_price→∞)    → Q_fringe≈0 (fringe never competitive)
+    if p.fringe_capacity_share > 0.0:
+        fringe_K = p.fringe_capacity_share * b.K0
+        price_ratio = s.P / max(b.P_ref, eps)
+        fringe_premium = max(0.0, price_ratio - p.fringe_entry_price)
+        Q_fringe = min(fringe_K, fringe_K * fringe_premium / max(p.fringe_entry_price, eps))
+    else:
+        Q_fringe = 0.0
+
+    # Total effective supply = dominant + substitution + fringe
+    Q_total = Q_eff + Q_sub + Q_fringe
+
     # 5) inventory update (+ stockpile release if any)
     # stockpile_release from shocks is a one-time delta (tons) in specified years
     # pol.stockpile_release is kept for backward compatibility but should be 0.0 if using shocks
-    I_next = max(0.0, s.I + dt * (Q_eff - D) + shock.stockpile_release + pol.stockpile_release)
+    I_next = max(0.0, s.I + dt * (Q_total - D) + shock.stockpile_release + pol.stockpile_release)
 
     # 6) tightness and cover
-    tight = (D - Q_eff) / max(D, eps)
+    tight = (D - Q_total) / max(D, eps)
     cover = I_next / max(D, eps)
 
-    shortage = max(0.0, D - Q_eff)
+    shortage = max(0.0, D - Q_total)
 
     # 7) price update in log space (Euler-Maruyama with sqrt(dt) scaling)
     noise = rng.normal(0.0, 1.0) if p.sigma_P > 0 else 0.0
@@ -100,5 +146,9 @@ def step(cfg: ScenarioConfig, s: State, shock: ShockSignals, rng: np.random.Gene
         I=float(I_next),
         P=float(P_next),
     )
-    res = StepResult(Q=float(Q), Q_eff=float(Q_eff), D=float(D), shortage=float(shortage), tight=float(tight), cover=float(cover))
+    res = StepResult(
+        Q=float(Q), Q_eff=float(Q_eff), Q_sub=float(Q_sub),
+        Q_fringe=float(Q_fringe), Q_total=float(Q_total),
+        D=float(D), shortage=float(shortage), tight=float(tight), cover=float(cover),
+    )
     return s_next, res

@@ -456,12 +456,17 @@ class GraphiteSupplyChainDAG(CausalDAG):
             "Price",
             "Demand",
             "GlobalDemand",
+            # New L2 nodes: supply substitution and fringe / cost-curve entry
+            "SubstitutionSupply",   # non-dominant suppliers rerouting around restrictions
+            "FringeSupply",         # high-cost entrants responding to elevated price
         ]
         unobserved = [
             "Supply",
             "Shortage",
             "Inventory",
             "Capacity",
+            "SubstitutionCapacity",  # latent: total non-dominant supplier capacity
+            "FringeCapacity",        # latent: total fringe producer capacity
         ]
 
         for var in observed:
@@ -474,6 +479,26 @@ class GraphiteSupplyChainDAG(CausalDAG):
         self.add_edge("TradeValue", "Price")           # lower supply → higher price
         self.add_edge("GlobalDemand", "Demand")        # macro drives demand
         self.add_edge("Demand", "Price")               # demand growth → price rise
+
+        # Supply substitution (Pearl L2 node: SubstitutionSupply)
+        # Causal parents: ExportPolicy (restriction creates the gap to fill)
+        #                 Price (price signal attracts non-dominant suppliers)
+        #                 SubstitutionCapacity (latent: how much RoW can supply)
+        self.add_edge("ExportPolicy",          "SubstitutionSupply")
+        self.add_edge("Price",                 "SubstitutionSupply")
+        self.add_edge("SubstitutionCapacity",  "SubstitutionSupply")
+        self.add_edge("SubstitutionSupply",    "TradeValue")  # RoW fills trade gap
+        self.add_edge("SubstitutionSupply",    "Shortage")    # reduces shortage
+
+        # Fringe / cost-curve supply (Pearl L2 node: FringeSupply)
+        # Causal parents: Price (entry only profitable above threshold)
+        #                 FringeCapacity (latent: how much fringe capacity exists)
+        # do(fringe_entry_price → low) = graph surgery: FringeCapacity → FringeSupply
+        # activates at lower P, expanding effective supply and dampening price spikes
+        self.add_edge("Price",          "FringeSupply")
+        self.add_edge("FringeCapacity", "FringeSupply")
+        self.add_edge("FringeSupply",   "TradeValue")  # adds to total trade volume
+        self.add_edge("FringeSupply",   "Shortage")    # reduces shortage
 
         # Unobserved structural mechanism (full SCM used in simulation)
         self.add_edge("Capacity", "Supply")

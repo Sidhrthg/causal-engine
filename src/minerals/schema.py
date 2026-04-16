@@ -53,6 +53,46 @@ class ParametersConfig(BaseModel):
     # Demand
     eta_D: float = Field(..., description="Demand price elasticity")
     demand_growth: DemandGrowthConfig = Field(..., description="Demand growth configuration")
+    # Supply substitution — Pearl L2: do(substitution_elasticity=e)
+    # When dominant exporter restricts, non-dominant suppliers fill part of the gap.
+    # Structural equation: Q_sub = r * Q * min(cap, e * max(0, P/P_ref - 1))
+    # where r = export_restriction fraction, e = substitution_elasticity.
+    # Default 0.0 = no substitution (original model behaviour).
+    substitution_elasticity: float = Field(
+        default=0.0, ge=0.0,
+        description=(
+            "Rate at which non-dominant suppliers fill the gap from export restrictions. "
+            "0.0 = no substitution (default). At e=1.0 and P=2*P_ref, the full restricted "
+            "fraction can be rerouted (subject to substitution_cap)."
+        ),
+    )
+    substitution_cap: float = Field(
+        default=0.9, ge=0.0, le=1.0,
+        description="Maximum fraction of restricted supply that can ever be substituted (0–1).",
+    )
+
+    # Fringe / cost-curve supply — Pearl L2: do(fringe_capacity_share=f)
+    # High-cost producers enter when P exceeds fringe_entry_price * P_ref.
+    # Structural equation: Q_fringe = fringe_K * max(0, P/P_ref - entry) / entry
+    #   capped at fringe_K = fringe_capacity_share * K0.
+    # Default 0.0 = no fringe (original model behaviour).
+    fringe_capacity_share: float = Field(
+        default=0.0, ge=0.0,
+        description=(
+            "Fringe producers' max capacity as a fraction of K0. "
+            "0.0 = no fringe supply (default). "
+            "e.g. 0.5 means fringe can supply up to 50 %% of dominant capacity "
+            "when price is far above the entry threshold."
+        ),
+    )
+    fringe_entry_price: float = Field(
+        default=2.0, gt=0.0,
+        description=(
+            "Normalised price at which fringe producers first become competitive. "
+            "e.g. 2.0 = fringe starts entering when P > 2 * P_ref."
+        ),
+    )
+
     # Price dynamics
     alpha_P: float = Field(..., gt=0, description="Price adjustment speed")
     cover_star: float = Field(..., gt=0, description="Target cover ratio")
