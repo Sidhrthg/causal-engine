@@ -3,6 +3,12 @@ data/raw/
 data/canonical/
 outputs/
 
+# HippoRAG build output (large parquet / vectors; rebuild with scripts/index_hipporag.py)
+data/documents/hipporag_index/
+
+# Scenario suite outputs (large; regenerate locally)
+runs/
+
 # Python
 __pycache__/
 *.pyc
