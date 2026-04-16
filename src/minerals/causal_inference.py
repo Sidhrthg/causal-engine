@@ -484,21 +484,23 @@ class GraphiteSupplyChainDAG(CausalDAG):
         # Causal parents: ExportPolicy (restriction creates the gap to fill)
         #                 Price (price signal attracts non-dominant suppliers)
         #                 SubstitutionCapacity (latent: how much RoW can supply)
-        self.add_edge("ExportPolicy",          "SubstitutionSupply")
-        self.add_edge("Price",                 "SubstitutionSupply")
-        self.add_edge("SubstitutionCapacity",  "SubstitutionSupply")
-        self.add_edge("SubstitutionSupply",    "TradeValue")  # RoW fills trade gap
-        self.add_edge("SubstitutionSupply",    "Shortage")    # reduces shortage
+        #
+        # NOTE: SubstitutionSupply is a TERMINAL node in this static DAG.
+        # Its effect on Price/Shortage is a temporal feedback (Q_sub at time t
+        # dampens Price at t+1), which the simulation models explicitly.  Adding
+        # SubstitutionSupply → TradeValue/Shortage → Price would create a cycle
+        # in the static graph.  The static DAG represents the instantaneous causal
+        # structure; temporal feedback is captured by the simulation dynamics.
+        self.add_edge("ExportPolicy",         "SubstitutionSupply")
+        self.add_edge("Price",                "SubstitutionSupply")
+        self.add_edge("SubstitutionCapacity", "SubstitutionSupply")
 
         # Fringe / cost-curve supply (Pearl L2 node: FringeSupply)
         # Causal parents: Price (entry only profitable above threshold)
         #                 FringeCapacity (latent: how much fringe capacity exists)
-        # do(fringe_entry_price → low) = graph surgery: FringeCapacity → FringeSupply
-        # activates at lower P, expanding effective supply and dampening price spikes
+        # Terminal node for same reason as SubstitutionSupply above.
         self.add_edge("Price",          "FringeSupply")
         self.add_edge("FringeCapacity", "FringeSupply")
-        self.add_edge("FringeSupply",   "TradeValue")  # adds to total trade volume
-        self.add_edge("FringeSupply",   "Shortage")    # reduces shortage
 
         # Unobserved structural mechanism (full SCM used in simulation)
         self.add_edge("Capacity", "Supply")

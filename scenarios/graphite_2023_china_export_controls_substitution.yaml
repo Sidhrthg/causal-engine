@@ -1,0 +1,102 @@
+# Graphite 2022-2024: China export controls + buyer substitution
+#
+# Historical context:
+#   2022: EV demand surge drives graphite demand +10%.
+#   Oct 2023: China imposes export licensing controls on natural graphite,
+#             covering ~65% of global anode material supply.
+#   2023-2024: Korean, Japanese, and North American battery manufacturers
+#              accelerate non-China graphite sourcing (non-China synthetic
+#              graphite, Mozambique flake, North American natural graphite).
+#
+# Pearl L2 intervention: do(substitution_elasticity=0.8)
+#   Graph surgery on Price→SubstitutionSupply edge weight.
+#   Severs market-structure determination of elasticity and pins it to 0.8,
+#   representing the historically observed non-China sourcing ramp-up.
+#   Causal question: P(Q_total, Price | do(substitution_elasticity=0.8))
+#
+# Use this scenario to:
+#   - Assess how supply substitution dampens price spikes under export controls
+#   - Run L3 counterfactuals: what would prices have been if sub=0 (no buyers diversify)?
+#   - Compare to graphite_2023_no_substitution.yaml for treatment effect
+
+name: graphite_2023_china_export_controls_substitution
+commodity: graphite
+seed: 42
+
+time:
+  dt: 1.0
+  start_year: 2019
+  end_year: 2026
+
+baseline:
+  P_ref: 1.0
+  P0: 1.0
+  K0: 108.695652
+  I0: 20.0
+  D0: 100.0
+
+parameters:
+  eps: 1e-9
+
+  # utilization
+  u0: 0.92
+  beta_u: 0.10
+  u_min: 0.70
+  u_max: 1.00
+
+  # capacity dynamics
+  tau_K: 3.0
+  eta_K: 0.40
+  retire_rate: 0.0
+
+  # demand
+  eta_D: -0.25
+  demand_growth:
+    type: constant
+    g: 1.0
+
+  # price dynamics
+  alpha_P: 0.80
+  cover_star: 0.20
+  lambda_cover: 0.60
+  sigma_P: 0.00
+
+  # Pearl L2 — SubstitutionSupply: do(substitution_elasticity=0.8)
+  # Non-dominant suppliers (Korea, Japan, North America, Mozambique) ramp up
+  # to fill ~60% of restricted supply when price exceeds P_ref.
+  substitution_elasticity: 0.8
+  substitution_cap: 0.6
+
+  # Fringe supply disabled (graphite fringe capacity negligible at 2023 margins)
+  fringe_capacity_share: 0.0
+  fringe_entry_price: 2.0
+
+policy:
+  substitution: 0.0
+  efficiency: 0.0
+  subsidy: 0.0
+  stockpile_release: 0.0
+
+shocks:
+  # 2022: EV sector demand surge
+  - type: demand_surge
+    start_year: 2022
+    end_year: 2022
+    magnitude: 0.10
+
+  # Oct 2023 onwards: China export licensing (~35% effective restriction)
+  - type: export_restriction
+    start_year: 2023
+    end_year: 2025
+    magnitude: 0.35
+
+outputs:
+  out_dir: runs
+  save_csv: true
+  metrics:
+    - total_shortage
+    - peak_shortage
+    - avg_price
+    - final_inventory_cover
+    - shock_window_total_shortage
+    - post_shock_total_shortage

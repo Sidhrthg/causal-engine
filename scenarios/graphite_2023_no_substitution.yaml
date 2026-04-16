@@ -1,0 +1,88 @@
+# Graphite 2022-2024: China export controls WITHOUT buyer substitution
+#
+# Counterfactual baseline — factual world where no supply substitution occurs.
+# Contrast with graphite_2023_china_export_controls_substitution.yaml to
+# estimate the treatment effect of buyer diversification:
+#
+#   ATE = E[Price | do(substitution_elasticity=0.8)]
+#       - E[Price | do(substitution_elasticity=0.0)]
+#
+# Pearl layer interpretation:
+#   This is the L2 control arm: do(substitution_elasticity=0)
+#   It represents a world where no non-China sourcing ramp-up occurs —
+#   all export-restricted supply is simply lost from the market.
+#
+# Run both this and graphite_2023_china_export_controls_substitution.yaml,
+# then compare price and shortage trajectories.
+
+name: graphite_2023_no_substitution
+commodity: graphite
+seed: 42
+
+time:
+  dt: 1.0
+  start_year: 2019
+  end_year: 2026
+
+baseline:
+  P_ref: 1.0
+  P0: 1.0
+  K0: 108.695652
+  I0: 20.0
+  D0: 100.0
+
+parameters:
+  eps: 1e-9
+
+  u0: 0.92
+  beta_u: 0.10
+  u_min: 0.70
+  u_max: 1.00
+
+  tau_K: 3.0
+  eta_K: 0.40
+  retire_rate: 0.0
+
+  eta_D: -0.25
+  demand_growth:
+    type: constant
+    g: 1.0
+
+  alpha_P: 0.80
+  cover_star: 0.20
+  lambda_cover: 0.60
+  sigma_P: 0.00
+
+  # Pearl L2 control: do(substitution_elasticity=0) — no buyer diversification
+  substitution_elasticity: 0.0
+  substitution_cap: 0.9
+  fringe_capacity_share: 0.0
+  fringe_entry_price: 2.0
+
+policy:
+  substitution: 0.0
+  efficiency: 0.0
+  subsidy: 0.0
+  stockpile_release: 0.0
+
+shocks:
+  - type: demand_surge
+    start_year: 2022
+    end_year: 2022
+    magnitude: 0.10
+
+  - type: export_restriction
+    start_year: 2023
+    end_year: 2025
+    magnitude: 0.35
+
+outputs:
+  out_dir: runs
+  save_csv: true
+  metrics:
+    - total_shortage
+    - peak_shortage
+    - avg_price
+    - final_inventory_cover
+    - shock_window_total_shortage
+    - post_shock_total_shortage

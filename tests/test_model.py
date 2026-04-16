@@ -66,9 +66,13 @@ def test_state_creation():
 
 
 def test_step_result_has_all_fields():
-    r = StepResult(Q=90.0, Q_eff=90.0, D=100.0, shortage=10.0, tight=0.1, cover=0.2)
+    r = StepResult(Q=90.0, Q_eff=90.0, Q_sub=0.0, Q_fringe=0.0, Q_total=90.0,
+                   D=100.0, shortage=10.0, tight=0.1, cover=0.2)
     assert r.Q == 90.0
     assert r.Q_eff == 90.0
+    assert r.Q_sub == 0.0
+    assert r.Q_fringe == 0.0
+    assert r.Q_total == 90.0
     assert r.D == 100.0
     assert r.shortage == 10.0
     assert r.tight == 0.1

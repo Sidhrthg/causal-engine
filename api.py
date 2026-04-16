@@ -104,6 +104,48 @@ class ThreeLayersRequest(BaseModel):
     cf_year: str = ""
     cf_value: str = ""
 
+class DoInterventionRequest(BaseModel):
+    """
+    Layer 2 — Intervention: P(Y | do(parameter=value)).
+
+    Graph surgery on the named structural parameter. Severs whatever normally
+    determines that parameter and pins it to the supplied value.
+
+    Fields:
+        scenario_name: name of a YAML in scenarios/
+        parameter_overrides: dict of {param_name: value} to apply via do(·).
+            Supported params (all in ParametersConfig):
+              substitution_elasticity, substitution_cap,
+              fringe_capacity_share, fringe_entry_price,
+              eta_D, alpha_P, tau_K, eta_K
+        outcomes: list of output columns to include in comparison table.
+            Defaults to ["P", "Q_total", "Q_sub", "Q_fringe", "shortage"].
+    """
+    scenario_name: str
+    parameter_overrides: dict
+    outcomes: list[str] = ["P", "Q_total", "Q_sub", "Q_fringe", "shortage"]
+
+class CounterfactualRequest(BaseModel):
+    """
+    Layer 3 — Counterfactual: P(Y_x | factual trajectory).
+
+    Abduction-Action-Prediction on the structural model.
+
+    Fields:
+        scenario_name: name of a YAML in scenarios/ (defines the factual world)
+        mechanism: "substitution" or "fringe"
+        cf_elasticity: counterfactual substitution_elasticity (mechanism=substitution)
+        cf_cap: counterfactual substitution_cap (optional)
+        cf_capacity_share: counterfactual fringe_capacity_share (mechanism=fringe)
+        cf_entry_price: counterfactual fringe_entry_price (optional)
+    """
+    scenario_name: str
+    mechanism: str  # "substitution" or "fringe"
+    cf_elasticity: Optional[float] = None
+    cf_cap: Optional[float] = None
+    cf_capacity_share: Optional[float] = None
+    cf_entry_price: Optional[float] = None
+
 class ExportReportRequest(BaseModel):
     content: str
 
@@ -578,6 +620,187 @@ def three_layers(req: ThreeLayersRequest):
     return {"result": engine.three_layers_query(
         req.run_dir, req.layer, req.treatment, req.outcome, req.cf_year, req.cf_value
     )}
+
+
+# ── Pearl L1/L2/L3 — structured causal endpoints ─────────────────────────────
+
+@app.get("/api/pearl/summary")
+def pearl_summary():
+    """
+    Return the three-layer implementation map.
+
+    Layer 1 (Seeing):   observational_conditional, observe_substitution_association
+    Layer 2 (Doing):    do_substitution, do_fringe_supply, do_compare
+    Layer 3 (Imagining): counterfactual_substitution, counterfactual_fringe
+    """
+    from src.minerals.pearl_layers import three_layers_summary
+    return {"summary": three_layers_summary()}
+
+
+@app.post("/api/pearl/l2/do")
+def pearl_do_intervention(req: DoInterventionRequest):
+    """
+    Layer 2 — Intervention: P(Y | do(parameters)).
+
+    Applies graph surgery on the named structural parameters (substitution_elasticity,
+    fringe_capacity_share, etc.) and runs the simulation forward.  Returns:
+      - factual: year-by-year output under the original scenario
+      - intervention: year-by-year output under the do(·) scenario
+      - ate_per_year: per-year Average Treatment Effect for each outcome
+      - ate_mean: mean ATE over all years for each outcome
+
+    Example request:
+      {"scenario_name": "graphite_2023_no_substitution",
+       "parameter_overrides": {"substitution_elasticity": 0.8},
+       "outcomes": ["P", "Q_sub", "shortage"]}
+    """
+    from src.minerals.schema import load_scenario
+    from src.minerals.pearl_layers import do_compare
+
+    try:
+        cfg = load_scenario(f"scenarios/{req.scenario_name}.yaml")
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail=f"Scenario not found: {req.scenario_name}")
+
+    supported = {
+        "substitution_elasticity", "substitution_cap",
+        "fringe_capacity_share", "fringe_entry_price",
+        "eta_D", "alpha_P", "tau_K", "eta_K",
+    }
+    bad = set(req.parameter_overrides) - supported
+    if bad:
+        raise HTTPException(status_code=400, detail=f"Unsupported parameters: {bad}. Supported: {supported}")
+
+    try:
+        compare_df = do_compare(cfg, req.parameter_overrides, outcomes=req.outcomes)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+    records = compare_df.to_dict(orient="records")
+    ate_mean = {}
+    for col in req.outcomes:
+        ate_col = f"{col}_ate"
+        if ate_col in compare_df.columns:
+            ate_mean[col] = round(float(compare_df[ate_col].mean()), 6)
+
+    return {
+        "scenario": req.scenario_name,
+        "intervention": req.parameter_overrides,
+        "layer": "L2 — Intervention P(Y|do(X))",
+        "outcomes": req.outcomes,
+        "trajectory": records,
+        "ate_mean": ate_mean,
+        "description": (
+            f"Graph surgery: parameters {list(req.parameter_overrides.keys())} were severed "
+            f"from their upstream causes and pinned to {list(req.parameter_overrides.values())}."
+        ),
+    }
+
+
+@app.post("/api/pearl/l3/counterfactual")
+def pearl_counterfactual(req: CounterfactualRequest):
+    """
+    Layer 3 — Counterfactual: P(Y_x | factual trajectory).
+
+    Abduction-Action-Prediction:
+      1. Abduction:  run factual scenario, capture noise sequence ε_t
+      2. Action:     apply do(mechanism parameters = cf values)
+      3. Prediction: replay with same ε_t, modified structural equation
+
+    Returns factual and counterfactual trajectories, ATE per outcome,
+    noise sequence, and human-readable description.
+
+    Example request (substitution):
+      {"scenario_name": "graphite_2023_no_substitution",
+       "mechanism": "substitution",
+       "cf_elasticity": 0.8}
+
+    Example request (fringe):
+      {"scenario_name": "lithium_2022_ev_boom_with_fringe",
+       "mechanism": "fringe",
+       "cf_capacity_share": 0.4,
+       "cf_entry_price": 1.1}
+    """
+    from src.minerals.schema import load_scenario
+    from src.minerals.pearl_layers import counterfactual_substitution, counterfactual_fringe
+
+    try:
+        cfg = load_scenario(f"scenarios/{req.scenario_name}.yaml")
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail=f"Scenario not found: {req.scenario_name}")
+
+    try:
+        if req.mechanism == "substitution":
+            if req.cf_elasticity is None:
+                raise HTTPException(status_code=400, detail="cf_elasticity required for mechanism=substitution")
+            result = counterfactual_substitution(cfg, cf_elasticity=req.cf_elasticity, cf_cap=req.cf_cap)
+        elif req.mechanism == "fringe":
+            if req.cf_capacity_share is None:
+                raise HTTPException(status_code=400, detail="cf_capacity_share required for mechanism=fringe")
+            result = counterfactual_fringe(cfg, cf_capacity_share=req.cf_capacity_share, cf_entry_price=req.cf_entry_price)
+        else:
+            raise HTTPException(status_code=400, detail=f"Unknown mechanism '{req.mechanism}'. Use 'substitution' or 'fringe'.")
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+    return {
+        "scenario": req.scenario_name,
+        "mechanism": req.mechanism,
+        "layer": "L3 — Counterfactual P(Y_x | X', Y')",
+        "description": result.description,
+        "ate": {k: round(v, 6) for k, v in result.ate.items()},
+        "noise_sequence": result.noise_sequence,
+        "factual_trajectory": result.factual.to_dict(orient="records"),
+        "counterfactual_trajectory": result.counterfactual.to_dict(orient="records"),
+        "abduction_note": (
+            "Noise sequence ε_t was abduced from the factual run (same RNG seed). "
+            "Both factual and counterfactual use identical ε_t — only the structural "
+            "equation for the named mechanism differs."
+        ),
+    }
+
+
+@app.post("/api/pearl/l1/association")
+def pearl_l1_association(req: ScenarioRequest):
+    """
+    Layer 1 — Association: compute observational statistics from a scenario run.
+
+    Runs the named scenario and returns:
+      - substitution: Spearman ρ(Q_sub, export_restriction) binned by restriction status
+      - fringe:       Spearman ρ(Q_fringe, P) binned by price quartile
+
+    These are purely observational (no causal claim). To get causal effects use L2/L3.
+    """
+    from src.minerals.schema import load_scenario
+    from src.minerals.simulate import run_scenario as _run
+    from src.minerals.pearl_layers import observe_substitution_association, observe_fringe_association
+
+    try:
+        cfg = load_scenario(f"scenarios/{req.scenario_name}.yaml")
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail=f"Scenario not found: {req.scenario_name}")
+
+    df, _ = _run(cfg)
+
+    try:
+        sub_summary = observe_substitution_association(df).to_dict(orient="records")
+    except Exception as exc:
+        sub_summary = {"error": str(exc)}
+
+    try:
+        fringe_summary = observe_fringe_association(df).to_dict(orient="records")
+    except Exception as exc:
+        fringe_summary = {"error": str(exc)}
+
+    return {
+        "scenario": req.scenario_name,
+        "layer": "L1 — Association P(Y|X)",
+        "warning": "Observational correlations only — not causal effects. Use /api/pearl/l2/do for interventional estimates.",
+        "substitution_association": sub_summary,
+        "fringe_association": fringe_summary,
+    }
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────

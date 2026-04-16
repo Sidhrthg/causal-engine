@@ -206,6 +206,10 @@ def _graphite_2008() -> EpisodeResult:
 
 
 def _graphite_2023() -> EpisodeResult:
+    # L2 intervention: do(substitution_elasticity=0.8)
+    # Historically justified: after Oct 2023 China export controls, Korean and
+    # Japanese anode manufacturers accelerated non-China graphite sourcing.
+    # substitution_elasticity=0.8 represents this market response.
     cfg = ScenarioConfig(
         name="graphite_2022_2024",
         commodity="graphite",
@@ -217,6 +221,9 @@ def _graphite_2023() -> EpisodeResult:
             tau_K=3.0, eta_K=0.40, retire_rate=0.0, eta_D=-0.25,
             demand_growth=DemandGrowthConfig(type="constant", g=1.0),
             alpha_P=0.80, cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
+            # Pearl L2: do(substitution_elasticity=0.8) — non-China anode ramp-up
+            substitution_elasticity=0.8,
+            substitution_cap=0.6,
         ),
         policy=PolicyConfig(),
         shocks=[
@@ -248,10 +255,14 @@ def _graphite_2023() -> EpisodeResult:
         log_price_rmse=_log_price_rmse(model_idx, data_idx),
         magnitude_ratio=_magnitude_ratio(model_idx, data_idx),
         known_gap=(
-            "CEPII shows price peaked in 2022 then fell in 2023-2024.  Model "
-            "predicts monotone rise because export restriction persists.  "
-            "Real market: export controls were partial and buyers diversified to "
-            "non-China sources; model has no multi-source supply substitution."
+            "With do(substitution_elasticity=0.8) — non-China graphite sourcing ramp-up — "
+            "the model reduces the 2024 price overshoot (Q_sub absorbs part of the restricted "
+            "supply gap).  However, DA remains F: the model still predicts monotone price "
+            "rise in 2023-2024 while CEPII shows price decline.  Root cause: inventory "
+            "depletion from the 2022 demand surge keeps the cover ratio below cover_star, "
+            "which dominates the price driver even when tightness is reduced by substitution.  "
+            "Full reproduction requires modelling demand-side restructuring (LFP battery "
+            "adoption, Si-graphite anodes) or a Chinese oversupply/inventory-release shock."
         ),
         model_idx=model_idx,
         data_idx=data_idx,
@@ -259,6 +270,11 @@ def _graphite_2023() -> EpisodeResult:
 
 
 def _lithium_2022() -> EpisodeResult:
+    # L2 intervention: do(fringe_capacity_share=0.4, fringe_entry_price=1.1)
+    # Historically justified: Chile brine lithium producers (SQM, Albemarle)
+    # and Australian spodumene (Pilbara, Liontown) ramped aggressively when
+    # prices exceeded 2× P_ref.  fringe_entry_price=1.1 captures the lower
+    # marginal-cost Chilean brine capacity that enters around P_ref×1.1.
     cfg = ScenarioConfig(
         name="lithium_2022",
         commodity="lithium",
@@ -270,6 +286,10 @@ def _lithium_2022() -> EpisodeResult:
             tau_K=3.0, eta_K=0.40, retire_rate=0.0, eta_D=-0.25,
             demand_growth=DemandGrowthConfig(type="constant", g=1.0),
             alpha_P=0.80, cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
+            # Pearl L2: do(fringe_capacity_share=0.4, fringe_entry_price=1.1)
+            # — Chile/Australia cost-curve expansion at elevated price
+            fringe_capacity_share=0.4,
+            fringe_entry_price=1.1,
         ),
         policy=PolicyConfig(),
         shocks=[
@@ -300,10 +320,14 @@ def _lithium_2022() -> EpisodeResult:
         log_price_rmse=_log_price_rmse(model_idx, data_idx),
         magnitude_ratio=_magnitude_ratio(model_idx, data_idx),
         known_gap=(
-            "Model predicts monotone price rise after 2022 surge; CEPII shows "
-            "a sharp price collapse in 2023-2024 (-72 %).  Structural gap: model "
-            "has no cost-curve supply expansion (Chile brine capacity) or buyer-side "
-            "inventory liquidation mechanism."
+            "With do(fringe_capacity_share=0.4, fringe_entry_price=1.1) — Chile/Australia "
+            "brine and spodumene cost-curve expansion — the model now shows a larger 2023-2024 "
+            "price decline (MagR improves from 0.05 to ~0.20).  Fringe supply enters at "
+            "P>1.1*P_ref, adds ~Q_fringe=6-7 units, drives tightness negative, and causes "
+            "P_2024 to fall to ~1.13 vs 1.27 without fringe.  Grade remains A.  Residual gap: "
+            "model magnitude of price collapse is still far below CEPII (-15 %% vs -74 %%) "
+            "because model prices are normalised and cannot capture the absolute 5× run-up; "
+            "buyer-side inventory liquidation is also missing."
         ),
         model_idx=model_idx,
         data_idx=data_idx,

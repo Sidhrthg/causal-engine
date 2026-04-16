@@ -1071,8 +1071,10 @@ class CausalInferenceEngine:
         ]
         f_results = [
             StepResult(
-                Q=r["Q"], Q_eff=r["Q_eff"], D=r["D"],
-                shortage=r["shortage"], tight=r["tight"], cover=r["cover"],
+                Q=r["Q"], Q_eff=r["Q_eff"],
+                Q_sub=r.get("Q_sub", 0.0), Q_fringe=r.get("Q_fringe", 0.0),
+                Q_total=r.get("Q_total", r["Q"]),
+                D=r["D"], shortage=r["shortage"], tight=r["tight"], cover=r["cover"],
             )
             for _, r in df_f.iterrows()
         ]
@@ -1082,8 +1084,10 @@ class CausalInferenceEngine:
         ]
         cf_results = [
             StepResult(
-                Q=r["Q"], Q_eff=r["Q_eff"], D=r["D"],
-                shortage=r["shortage"], tight=r["tight"], cover=r["cover"],
+                Q=r["Q"], Q_eff=r["Q_eff"],
+                Q_sub=r.get("Q_sub", 0.0), Q_fringe=r.get("Q_fringe", 0.0),
+                Q_total=r.get("Q_total", r["Q"]),
+                D=r["D"], shortage=r["shortage"], tight=r["tight"], cover=r["cover"],
             )
             for _, r in df_cf.iterrows()
         ]
