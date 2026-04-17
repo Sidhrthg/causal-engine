@@ -4,7 +4,6 @@
   "outputDirectory": ".next",
   "installCommand": "npm install",
   "env": {
-    "API_URL": "@api-url",
     "NEXT_TELEMETRY_DISABLED": "1"
   }
 }
