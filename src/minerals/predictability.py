@@ -334,11 +334,51 @@ def _lithium_2022() -> EpisodeResult:
     )
 
 
+def _soybeans_2018_trade_war() -> EpisodeResult:
+    # L2 intervention: do(export_restriction=0.16) on USA in 2018
+    # China imposed 25% tariffs on US soybeans in July 2018.
+    # US exports fell 16% (55.4→46.4 Mt). Phase 1 deal in Jan 2020 reversed the shock.
+    cfg = load_scenario("scenarios/soybeans_2018_trade_war.yaml")
+    df, _ = run_scenario(cfg)
+    m = df.set_index("year")
+
+    cepii = _cepii_series("data/canonical/cepii_soybeans.csv", "USA")
+
+    # 2019 excluded — Brazil absent from Comtrade that year (known reporting gap)
+    years = [yr for yr in [2016, 2017, 2018, 2020, 2021] if yr in cepii.index]
+    base = years[0]
+
+    model_P = m.loc[years, "P"]
+    model_idx = model_P / model_P.loc[base]
+
+    data_P = cepii.loc[years, "implied_price"]
+    data_idx = data_P / data_P.loc[base]
+
+    return EpisodeResult(
+        name="soybeans_2018_us_china_trade_war",
+        commodity="soybeans",
+        years=years,
+        directional_accuracy=_directional_accuracy(model_idx, data_idx),
+        spearman_rho=_spearman_rho(model_idx, data_idx),
+        log_price_rmse=_log_price_rmse(model_idx, data_idx),
+        magnitude_ratio=_magnitude_ratio(model_idx, data_idx),
+        known_gap=(
+            "The model tracks the US dominant-exporter price index. The 2018 tariff "
+            "shock caused US domestic soybean prices to fall (surplus from lost China "
+            "access) while Brazilian prices rose — a price bifurcation the single-price "
+            "model cannot capture. Expect model to under-react to the 2018 price drop "
+            "and the 2020 Phase 1 demand surge."
+        ),
+        model_idx=model_idx,
+        data_idx=data_idx,
+    )
+
+
 # ── Public API ────────────────────────────────────────────────────────────────
 
 def run_predictability_evaluation() -> List[EpisodeResult]:
     """Run all episodes and return results."""
-    return [_graphite_2008(), _graphite_2023(), _lithium_2022()]
+    return [_graphite_2008(), _graphite_2023(), _lithium_2022(), _soybeans_2018_trade_war()]
 
 
 def print_report(results: Optional[List[EpisodeResult]] = None) -> None:

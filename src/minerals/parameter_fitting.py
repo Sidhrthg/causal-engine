@@ -68,6 +68,10 @@ _COMMODITY_DEFAULTS: Dict[str, Dict] = {
         "data_path": str(_CANONICAL_DATA_DIR / "cepii_nickel.csv"),
         "dominant_exporter": "Indonesia",
     },
+    "soybeans": {
+        "data_path": str(_CANONICAL_DATA_DIR / "cepii_soybeans.csv"),
+        "dominant_exporter": "USA",
+    },
 }
 
 

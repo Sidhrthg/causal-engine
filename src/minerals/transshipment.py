@@ -78,10 +78,16 @@ logger = logging.getLogger(__name__)
 _KNOWN_PRODUCERS: Dict[str, Set[str]] = {
     "graphite": {
         # Primary mining nations (USGS MCS 2024)
-        "China", "Mozambique", "Tanzania", "Madagascar", "Norway",
+        # World mine production: China 1.23Mt, Mozambique 96kt, Madagascar 100kt,
+        # Brazil 73kt, North Korea 8.1kt, India 11.5kt, Tanzania ~6kt, Sri Lanka 16kt
+        # Ukraine 2kt (disrupted), Austria 0.5kt, Vietnam 0.5kt
+        "China", "Mozambique", "Tanzania", "Madagascar",
         "Ukraine", "Brazil", "Canada", "India", "North Korea",
-        "South Africa", "Zimbabwe", "Namibia", "Austria",
-        # Major anode processors (add genuine value, not pure transshipment)
+        "South Africa", "Zimbabwe", "Namibia", "Austria", "Sri Lanka",
+        "Vietnam", "Turkey", "Russia",
+        # Major anode/electrode processors — add genuine value via manufacturing,
+        # not transshipment. South Korea/Japan transform raw flake into battery-grade
+        # spherical graphite (different product, substantial transformation).
         "South Korea", "Japan",
     },
     "lithium": {
@@ -129,8 +135,15 @@ class PathTrace:
     source_total_t: float           # total exports of source node this year
     pct_of_source: float            # bottleneck / source_total (0-1)
     hops: int
-    non_producer_intermediaries: List[str]   # potential transshipment hubs
+    non_producer_intermediaries: List[str]   # countries that are neither
+                                             # known producers nor processors
     is_circumvention_candidate: bool         # True if any non-producer in path
+    # Note: "circumvention candidate" means the path passes through countries
+    # with no legitimate production/processing role for this commodity.
+    # Processor countries (South Korea, Japan for graphite anode) are in
+    # _KNOWN_PRODUCERS and are NOT flagged — they add genuine value.
+    # Shell company hubs (UAE, Switzerland, Singapore for non-processed goods)
+    # ARE flagged as circumvention candidates.
 
 
 @dataclass
@@ -468,6 +481,13 @@ class TransshipmentAnalyzer:
             DataFrame with columns: year, country_a, country_b,
             a_reports_export_t, b_reports_import_t, discrepancy_t,
             discrepancy_pct, abs_discrepancy_t
+
+        Important: CEPII BACI data is pre-reconciled — both sides of each
+        bilateral flow are averaged before publication, so discrepancies are
+        near-zero by construction. This method is most useful with raw
+        UN Comtrade data where the two sides of a flow are independently
+        reported and may differ substantially.  On BACI data it primarily
+        detects asymmetric coverage (one side reporting, other not).
         """
         df = self.df.copy()
         if year_range:
@@ -960,7 +980,13 @@ class TransshipmentAnalyzer:
                 circumvention rate denominator.  Defaults to 0.30.
         """
         year = year or (event_years[-1] if event_years else self.df["year"].max())
-        paths = self.trace_paths(self.dominant_exporter, destination, year=year, max_hops=max_hops)
+        # min_flow_pct=0.005 (0.5% of source exports) filters network noise:
+        # paths below this threshold are real bilateral flows but too small
+        # to represent meaningful commercial routing decisions.
+        paths = self.trace_paths(
+            self.dominant_exporter, destination, year=year, max_hops=max_hops,
+            min_flow_pct=0.005,
+        )
         ce = self.estimate_circumvention_rate(event_years, nominal_restriction=nominal_restriction)
 
         lines = [

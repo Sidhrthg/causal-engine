@@ -152,7 +152,7 @@ class ScenarioConfig(BaseModel):
     shocks: List[ShockConfig] = Field(default_factory=list, description="Shock list")
     outputs: OutputsConfig = Field(..., description="Output configuration")
     
-    SUPPORTED_COMMODITIES: ClassVar[set] = {"graphite", "lithium", "cobalt", "nickel", "copper"}
+    SUPPORTED_COMMODITIES: ClassVar[set] = {"graphite", "lithium", "cobalt", "nickel", "copper", "soybeans"}
 
     @field_validator("commodity")
     @classmethod

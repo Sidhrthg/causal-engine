@@ -1,0 +1,34 @@
+[Unit]
+Description=Causal Engine FastAPI Backend
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=causal
+Group=causal
+WorkingDirectory=/srv/causal-engine
+
+# Activate the venv and run via gunicorn with uvicorn workers
+ExecStart=/srv/causal-engine/.venv/bin/gunicorn src.api:app \
+    --workers 2 \
+    --worker-class uvicorn.workers.UvicornWorker \
+    --bind 127.0.0.1:8000 \
+    --timeout 120 \
+    --keep-alive 5 \
+    --log-level info \
+    --access-logfile /var/log/causal-engine/access.log \
+    --error-logfile /var/log/causal-engine/error.log
+
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=causal-engine
+
+# Safety hardening
+NoNewPrivileges=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target
