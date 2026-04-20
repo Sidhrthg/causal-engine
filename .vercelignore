@@ -1,16 +1,15 @@
 # Ignore Python backend files so Vercel doesn't try to build them.
-# Note: do NOT use "*" here — gitignore rules cannot re-include files
-# inside an excluded parent directory, so "*" + "!frontend/**" silently
-# excludes everything including frontend/.
+# IMPORTANT: patterns must be anchored with / to match root-level dirs only.
+# Without /, "src/" would also exclude frontend/src/ (the Next.js app).
 *.py
 pyproject.toml
 requirements*.txt
-src/
-scripts/
-data/
-hipporag_index/
-runs/
-configs/
+/src/
+/scripts/
+/data/
+/hipporag_index/
+/runs/
+/configs/
 Dockerfile
 fly.toml
 README.md
