@@ -1,14 +1,12 @@
 {
-  "builds": [
+  "installCommand": "cd frontend && npm install",
+  "buildCommand": "cd frontend && npm run build",
+  "outputDirectory": "frontend/.next",
+  "framework": "nextjs",
+  "rewrites": [
     {
-      "src": "src/api.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "src/api.py"
+      "source": "/api/:path*",
+      "destination": "https://causal-engine.fly.dev/api/:path*"
     }
   ]
 }
