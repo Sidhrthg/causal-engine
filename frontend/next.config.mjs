@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-const apiUrl = process.env.API_URL || 'http://localhost:8000';
+const apiUrl = process.env.API_URL || 'https://causal-engine.fly.dev';
 
 const nextConfig = {
   async rewrites() {
