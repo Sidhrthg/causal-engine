@@ -30,7 +30,11 @@ RUN pip install --no-cache-dir uv && \
 # Copy source code (after deps so code changes don't bust the dep cache)
 COPY src/ ./src/
 COPY scenarios/ ./scenarios/
-# data/ and hipporag_index/ are mounted at runtime — don't COPY them (they're large)
+# Embed the document index in the image so the RAG pipeline works on first start.
+# The Fly.io volume mounts at /app/data/ (starts empty); the entrypoint copies
+# data_init/ → data/ on first boot so the index survives across restarts.
+COPY data/documents/ ./data_init/documents/
+# data/canonical/ (CEPII CSVs) are large and gitignored — mount via Fly.io volume
 
 # Non-root user for safety
 # Create cache dir before switching user so HuggingFace model downloads work
@@ -50,7 +54,10 @@ EXPOSE 8000
 COPY api.py ./
 COPY app.py ./
 COPY configs/ ./configs/
+COPY entrypoint.sh ./
+RUN chmod +x entrypoint.sh
 
+ENTRYPOINT ["./entrypoint.sh"]
 CMD gunicorn api:app \
     --workers ${WORKERS:-2} \
     --worker-class uvicorn.workers.UvicornWorker \
