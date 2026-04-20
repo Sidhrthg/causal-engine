@@ -1,4 +1,16 @@
-# Ensure Vercel only builds the Next.js app in frontend/.
-# Without this, Vercel can auto-detect pyproject.toml and try to install Python deps.
-*
-!frontend/**
+# Ignore Python backend files so Vercel doesn't try to build them.
+# Note: do NOT use "*" here — gitignore rules cannot re-include files
+# inside an excluded parent directory, so "*" + "!frontend/**" silently
+# excludes everything including frontend/.
+*.py
+pyproject.toml
+requirements*.txt
+src/
+scripts/
+data/
+hipporag_index/
+runs/
+configs/
+Dockerfile
+fly.toml
+README.md
