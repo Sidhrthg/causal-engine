@@ -33,9 +33,16 @@ COPY scenarios/ ./scenarios/
 # data/ and hipporag_index/ are mounted at runtime — don't COPY them (they're large)
 
 # Non-root user for safety
+# Create cache dir before switching user so HuggingFace model downloads work
 RUN useradd --no-create-home --shell /bin/false causal && \
+    mkdir -p /app/.cache/huggingface && \
     chown -R causal:causal /app
 USER causal
+
+# Point all HuggingFace / sentence-transformers downloads to /app/.cache
+ENV HF_HOME=/app/.cache/huggingface \
+    TRANSFORMERS_CACHE=/app/.cache/huggingface \
+    SENTENCE_TRANSFORMERS_HOME=/app/.cache/sentence_transformers
 
 EXPOSE 8000
 
