@@ -39,6 +39,21 @@ app.add_middleware(
 
 # ── Request models ────────────────────────────────────────────────────────────
 
+class QueryRequest(BaseModel):
+    question: str
+    commodity: Optional[str] = None
+    top_k: int = 5
+
+class TransshipmentRequest(BaseModel):
+    commodity: str
+    source: str
+    destination: str
+    year: int
+    event_years: list[int] = []
+    max_hops: int = 3
+    data_path: str = ""
+    nominal_restriction: float = 0.3
+
 class CausalAskRequest(BaseModel):
     question: str
     scenario_name: str = ""
@@ -179,6 +194,151 @@ def _extract_shock_sources(gradio_update) -> list[str]:
 @app.get("/api/scenarios")
 def get_scenarios():
     return {"scenarios": engine.list_scenarios()}
+
+
+# ── Knowledge Query (frontend shorthand) ─────────────────────────────────────
+
+@app.post("/api/query")
+def knowledge_query(req: QueryRequest):
+    """
+    POST /api/query — used by the Next.js Knowledge Query page.
+
+    Wraps the full RAG pipeline (retrieve + LLM answer + memory) and returns
+    a structured response with sources the frontend can render.
+    """
+    try:
+        pipeline = engine._get_pipeline()
+        q = req.question.strip()
+        if not q:
+            raise HTTPException(status_code=400, detail="question is required")
+
+        result = pipeline.ask(q, top_k=req.top_k, use_memory=True)
+
+        raw_sources = result.get("sources", [])
+        sources = []
+        for s in raw_sources[:10]:
+            meta = s.get("metadata", {}) if isinstance(s.get("metadata"), dict) else {}
+            sources.append({
+                "text": (s.get("text") or "")[:600],
+                "source": meta.get("source_file", s.get("source", "unknown")),
+                "similarity": round(float(s.get("similarity", 0.0)), 4),
+            })
+
+        return {
+            "question": req.question,
+            "answer": result.get("answer", "No answer returned."),
+            "sources": sources,
+            "backend": getattr(pipeline, "backend_name", "rag"),
+            "episode_id": result.get("episode_id", ""),
+        }
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+# ── Transshipment analysis (frontend shorthand) ───────────────────────────────
+
+@app.post("/api/transshipment")
+def transshipment_analysis(req: TransshipmentRequest):
+    """
+    POST /api/transshipment — used by the Next.js Transshipment page.
+
+    Loads the CEPII canonical file for the requested commodity, runs the
+    TransshipmentAnalyzer, and returns ranked routes + circumvention estimate.
+    """
+    import pandas as pd
+    from src.minerals.transshipment import TransshipmentAnalyzer
+
+    # Resolve data path
+    commodity_files = {
+        "graphite": "data/canonical/cepii_graphite.csv",
+        "lithium":  "data/canonical/cepii_lithium.csv",
+        "cobalt":   "data/canonical/cepii_cobalt.csv",
+        "nickel":   "data/canonical/cepii_nickel.csv",
+        "copper":   "data/canonical/cepii_copper.csv",
+        "soybeans": "data/canonical/cepii_soybeans.csv",
+    }
+    data_path = req.data_path or commodity_files.get(req.commodity.lower(), "")
+    if not data_path or not Path(data_path).exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"No CEPII data file found for commodity '{req.commodity}'. "
+                   f"Expected at {data_path or commodity_files.get(req.commodity.lower(), '?')}",
+        )
+
+    dominant_exporters = {
+        "graphite": "China", "cobalt": "Democratic Republic of the Congo",
+        "lithium": "Australia", "nickel": "Indonesia",
+        "copper": "Chile", "soybeans": "USA",
+    }
+    dominant = dominant_exporters.get(req.commodity.lower(), req.source)
+
+    df = pd.read_csv(data_path)
+    ta = TransshipmentAnalyzer(df, commodity=req.commodity.lower(), dominant_exporter=dominant)
+
+    # Trace routes from source to destination for the requested year
+    try:
+        paths = ta.trace_paths(req.source, req.destination, year=req.year, max_hops=req.max_hops)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"trace_paths failed: {exc}")
+
+    routes = []
+    for i, p in enumerate(paths[:20], 1):
+        routes.append({
+            "rank": i,
+            "path": p.path,
+            "bottleneck_t": round(p.bottleneck_t, 1),
+            "pct_of_source": round(p.pct_of_source, 4),
+            "is_circumvention": p.is_circumvention_candidate,
+            "non_producer_intermediaries": p.non_producer_intermediaries,
+            "hops": p.hops,
+        })
+
+    # Circumvention estimate
+    event_years = req.event_years or []
+    circ_rate = 0.0
+    circ_ci: list[float] = [0.0, 0.0]
+    sig_hubs: list[str] = []
+    notes: list[str] = []
+    nominal_t = 0.0
+    rerouted_t = 0.0
+
+    if event_years:
+        try:
+            # Nominal restriction tonnage: source's total exports * nominal_restriction
+            yr_df = df[df["year"] == req.year]
+            src_df = yr_df[yr_df["exporter"] == req.source] if req.source in df["exporter"].values else yr_df[yr_df["exporter"].str.contains(req.source, case=False, na=False)]
+            nominal_t = float(src_df["quantity_tonnes"].sum()) * req.nominal_restriction
+            est = ta.estimate_circumvention_rate(event_years=event_years, nominal_restriction=nominal_t)
+            circ_rate = round(est.circumvention_rate, 4)
+            circ_ci = [round(est.circumvention_rate_ci[0], 4), round(est.circumvention_rate_ci[1], 4)]
+            sig_hubs = est.significant_hubs
+            notes = est.notes
+            rerouted_t = round(est.detected_rerouted_t, 1)
+        except Exception as exc:
+            notes = [f"Circumvention estimation skipped: {exc}"]
+
+    n_circ = sum(1 for r in routes if r["is_circumvention"])
+    summary = (
+        f"{len(routes)} routes found from {req.source} to {req.destination} "
+        f"({req.year}). {n_circ} pass through non-producer intermediaries."
+    )
+
+    return {
+        "commodity": req.commodity,
+        "source": req.source,
+        "destination": req.destination,
+        "year": req.year,
+        "routes": routes,
+        "circumvention_rate": circ_rate,
+        "circumvention_rate_ci": circ_ci,
+        "nominal_restriction_t": round(nominal_t, 1),
+        "detected_rerouted_t": rerouted_t,
+        "significant_hubs": sig_hubs,
+        "notes": notes,
+        "summary": summary,
+    }
 
 
 # ── Causal Ask ────────────────────────────────────────────────────────────────
