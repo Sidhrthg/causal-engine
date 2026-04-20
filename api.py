@@ -189,6 +189,30 @@ def _extract_shock_sources(gradio_update) -> list[str]:
     return engine.get_kg_shock_sources()
 
 
+# ── Health ───────────────────────────────────────────────────────────────────
+
+@app.get("/api/health")
+def health():
+    return {"status": "healthy"}
+
+
+# ── Commodities ───────────────────────────────────────────────────────────────
+
+@app.get("/api/commodities")
+def get_commodities():
+    return {
+        "commodities": ["graphite", "lithium", "cobalt", "nickel", "copper", "soybeans"],
+        "hs_codes": {
+            "graphite": "HS 250490",
+            "lithium":  "HS 283691",
+            "cobalt":   "HS 810520",
+            "nickel":   "HS 750110",
+            "copper":   "HS 740311",
+            "soybeans": "HS 120190",
+        },
+    }
+
+
 # ── Scenarios ─────────────────────────────────────────────────────────────────
 
 @app.get("/api/scenarios")
@@ -839,6 +863,69 @@ def soybeans_tariff_scenarios():
                 "and price premium vs the no-deal path by 2028."
             ),
         },
+    }
+
+
+# ── Counterfactual (frontend shorthand) ──────────────────────────────────────
+
+class FrontendCounterfactualRequest(BaseModel):
+    scenario: str
+    cf_type: str  # "substitution" | "fringe" | "trajectory"
+    cf_elasticity: Optional[float] = None
+    cf_cap: Optional[float] = None
+    cf_capacity_share: Optional[float] = None
+    cf_entry_price: Optional[float] = None
+    shock_overrides: Optional[dict] = None
+    use_calibrated: Optional[bool] = True
+
+@app.post("/api/counterfactual")
+def counterfactual(req: FrontendCounterfactualRequest):
+    """
+    POST /api/counterfactual — used by the Next.js Counterfactual page.
+
+    Bridges the frontend's cf_type/scenario format to the Pearl L3 engine.
+    """
+    from src.minerals.schema import load_scenario
+    from src.minerals.pearl_layers import counterfactual_substitution, counterfactual_fringe
+
+    scenario_name = req.scenario
+    # Try calibrated version first if requested
+    if req.use_calibrated:
+        cal_path = f"scenarios/calibrated/{scenario_name}_calibrated.yaml"
+        if Path(cal_path).exists():
+            scenario_name = f"calibrated/{scenario_name}_calibrated"
+
+    try:
+        cfg = load_scenario(f"scenarios/{scenario_name}.yaml")
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail=f"Scenario not found: {scenario_name}")
+
+    try:
+        if req.cf_type == "substitution":
+            if req.cf_elasticity is None:
+                raise HTTPException(status_code=400, detail="cf_elasticity required")
+            result = counterfactual_substitution(cfg, cf_elasticity=req.cf_elasticity, cf_cap=req.cf_cap)
+        elif req.cf_type == "fringe":
+            if req.cf_capacity_share is None:
+                raise HTTPException(status_code=400, detail="cf_capacity_share required")
+            result = counterfactual_fringe(cfg, cf_capacity_share=req.cf_capacity_share, cf_entry_price=req.cf_entry_price)
+        else:
+            raise HTTPException(status_code=400, detail=f"cf_type '{req.cf_type}' not supported via this endpoint. Use /api/pearl/l3/counterfactual.")
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+    return {
+        "scenario":       req.scenario,
+        "cf_type":        req.cf_type,
+        "description":    result.description,
+        "factual":        result.factual.to_dict(orient="records"),
+        "counterfactual": result.counterfactual.to_dict(orient="records"),
+        "ate":            {k: round(v, 6) for k, v in result.ate.items()},
+        "factual_params": {k: round(v, 4) if isinstance(v, float) else v
+                           for k, v in (result.factual_params if hasattr(result, "factual_params") else {}).items()},
+        "cf_params":      result.cf_params if hasattr(result, "cf_params") else {},
     }
 
 
