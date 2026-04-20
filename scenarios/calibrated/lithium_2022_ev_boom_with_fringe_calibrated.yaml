@@ -1,0 +1,92 @@
+# Lithium 2022 EV Boom with cost-curve fringe supply expansion
+#
+# Historical context:
+#   2022: Global EV demand surge drives lithium demand +30%.
+#   2022-2023: Chilean brine producers (SQM, Albemarle) and Australian
+#              spodumene miners (Pilbara Minerals, Liontown) aggressively
+#              ramped capacity in response to 5× price spike.
+#   2024: New capacity floods market, lithium price collapses -72%.
+#
+# Pearl L2 intervention: do(fringe_capacity_share=0.4, fringe_entry_price=1.1)
+#   Graph surgery on FringeCapacity→FringeSupply structural equation.
+#   fringe_entry_price=1.1 captures the low marginal-cost Chilean brine
+#   producers who become competitive at P > 1.1×P_ref.
+#   fringe_capacity_share=0.4 means fringe can supply up to 40% of dominant
+#   capacity (K0) once fully activated.
+#
+# Causal question: P(Q_total, Price | do(fringe_capacity_share=0.4))
+#   Compared to lithium_2022_no_fringe.yaml, this shows the dampening
+#   effect of cost-curve supply response on extreme price spikes.
+#
+# Note: lithium_2022_ev_boom_with_fringe is used in predictability scoring
+#       (graphite_2022_ev_boost episode). MagR improves 0.05 → 0.20.
+# [CALIBRATED] Parameters fitted from CEPII data by fit_and_write_scenarios.py
+
+name: lithium_2022_ev_boom_with_fringe
+commodity: lithium
+seed: 42
+time:
+  dt: 1.0
+  start_year: 2019
+  end_year: 2026
+baseline:
+  P_ref: 1.0
+  P0: 1.0
+  K0: 108.695652
+  I0: 20.0
+  D0: 100.0
+parameters:
+  eps: 1e-9
+  u0: 0.92
+  beta_u: 0.1
+  u_min: 0.7
+  u_max: 1.0
+  tau_K: 1.0273
+  eta_K: 0.4
+  retire_rate: 0.0
+  eta_D: -0.15
+  demand_growth:
+    type: constant
+    g: 1.0
+  alpha_P: 0.3
+  cover_star: 0.2
+  lambda_cover: 0.6
+  sigma_P: 0.0
+  substitution_elasticity: 0.0
+  substitution_cap: 0.9
+  fringe_capacity_share: 0.4
+  fringe_entry_price: 1.1
+policy:
+  substitution: 0.0
+  efficiency: 0.0
+  subsidy: 0.0
+  stockpile_release: 0.0
+shocks:
+- type: demand_surge
+  start_year: 2022
+  end_year: 2022
+  magnitude: 0.3
+outputs:
+  out_dir: runs
+  save_csv: true
+  metrics:
+  - total_shortage
+  - peak_shortage
+  - avg_price
+  - final_inventory_cover
+  - shock_window_total_shortage
+  - post_shock_total_shortage
+_calibration:
+  fitted_from: /Users/sidg/Downloads/Causal-engine/data/canonical/cepii_lithium.csv
+  n_obs: 30
+  eta_D_ci:
+  - 0.3431
+  - 0.7788
+  alpha_P_ci:
+  - 0.05
+  - 0.6
+  tau_K_ci:
+  - 1.0
+  - 1.4438
+  eta_D_method: OLS
+  alpha_P_method: OLS

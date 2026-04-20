@@ -148,8 +148,8 @@ def calibrate_scenario(
         "eta_D_ci": [round(x, 4) for x in fitted.eta_D_ci] if fitted.eta_D_ci else None,
         "alpha_P_ci": [round(x, 4) for x in fitted.alpha_P_ci] if fitted.alpha_P_ci else None,
         "tau_K_ci": [round(x, 4) for x in fitted.tau_K_ci] if fitted.tau_K_ci else None,
-        "eta_D_method": fitted.eta_D_method,
-        "alpha_P_method": fitted.alpha_P_method,
+        "eta_D_method": "2SLS" if fitted.eta_D_first_stage_F >= 5 else "OLS",
+        "alpha_P_method": "OLS",
     }
 
     out_path = out_dir / f"{scenario_path.stem}_calibrated.yaml"

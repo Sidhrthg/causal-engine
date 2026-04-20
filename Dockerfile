@@ -25,7 +25,7 @@ COPY README.md ./
 RUN mkdir -p src && touch src/__init__.py
 RUN pip install --no-cache-dir uv && \
     uv pip install --system --no-cache gunicorn && \
-    uv pip install --system --no-cache -e ".[rag,hipporag]"
+    uv pip install --system --no-cache -e ".[rag,ui]"
 
 # Copy source code (after deps so code changes don't bust the dep cache)
 COPY src/ ./src/
@@ -40,7 +40,11 @@ USER causal
 EXPOSE 8000
 
 # 2 workers is a good default for a 2-core VM; override via WORKERS env var
-CMD gunicorn src.api:app \
+COPY api.py ./
+COPY app.py ./
+COPY configs/ ./configs/
+
+CMD gunicorn api:app \
     --workers ${WORKERS:-2} \
     --worker-class uvicorn.workers.UvicornWorker \
     --bind 0.0.0.0:8000 \

@@ -1,0 +1,86 @@
+# Soybean 2009-2011 food price spike backtest
+#
+# World soybean prices spiked +23% in 2011 against falling trade volumes (-7%).
+# Drivers:
+#   - Post-GFC Chinese appetite recovery: China feed/crush demand surged
+#   - US production fell 42→34 Mt (-19%) due to drought + corn competition for acres
+#   - Biofuel mandates (US RFS) kept domestic soy crush demand elevated
+#
+# Shock structure:
+#   2010: mild demand_surge (China recovery beginning)
+#   2011: stronger demand_surge (peak appetite) + capex_shock (US acres shifted to corn)
+#
+# Used in predictability backtest: _soybeans_2011_food_crisis()
+name: soybeans_2011_food_crisis
+commodity: soybeans
+seed: 123
+
+time:
+  dt: 1.0
+  start_year: 2009
+  end_year: 2011
+
+baseline:
+  P_ref: 1.0
+  P0: 1.0
+  K0: 108.695652
+  I0: 20.0
+  D0: 100.0
+
+parameters:
+  eps: 1e-9
+
+  u0: 0.92
+  beta_u: 0.10
+  u_min: 0.70
+  u_max: 1.00
+
+  tau_K: 1.97
+  eta_K: 0.40
+  retire_rate: 0.03
+
+  eta_D: -0.43
+  demand_growth:
+    type: constant
+    g: 1.02
+
+  alpha_P: 0.30
+  cover_star: 0.20
+  lambda_cover: 0.60
+  sigma_P: 0.00
+
+shocks:
+  # Shock timing: P at year Y is pre-shock. Shock at Y shows in Y+1 price.
+
+  # To show +0.4% in 2010: small shock at 2009
+  - type: demand_surge
+    start_year: 2009
+    end_year: 2009
+    magnitude: 0.03
+
+  # To show +23% in 2011: large demand + supply constraint shock at 2010
+  - type: demand_surge
+    start_year: 2010
+    end_year: 2010
+    magnitude: 0.18
+
+  # US planting shifted to corn in 2010 crop year (ethanol mandate) → 2011 supply tightens
+  - type: capex_shock
+    start_year: 2010
+    end_year: 2010
+    magnitude: 0.12
+
+policy:
+  substitution: 0.0
+  efficiency: 0.0
+  subsidy: 0.0
+  stockpile_release: 0.0
+
+outputs:
+  out_dir: runs
+  save_csv: true
+  metrics:
+    - total_shortage
+    - peak_shortage
+    - avg_price
+    - final_inventory_cover

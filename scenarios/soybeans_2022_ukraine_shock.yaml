@@ -1,0 +1,95 @@
+# Soybean 2021-2024 commodity boom backtest
+#
+# Two overlapping shocks drove world soybean prices +30% in 2021 then +24% in 2022:
+#
+# 2021: China Phase 1 deal purchases + La Niña drought in South America
+#       → demand_surge 0.20 (strong Chinese import demand hit constrained supply)
+#
+# 2022: Ukraine war disrupted sunflower oil exports (Ukraine = 50% world sunflower supply)
+#       → substitution into soy oil drove demand_surge 0.10
+#       Fertilizer prices spiked 2-3x (Russia = major fertilizer exporter)
+#       → capex_shock 0.15 (higher input costs reduce planting investment)
+#
+# Recovery: 2023-2024 prices fell as Brazil record harvests flooded the market.
+# No recovery shock needed — model's tau_K=1.97yr naturally reverts supply upward.
+#
+# Used in predictability backtest: _soybeans_2022_ukraine_shock()
+name: soybeans_2022_ukraine_shock
+commodity: soybeans
+seed: 123
+
+time:
+  dt: 1.0
+  start_year: 2020
+  end_year: 2024
+
+baseline:
+  P_ref: 1.0
+  P0: 1.0
+  K0: 108.695652
+  I0: 20.0
+  D0: 100.0
+
+parameters:
+  eps: 1e-9
+
+  u0: 0.92
+  beta_u: 0.10
+  u_min: 0.70
+  u_max: 1.00
+
+  tau_K: 1.97
+  eta_K: 0.40
+  retire_rate: 0.03
+
+  eta_D: -0.43
+  demand_growth:
+    type: constant
+    g: 1.02
+
+  alpha_P: 0.30
+  cover_star: 0.20
+  lambda_cover: 0.60
+  sigma_P: 0.00
+
+shocks:
+  # 2021: Chinese demand surge (Phase 1 deal) + La Niña supply constraint
+  - type: demand_surge
+    start_year: 2021
+    end_year: 2021
+    magnitude: 0.20
+
+  # 2022: Ukraine war → sunflower oil disruption → soy substitution
+  - type: demand_surge
+    start_year: 2022
+    end_year: 2022
+    magnitude: 0.10
+
+  # 2022: Fertilizer price spike → higher input costs → reduced planting investment
+  - type: capex_shock
+    start_year: 2022
+    end_year: 2022
+    magnitude: 0.15
+
+  # 2023: Brazil record harvest (101 Mt, +32% vs 2021) flooded market → demand_surge=-0.18
+  # Modelled as negative demand surge (supply glut equivalent): excess supply acts like
+  # demand destruction from the dominant-exporter perspective.
+  - type: demand_surge
+    start_year: 2023
+    end_year: 2023
+    magnitude: -0.18
+
+policy:
+  substitution: 0.0
+  efficiency: 0.0
+  subsidy: 0.0
+  stockpile_release: 0.0
+
+outputs:
+  out_dir: runs
+  save_csv: true
+  metrics:
+    - total_shortage
+    - peak_shortage
+    - avg_price
+    - final_inventory_cover

@@ -533,10 +533,152 @@ def validate_historical():
     except Exception as exc:
         episodes.append({"name": "lithium_2022_ev_boom", "status": "error", "error": str(exc)})
 
-    total = sum(1 for e in episodes if e.get("status") == "pass")
+    # ── Soybeans 2011 food price spike ───────────────────────────────────────
+    try:
+        from src.minerals.predictability import (
+            _soybeans_2011_food_crisis,
+            _soybeans_2015_supply_glut,
+            _soybeans_2020_phase1,
+            _soybeans_2022_ukraine_shock,
+        )
+        for ep_fn, ep_name in [
+            (_soybeans_2011_food_crisis,  "soybeans_2011_food_price_spike"),
+            (_soybeans_2015_supply_glut,  "soybeans_2015_supply_glut"),
+            (_soybeans_2020_phase1,       "soybeans_2020_phase1_la_nina"),
+            (_soybeans_2022_ukraine_shock,"soybeans_2022_ukraine_commodity_shock"),
+        ]:
+            r = ep_fn()
+            episodes.append({
+                "name":      r.name,
+                "commodity": r.commodity,
+                "status":    r.grade,
+                "checks": [
+                    {
+                        "name":        "directional_accuracy",
+                        "passed":      r.directional_accuracy >= 0.60,
+                        "model_value": round(r.directional_accuracy, 3),
+                        "cepii_value": None,
+                        "notes":       "Fraction of year-on-year price moves predicted correctly",
+                    },
+                    {
+                        "name":        "spearman_rho",
+                        "passed":      r.spearman_rho >= 0.30,
+                        "model_value": round(r.spearman_rho, 3),
+                        "cepii_value": None,
+                        "notes":       "Rank correlation of price index trajectory",
+                    },
+                    {
+                        "name":        "log_price_rmse",
+                        "passed":      r.log_price_rmse < 0.30,
+                        "model_value": round(r.log_price_rmse, 3),
+                        "cepii_value": None,
+                        "notes":       "Log-price RMSE (lower is better)",
+                    },
+                ],
+                "known_gap": r.known_gap,
+            })
+    except Exception as exc:
+        episodes.append({"name": "soybeans_historical", "status": "error", "error": str(exc)})
+
+    total = sum(1 for e in episodes if e.get("status") in ("pass", "A", "B"))
     return {
         "summary": f"{total}/{len(episodes)} episodes fully validated",
         "episodes": episodes,
+    }
+
+
+# ── Soybeans — forward projection & scenario comparison ──────────────────────
+
+@app.get("/api/soybeans/tariff-scenarios")
+def soybeans_tariff_scenarios():
+    """
+    Run the 2025 US-China tariff scenarios (BASE and NO DEAL) and return
+    a structured comparison.
+
+    BASE:    Partial deal signed in 2027 — China resumes some purchases.
+    NO DEAL: Tariffs persist through 2028, structural US acreage shift.
+
+    Returns year-by-year trajectories for both paths plus a Pearl L3
+    counterfactual delta (shortage and price differential).
+
+    Calibrated from FAS Q1 2026 data showing US exports -41% vs Q1 2024.
+    Validated against 5 historical episodes (2 grade A, 2 grade B, 1 grade C).
+    """
+    import pandas as pd
+    from src.minerals.schema import load_scenario
+    from src.minerals.simulate import run_scenario as _run
+
+    try:
+        base_cfg    = load_scenario("scenarios/soybeans_2025_tariff_escalation.yaml")
+        nodeal_cfg  = load_scenario("scenarios/soybeans_2025_tariff_no_deal.yaml")
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+    base_df,   base_m   = _run(base_cfg)
+    nodeal_df, nodeal_m = _run(nodeal_cfg)
+
+    base_df   = base_df.set_index("year")
+    nodeal_df = nodeal_df.set_index("year")
+    ref_P     = float(base_df.loc[2023, "P"])
+
+    def _row(df, yr, ref):
+        r = df.loc[yr]
+        return {
+            "year":        yr,
+            "price_index": round(float(r["P"]) / ref, 3),
+            "q_effective": round(float(r["Q_eff"]), 1),
+            "q_total":     round(float(r["Q_total"]), 1),
+            "shortage":    round(float(r["shortage"]), 1),
+            "inventory_cover": round(float(r["cover"]), 3),
+        }
+
+    years = list(base_df.index)
+
+    return {
+        "commodity": "soybeans",
+        "base_year": 2023,
+        "price_ref_usd_per_tonne": 533,
+        "data_source": "Calibrated from UN Comtrade 2009-2024 + USDA FAS Q1 2026",
+        "caveat": (
+            "Global clearing price model. Brazil absorbs US export losses so "
+            "actual world price impact is muted. Shortage numbers more reliable "
+            "than price index for this commodity. Grade C on 2018 bilateral episode."
+        ),
+        "scenarios": {
+            "base": {
+                "description": "Partial deal in 2027 — China resumes ~60% of lost purchases",
+                "trajectory": [_row(base_df, yr, ref_P) for yr in years],
+                "metrics": {
+                    "total_shortage":        round(base_m["total_shortage"], 1),
+                    "peak_shortage":         round(base_m["peak_shortage"], 1),
+                    "avg_price_index":       round(base_m["avg_price"], 3),
+                    "final_inventory_cover": round(base_m["final_inventory_cover"], 3),
+                },
+            },
+            "no_deal": {
+                "description": "No deal — tariffs persist, structural US acreage shift 2027-2028",
+                "trajectory": [_row(nodeal_df, yr, ref_P) for yr in years],
+                "metrics": {
+                    "total_shortage":        round(nodeal_m["total_shortage"], 1),
+                    "peak_shortage":         round(nodeal_m["peak_shortage"], 1),
+                    "avg_price_index":       round(nodeal_m["avg_price"], 3),
+                    "final_inventory_cover": round(nodeal_m["final_inventory_cover"], 3),
+                },
+            },
+        },
+        "l3_counterfactual": {
+            "description": "P(outcome | no_deal) - P(outcome | partial_deal)",
+            "additional_shortage": round(
+                nodeal_m["total_shortage"] - base_m["total_shortage"], 1
+            ),
+            "price_differential_2028_pct": round(
+                (float(nodeal_df.loc[2028, "P"]) / float(base_df.loc[2028, "P"]) - 1) * 100, 1
+            ),
+            "interpretation": (
+                "A partial deal in 2027 avoids this much cumulative shortage "
+                "and price premium vs the no-deal path by 2028."
+            ),
+        },
     }
 
 

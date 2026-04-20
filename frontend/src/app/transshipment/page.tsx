@@ -293,7 +293,7 @@ function TransshipmentForm() {
             <p className="text-sm text-red-600">{error}</p>
             <p className="text-xs text-red-400 mt-2">
               Make sure the FastAPI backend is running:{' '}
-              <code className="bg-red-100 px-1 rounded">uvicorn src.api:app --reload</code>
+              <code className="bg-red-100 px-1 rounded">uvicorn api:app --reload</code>
               {' '}then check that{' '}
               <code className="bg-red-100 px-1 rounded">data/canonical/cepii_{commodity}.csv</code>
               {' '}exists.

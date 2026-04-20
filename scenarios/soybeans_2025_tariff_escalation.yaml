@@ -1,0 +1,111 @@
+# US-China Soybean Tariff Escalation — 2025 Forward Scenario
+#
+# Context (as of Q1 2026):
+#   - US imposed 145% tariffs on Chinese goods (Apr 2025)
+#   - China retaliated with 125% tariffs on US goods incl. soybeans
+#   - This is 5x the 2018 tariff level (25%) that caused a -16% US export drop
+#   - FAS data shows Q1 2026 US soybean exports already down -41% vs Q1 2024
+#   - Estimated 2025 full-year volume: ~35 Mt (vs 52 Mt in 2024, -33%)
+#   - Estimated 2026 full-year volume: ~30 Mt (vs 52 Mt in 2024, -42%)
+#
+# Key differences from 2018:
+#   - Brazil now at 99-102 Mt (dominant) vs 68 Mt in 2017 — can absorb more
+#   - US share already fallen from 37% (2016) to 30% (2024) — less room to fall
+#   - Global price effect still muted (same as 2018) — bilateral flow story
+#   - But: fertilizer/logistics costs elevated → capex_shock persists
+#
+# Scenario structure (two paths):
+#   BASE: Tariffs persist 2025-2026, partial deal in 2027 (similar to Phase 1)
+#   ESCALATION: Tariffs persist through 2028, no deal
+#
+# This file models the BASE path.
+# For Pearl L2: do(export_restriction=0.33) in 2025, do(export_restriction=0.40) in 2026
+# Recovery: do(demand_surge=0.12) in 2027 (partial deal, China resumes purchases)
+
+name: soybeans_2025_tariff_escalation
+commodity: soybeans
+seed: 123
+
+time:
+  dt: 1.0
+  start_year: 2023
+  end_year: 2028
+
+baseline:
+  P_ref: 1.0
+  P0: 1.0
+  K0: 108.695652
+  I0: 20.0
+  D0: 100.0
+
+parameters:
+  eps: 1e-9
+
+  u0: 0.92
+  beta_u: 0.10
+  u_min: 0.70
+  u_max: 1.00
+
+  tau_K: 1.97
+  eta_K: 0.40
+  retire_rate: 0.03
+
+  eta_D: -0.43
+  demand_growth:
+    type: constant
+    g: 1.02
+
+  alpha_P: 0.30
+  cover_star: 0.20
+  lambda_cover: 0.60
+  sigma_P: 0.00
+
+shocks:
+  # Shock timing: P at year Y is pre-shock. Shock at Y shows in Y+1 price.
+
+  # 2023: Brazil record harvest (101 Mt) — supply glut, prices fell -11%
+  - type: demand_surge
+    start_year: 2023
+    end_year: 2023
+    magnitude: -0.18
+
+  # 2024: Prices fell further -17% — Brazil 99 Mt, persistent oversupply
+  - type: demand_surge
+    start_year: 2024
+    end_year: 2024
+    magnitude: -0.10
+
+  # 2025: 125% China tariffs → US exports fall ~33% (52→35 Mt)
+  # Calibrated from FAS Q1 2026 data showing -41% value vs Q1 2024
+  - type: export_restriction
+    start_year: 2025
+    end_year: 2025
+    magnitude: 0.33
+
+  # 2026: Tariff escalation deepens — US exports fall further to ~30 Mt (-42% vs 2024)
+  - type: export_restriction
+    start_year: 2026
+    end_year: 2026
+    magnitude: 0.40
+
+  # 2027: Partial deal (BASE path) — China resumes some purchases
+  # Conservative: assume 60% recovery of lost volume (not full Phase 1 surge)
+  - type: demand_surge
+    start_year: 2027
+    end_year: 2027
+    magnitude: 0.12
+
+policy:
+  substitution: 0.0
+  efficiency: 0.0
+  subsidy: 0.0
+  stockpile_release: 0.0
+
+outputs:
+  out_dir: runs
+  save_csv: true
+  metrics:
+    - total_shortage
+    - peak_shortage
+    - avg_price
+    - final_inventory_cover

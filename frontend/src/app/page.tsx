@@ -4,7 +4,7 @@ const STEPS = [
   {
     n: '1',
     title: 'Start the backend',
-    code: 'uvicorn src.api:app --reload',
+    code: 'uvicorn api:app --reload',
     desc: 'Run from the project root. The backend serves CEPII + RAG endpoints.',
   },
   {

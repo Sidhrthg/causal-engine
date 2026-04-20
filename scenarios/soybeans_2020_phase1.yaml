@@ -1,0 +1,93 @@
+# Soybean 2020-2021 Phase 1 trade deal recovery backtest
+#
+# Jan 2020: US-China Phase 1 trade deal restored Chinese soybean purchases.
+# US exports surged 46→65 Mt (+39% vs 2018 tariff-year low).
+# World price: 2020 flat (-5%), then 2021 +30% as La Niña hit South America
+# and Chinese purchases outpaced supply recovery.
+#
+# Shock structure:
+#   2020: demand_surge 0.12 (Phase 1 Chinese purchases resume)
+#   2021: demand_surge 0.20 (La Niña South America drought + continued China demand)
+#         capex_shock 0.08 (La Niña reduced planting confidence in Argentina)
+#
+# Used in predictability backtest: _soybeans_2020_phase1()
+name: soybeans_2020_phase1
+commodity: soybeans
+seed: 123
+
+time:
+  dt: 1.0
+  start_year: 2018
+  end_year: 2021
+
+baseline:
+  P_ref: 1.0
+  P0: 1.0
+  K0: 108.695652
+  I0: 20.0
+  D0: 100.0
+
+parameters:
+  eps: 1e-9
+
+  u0: 0.92
+  beta_u: 0.10
+  u_min: 0.70
+  u_max: 1.00
+
+  tau_K: 1.97
+  eta_K: 0.40
+  retire_rate: 0.03
+
+  eta_D: -0.43
+  demand_growth:
+    type: constant
+    g: 1.02
+
+  alpha_P: 0.30
+  cover_star: 0.20
+  lambda_cover: 0.60
+  sigma_P: 0.00
+
+shocks:
+  # Shock timing: P at year Y is pre-shock. Shock at Y shows in Y+1 price.
+
+  # To show tariff effect at 2018 price: shock at 2017
+  - type: export_restriction
+    start_year: 2017
+    end_year: 2017
+    magnitude: 0.16
+
+  # 2020 world price fell slightly (-5%): COVID offset Phase 1 demand
+  # Net shock at 2019 is small negative (COVID demand destruction outweighs Phase 1)
+  - type: demand_surge
+    start_year: 2019
+    end_year: 2019
+    magnitude: -0.06
+
+  # To show +30% spike in 2021: La Niña + peak China demand shock at 2020
+  - type: demand_surge
+    start_year: 2020
+    end_year: 2020
+    magnitude: 0.22
+
+  # La Niña reduced Argentine planting → supply tightens in 2021
+  - type: capex_shock
+    start_year: 2020
+    end_year: 2020
+    magnitude: 0.08
+
+policy:
+  substitution: 0.0
+  efficiency: 0.0
+  subsidy: 0.0
+  stockpile_release: 0.0
+
+outputs:
+  out_dir: runs
+  save_csv: true
+  metrics:
+    - total_shortage
+    - peak_shortage
+    - avg_price
+    - final_inventory_cover

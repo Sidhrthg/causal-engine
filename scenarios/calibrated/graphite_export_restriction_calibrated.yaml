@@ -1,0 +1,64 @@
+name: graphite_export_restriction
+commodity: graphite
+seed: 123
+time:
+  dt: 1.0
+  start_year: 2024
+  end_year: 2030
+baseline:
+  P_ref: 1.0
+  P0: 1.0
+  K0: 108.695652
+  I0: 20.0
+  D0: 100.0
+parameters:
+  eps: 1e-9
+  u0: 0.92
+  beta_u: 0.1
+  u_min: 0.7
+  u_max: 1.0
+  tau_K: 2.3708
+  eta_K: 0.4
+  retire_rate: 0.0
+  eta_D: -0.3884
+  demand_growth:
+    type: constant
+    g: 1.0
+  alpha_P: 0.3
+  cover_star: 0.2
+  lambda_cover: 0.6
+  sigma_P: 0.0
+policy:
+  substitution: 0.0
+  efficiency: 0.0
+  subsidy: 0.0
+  stockpile_release: 0.0
+shocks:
+- type: export_restriction
+  start_year: 2027
+  end_year: 2028
+  magnitude: 0.15
+outputs:
+  out_dir: runs
+  save_csv: true
+  metrics:
+  - total_shortage
+  - peak_shortage
+  - avg_price
+  - final_inventory_cover
+  - shock_window_total_shortage
+  - post_shock_total_shortage
+_calibration:
+  fitted_from: /Users/sidg/Downloads/Causal-engine/data/canonical/cepii_graphite.csv
+  n_obs: 30
+  eta_D_ci:
+  - 0.0681
+  - 0.6346
+  alpha_P_ci:
+  - 0.05
+  - 0.6
+  tau_K_ci:
+  - 1.0
+  - 4.1681
+  eta_D_method: OLS
+  alpha_P_method: OLS

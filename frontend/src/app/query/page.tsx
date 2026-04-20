@@ -159,7 +159,7 @@ export default function QueryPage() {
           ...prev,
           {
             role: 'assistant',
-            content: `Could not reach the backend: ${err instanceof Error ? err.message : 'Unknown error'}.\n\nMake sure the FastAPI server is running:\n  uvicorn src.api:app --reload`,
+            content: `Could not reach the backend: ${err instanceof Error ? err.message : 'Unknown error'}.\n\nMake sure the FastAPI server is running:\n  uvicorn api:app --reload`,
             timestamp: new Date(),
           },
         ]);

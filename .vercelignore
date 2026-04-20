@@ -1,0 +1,4 @@
+# Ensure Vercel only builds the Next.js app in frontend/.
+# Without this, Vercel can auto-detect pyproject.toml and try to install Python deps.
+*
+!frontend/**

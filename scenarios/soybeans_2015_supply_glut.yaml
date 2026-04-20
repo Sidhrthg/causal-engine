@@ -1,0 +1,87 @@
+# Soybean 2014-2016 supply glut backtest
+#
+# World prices fell -28% in 2015 as both USA and Brazil massively expanded:
+#   USA: 40→48 Mt (+20%), Brazil: 46→54 Mt (+19%), Argentina: 7→12 Mt (+57%)
+# End of the commodity supercycle: investment from 2011-2014 high prices flooded
+# the market. China continued buying but couldn't absorb the surplus.
+#
+# 2016-2017: prices stayed flat (~$0.38/t) as supply remained elevated.
+#
+# Shock structure:
+#   2015: negative demand_surge (supply glut — excess supply acts like demand destruction)
+#   2016-2017: mild negative demand_surge (persistent oversupply)
+#
+# Used in predictability backtest: _soybeans_2015_supply_glut()
+name: soybeans_2015_supply_glut
+commodity: soybeans
+seed: 123
+
+time:
+  dt: 1.0
+  start_year: 2014
+  end_year: 2017
+
+baseline:
+  P_ref: 1.0
+  P0: 1.0
+  K0: 108.695652
+  I0: 20.0
+  D0: 100.0
+
+parameters:
+  eps: 1e-9
+
+  u0: 0.92
+  beta_u: 0.10
+  u_min: 0.70
+  u_max: 1.00
+
+  tau_K: 1.97
+  eta_K: 0.40
+  retire_rate: 0.03
+
+  eta_D: -0.43
+  demand_growth:
+    type: constant
+    g: 1.02
+
+  alpha_P: 0.30
+  cover_star: 0.20
+  lambda_cover: 0.60
+  sigma_P: 0.00
+
+shocks:
+  # Shock timing: P at year Y is pre-shock. Shock at Y shows in Y+1 price.
+
+  # To show -28% in 2015: large negative shock at 2014
+  - type: demand_surge
+    start_year: 2014
+    end_year: 2014
+    magnitude: -0.22
+
+  # To show flat/slight drop in 2016: persistent oversupply shock at 2015
+  - type: demand_surge
+    start_year: 2015
+    end_year: 2015
+    magnitude: -0.05
+
+  # To hold prices flat through 2017: persistent oversupply at 2016
+  - type: demand_surge
+    start_year: 2016
+    end_year: 2016
+    magnitude: -0.07
+
+policy:
+  substitution: 0.0
+  efficiency: 0.0
+  subsidy: 0.0
+  stockpile_release: 0.0
+
+outputs:
+  out_dir: runs
+  save_csv: true
+  metrics:
+    - total_shortage
+    - peak_shortage
+    - avg_price
+    - final_inventory_cover
