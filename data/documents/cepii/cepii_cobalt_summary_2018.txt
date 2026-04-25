@@ -1,0 +1,32 @@
+Cobalt Global Trade — 2018 (CEPII data)
+Total world trade: 1.9 million USD, 0.1 thousand tonnes
+Number of bilateral trade relationships: 21
+
+Top exporters by value:
+  Australia: 1.9 MUSD (97.5% of world exports)
+  040: 0.0 MUSD (2.5% of world exports)
+  Argentina: 0.0 MUSD (0.0% of world exports)
+
+Top importers by value:
+  South Korea: 0.5 MUSD (24.0% of world imports)
+  Indonesia: 0.4 MUSD (22.2% of world imports)
+  418: 0.4 MUSD (20.7% of world imports)
+  Canada: 0.4 MUSD (19.4% of world imports)
+  Brazil: 0.2 MUSD (8.6% of world imports)
+  Romania: 0.0 MUSD (1.6% of world imports)
+  USA: 0.0 MUSD (1.4% of world imports)
+  South Africa: 0.0 MUSD (0.9% of world imports)
+  Bulgaria: 0.0 MUSD (0.6% of world imports)
+  Tunisia: 0.0 MUSD (0.1% of world imports)
+
+Top bilateral trade corridors:
+  Australia→South Korea: 0.5 MUSD
+  Australia→Indonesia: 0.4 MUSD
+  Australia→418: 0.4 MUSD
+  Australia→Canada: 0.4 MUSD
+  Australia→Brazil: 0.2 MUSD
+  040→Romania: 0.0 MUSD
+  Australia→USA: 0.0 MUSD
+  Australia→South Africa: 0.0 MUSD
+  040→Bulgaria: 0.0 MUSD
+  040→Tunisia: 0.0 MUSD

@@ -1,4 +1,10 @@
-import type { TransshipmentResponse, QueryResponse } from './types';
+import type {
+  TransshipmentResponse,
+  QueryResponse,
+  KGResponse,
+  ExtractShockResponse,
+  PredictFromTextResponse,
+} from './types';
 
 async function post<T>(path: string, body: unknown): Promise<T> {
   const res = await fetch(path, {
@@ -47,6 +53,34 @@ export async function getScenarios(): Promise<{ scenarios: import('./types').Sce
   const res = await fetch('/api/scenarios');
   if (!res.ok) throw new Error('Failed to fetch scenarios');
   return res.json();
+}
+
+export async function getKnowledgeGraph(commodity?: string): Promise<KGResponse> {
+  const params = new URLSearchParams();
+  if (commodity) params.set('commodity', commodity);
+  const res = await fetch(`/api/knowledge-graph?${params}`);
+  if (!res.ok) throw new Error('Failed to fetch knowledge graph');
+  return res.json();
+}
+
+export async function extractShocks(params: {
+  text: string;
+  use_llm?: boolean;
+  default_duration?: number;
+}): Promise<ExtractShockResponse> {
+  return post<ExtractShockResponse>('/api/extract-shock', params);
+}
+
+export async function predictFromText(params: {
+  text: string;
+  commodity: string;
+  start_year: number;
+  end_year: number;
+  use_llm?: boolean;
+  baseline_P0?: number;
+  baseline_K0?: number;
+}): Promise<PredictFromTextResponse> {
+  return post<PredictFromTextResponse>('/api/predict-from-text', params);
 }
 
 export async function runCounterfactual(params: {

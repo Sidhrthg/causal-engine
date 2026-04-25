@@ -11,8 +11,16 @@ hipporag_index
 data
 !data/documents
 !data/documents/**
+!data/canonical
+!data/canonical/**
 outputs
 runs
 *.egg-info
 dist
 build
+
+# Raw data dirs not needed in the image
+"src/minerals/cobalt data"
+thesis writing
+data/comtrade
+scripts

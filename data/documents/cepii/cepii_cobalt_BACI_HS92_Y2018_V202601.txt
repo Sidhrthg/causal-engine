@@ -1,0 +1,12 @@
+CEPII Trade Flow Data — Cobalt
+Source file: BACI_HS92_Y2018_V202601
+Total records: 21
+
+Year 2018: 21 bilateral flows, total value 1,898 kUSD, total quantity 65 tonnes
+  Top exporters: Australia (1,852 kUSD), 040 (47 kUSD), Argentina (0 kUSD)
+  Top importers: South Korea (455 kUSD), Indonesia (421 kUSD), 418 (393 kUSD), Canada (369 kUSD), Brazil (163 kUSD)
+  Australia → South Korea: 455 kUSD  45 t
+  Australia → Indonesia: 421 kUSD  3 t
+  Australia → 418: 393 kUSD  7 t
+  Australia → Canada: 369 kUSD  1 t
+  Australia → Brazil: 163 kUSD  3 t

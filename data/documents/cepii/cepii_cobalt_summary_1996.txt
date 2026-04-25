@@ -1,0 +1,34 @@
+Cobalt Global Trade — 1996 (CEPII data)
+Total world trade: 105.8 million USD, 2.5 thousand tonnes
+Number of bilateral trade relationships: 58
+
+Top exporters by value:
+  058: 99.9 MUSD (94.5% of world exports)
+  Brazil: 2.9 MUSD (2.7% of world exports)
+  Australia: 2.8 MUSD (2.7% of world exports)
+  040: 0.1 MUSD (0.1% of world exports)
+  Argentina: 0.0 MUSD (0.0% of world exports)
+
+Top importers by value:
+  Japan: 44.1 MUSD (41.7% of world imports)
+  Italy: 10.6 MUSD (10.1% of world imports)
+  USA: 10.6 MUSD (10.0% of world imports)
+  Spain: 8.4 MUSD (8.0% of world imports)
+  Mexico: 4.6 MUSD (4.4% of world imports)
+  344: 4.0 MUSD (3.8% of world imports)
+  South Korea: 3.6 MUSD (3.4% of world imports)
+  Netherlands: 3.2 MUSD (3.0% of world imports)
+  Uruguay: 2.9 MUSD (2.7% of world imports)
+  Germany: 2.8 MUSD (2.6% of world imports)
+
+Top bilateral trade corridors:
+  058→Japan: 43.3 MUSD
+  058→Italy: 10.5 MUSD
+  058→USA: 10.2 MUSD
+  058→Spain: 8.4 MUSD
+  058→Mexico: 4.6 MUSD
+  058→344: 4.0 MUSD
+  058→South Korea: 3.6 MUSD
+  058→Netherlands: 3.2 MUSD
+  Brazil→Uruguay: 2.9 MUSD
+  058→Germany: 2.7 MUSD

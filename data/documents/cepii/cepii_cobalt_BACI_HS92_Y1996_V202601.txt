@@ -1,0 +1,12 @@
+CEPII Trade Flow Data — Cobalt
+Source file: BACI_HS92_Y1996_V202601
+Total records: 58
+
+Year 1996: 58 bilateral flows, total value 105,767 kUSD, total quantity 2,514 tonnes
+  Top exporters: 058 (99,948 kUSD), Brazil (2,876 kUSD), Australia (2,820 kUSD), 040 (90 kUSD), Argentina (34 kUSD)
+  Top importers: Japan (44,061 kUSD), Italy (10,643 kUSD), USA (10,560 kUSD), Spain (8,422 kUSD), Mexico (4,604 kUSD)
+  058 → Japan: 43,336 kUSD  865 t
+  058 → Italy: 10,547 kUSD  229 t
+  058 → USA: 10,216 kUSD  213 t
+  058 → Spain: 8,422 kUSD  195 t
+  058 → Mexico: 4,604 kUSD  123 t

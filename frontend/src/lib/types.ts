@@ -44,6 +44,67 @@ export interface ChatMessage {
   timestamp: Date;
 }
 
+// ─── Knowledge Graph ──────────────────────────────────────────────────────────
+
+export interface KGEntity {
+  id: string;
+  entity_type: string;
+  name?: string;
+  aliases?: string[];
+  properties?: Record<string, unknown>;
+}
+
+export interface KGRelationship {
+  source_id: string;
+  target_id: string;
+  relation_type: string;
+  weight?: number;
+  confidence?: number;
+}
+
+export interface KGResponse {
+  entities: KGEntity[];
+  relationships?: KGRelationship[];
+  metadata: {
+    num_entities: number;
+    num_relationships: number;
+    entity_types: string[];
+    relation_types: string[];
+    filtered_by?: string;
+  };
+}
+
+export interface ExtractedShock {
+  commodity: string;
+  shock: {
+    type: string;
+    start_year: number;
+    end_year: number;
+    magnitude: number;
+  };
+  affected_entities: string[];
+  reasoning: string;
+  evidence: string;
+  confidence: number;
+}
+
+export interface ExtractShockResponse {
+  n_shocks_extracted: number;
+  extraction_method: string;
+  shocks: ExtractedShock[];
+}
+
+export interface PredictFromTextResponse {
+  commodity: string;
+  text_length: number;
+  n_shocks_extracted: number;
+  n_shocks_applied: number;
+  extraction_method: string;
+  extracted_shocks: ExtractedShock[];
+  trajectory: TrajectoryRow[];
+  metrics: Record<string, number>;
+}
+
 // ─── Counterfactual ───────────────────────────────────────────────────────────
 
 export interface ScenarioMeta {

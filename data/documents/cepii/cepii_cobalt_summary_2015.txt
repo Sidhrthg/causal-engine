@@ -1,0 +1,35 @@
+Cobalt Global Trade — 2015 (CEPII data)
+Total world trade: 1.1 million USD, 0.1 thousand tonnes
+Number of bilateral trade relationships: 19
+
+Top exporters by value:
+  Belgium: 0.9 MUSD (82.3% of world exports)
+  Australia: 0.2 MUSD (14.7% of world exports)
+  040: 0.0 MUSD (2.8% of world exports)
+  Bangladesh: 0.0 MUSD (0.1% of world exports)
+  Argentina: 0.0 MUSD (0.1% of world exports)
+  052: 0.0 MUSD (0.0% of world exports)
+
+Top importers by value:
+  Australia: 0.4 MUSD (33.3% of world imports)
+  Argentina: 0.3 MUSD (30.2% of world imports)
+  Algeria: 0.2 MUSD (18.8% of world imports)
+  China: 0.1 MUSD (14.0% of world imports)
+  Czech Republic: 0.0 MUSD (1.2% of world imports)
+  703: 0.0 MUSD (0.7% of world imports)
+  Hungary: 0.0 MUSD (0.7% of world imports)
+  Thailand: 0.0 MUSD (0.5% of world imports)
+  South Korea: 0.0 MUSD (0.1% of world imports)
+  702: 0.0 MUSD (0.1% of world imports)
+
+Top bilateral trade corridors:
+  Belgium→Australia: 0.4 MUSD
+  Belgium→Argentina: 0.3 MUSD
+  Belgium→Algeria: 0.2 MUSD
+  Australia→China: 0.1 MUSD
+  040→Czech Republic: 0.0 MUSD
+  040→703: 0.0 MUSD
+  040→Hungary: 0.0 MUSD
+  Australia→Thailand: 0.0 MUSD
+  Australia→South Korea: 0.0 MUSD
+  Bangladesh→702: 0.0 MUSD

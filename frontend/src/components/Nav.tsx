@@ -13,7 +13,7 @@ const links = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
       </svg>
     ),
-    desc: 'Overview',
+    desc: 'Overview & metrics',
   },
   {
     href: '/transshipment',
@@ -23,7 +23,7 @@ const links = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
       </svg>
     ),
-    desc: 'Trace routes',
+    desc: 'Trace & detect routes',
   },
   {
     href: '/query',
@@ -33,7 +33,7 @@ const links = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
       </svg>
     ),
-    desc: 'Ask questions',
+    desc: 'Ask the knowledge base',
   },
   {
     href: '/counterfactual',
@@ -43,7 +43,27 @@ const links = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
       </svg>
     ),
-    desc: 'What would have been',
+    desc: 'Pearl L3 — what would have been',
+  },
+  {
+    href: '/knowledge-graph',
+    label: 'Knowledge Graph',
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+      </svg>
+    ),
+    desc: 'Entities & causal edges',
+  },
+  {
+    href: '/shock-extractor',
+    label: 'Shock Extractor',
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+    ),
+    desc: 'Text → causal prediction',
   },
 ];
 
@@ -75,16 +95,18 @@ export default function Nav() {
     status === 'online' ? 'Backend online' : status === 'offline' ? 'Backend offline' : 'Checking…';
 
   return (
-    <nav className="w-56 min-h-screen bg-white border-r border-zinc-200 flex flex-col py-5 shrink-0">
+    <nav className="w-58 min-h-screen bg-white border-r border-zinc-100 flex flex-col py-5 shrink-0 shadow-[1px_0_0_0_#f4f4f5]">
       {/* Logo */}
-      <div className="px-4 mb-6">
-        <div className="flex items-center gap-2 mb-1">
-          <div className="h-6 w-6 bg-indigo-600 rounded flex items-center justify-center">
-            <span className="text-white text-xs font-bold">CE</span>
+      <div className="px-4 mb-7">
+        <div className="flex items-center gap-2.5 mb-1">
+          <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-sm">
+            <span className="text-white text-[11px] font-bold tracking-tight">CE</span>
           </div>
-          <span className="text-sm font-bold text-zinc-900">Causal Engine</span>
+          <div>
+            <span className="text-sm font-bold text-zinc-900 leading-none block">Causal Engine</span>
+            <span className="text-[10px] text-zinc-400 leading-none">Critical Minerals</span>
+          </div>
         </div>
-        <p className="text-[10px] text-zinc-400 pl-8">Critical Minerals</p>
       </div>
 
       {/* Nav links */}
@@ -95,12 +117,16 @@ export default function Nav() {
             <Link
               key={href}
               href={href}
-              className={`group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
+              className={`group relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
                 active
                   ? 'bg-indigo-50 text-indigo-700'
                   : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50'
               }`}
             >
+              {/* Active left-border accent */}
+              {active && (
+                <span className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full bg-indigo-500" />
+              )}
               <span className={`${active ? 'text-indigo-600' : 'text-zinc-400 group-hover:text-zinc-600'} transition-colors`}>
                 {icon}
               </span>

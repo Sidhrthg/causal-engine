@@ -1,0 +1,31 @@
+Cobalt Global Trade — 2022 (CEPII data)
+Total world trade: 1.1 million USD, 0.0 thousand tonnes
+Number of bilateral trade relationships: 13
+
+Top exporters by value:
+  Australia: 1.0 MUSD (94.5% of world exports)
+  040: 0.1 MUSD (5.5% of world exports)
+
+Top importers by value:
+  Canada: 0.4 MUSD (35.8% of world imports)
+  USA: 0.3 MUSD (28.9% of world imports)
+  418: 0.2 MUSD (16.0% of world imports)
+  699: 0.2 MUSD (13.7% of world imports)
+  Italy: 0.0 MUSD (4.3% of world imports)
+  Czech Republic: 0.0 MUSD (0.6% of world imports)
+  Netherlands: 0.0 MUSD (0.5% of world imports)
+  554: 0.0 MUSD (0.1% of world imports)
+  372: 0.0 MUSD (0.0% of world imports)
+  Romania: 0.0 MUSD (0.0% of world imports)
+
+Top bilateral trade corridors:
+  Australia→Canada: 0.4 MUSD
+  Australia→USA: 0.3 MUSD
+  Australia→418: 0.2 MUSD
+  Australia→699: 0.2 MUSD
+  040→Italy: 0.0 MUSD
+  040→Czech Republic: 0.0 MUSD
+  040→Netherlands: 0.0 MUSD
+  Australia→554: 0.0 MUSD
+  Australia→372: 0.0 MUSD
+  040→Romania: 0.0 MUSD

@@ -1,0 +1,12 @@
+CEPII Trade Flow Data — Cobalt
+Source file: BACI_HS92_Y2005_V202601
+Total records: 26
+
+Year 2005: 26 bilateral flows, total value 20,341 kUSD, total quantity 1,115 tonnes
+  Top exporters: Belgium (19,612 kUSD), Australia (718 kUSD), 040 (9 kUSD), Argentina (1 kUSD)
+  Top importers: China (13,448 kUSD), Germany (2,017 kUSD), 251 (1,864 kUSD), Finland (888 kUSD), Brazil (583 kUSD)
+  Belgium → China: 13,181 kUSD  451 t
+  Belgium → Germany: 2,017 kUSD  78 t
+  Belgium → 251: 1,864 kUSD  80 t
+  Belgium → Finland: 888 kUSD  214 t
+  Belgium → Brazil: 582 kUSD  176 t

@@ -504,6 +504,134 @@ def validate_predictability():
     }
 
 
+@app.get("/api/validate/oos")
+def validate_oos():
+    """
+    Out-of-sample validation: structural parameters calibrated on one episode
+    are applied to a different episode. Shocks remain episode-specific.
+
+    Tests whether the causal mechanism generalises across time periods without
+    re-fitting parameters.
+
+    Returns per-episode OOS DA alongside in-sample DA, plus a summary showing
+    how much accuracy degrades when parameters are transferred.
+    """
+    from src.minerals.predictability import run_oos_evaluation
+    return run_oos_evaluation()
+
+
+@app.get("/api/validate/counterfactual")
+def validate_counterfactual():
+    """
+    Pearl L3 counterfactual analysis.
+
+    For three key episodes, runs the model twice:
+      - actual:         the real shocks that occurred
+      - counterfactual: the key policy intervention removed (do(shock=0))
+
+    The price difference between trajectories is the causal effect of the
+    intervention — a Pearl Layer 3 query that purely statistical models cannot
+    answer.  Episodes covered:
+      1. Graphite 2023 export controls: price impact of China's Oct-2023 ban
+      2. Soybeans 2018 trade war:       price impact of US-China tariffs
+      3. Graphite 2008 export quota:    price impact of China's 2010-2011 quota
+    """
+    from src.minerals.predictability import run_counterfactual_analysis
+    return {"counterfactuals": run_counterfactual_analysis()}
+
+
+@app.get("/api/validate/sensitivity")
+def validate_sensitivity():
+    """
+    Return pre-computed fixed-parameter sensitivity grid results.
+
+    Grid: cover_star × u0 × lambda_cover (48 points).
+    Calibrated parameters (alpha_P, eta_D, tau_K, g) held fixed at
+    episode-specific values. Reports per-point DA for 8 in-sample
+    episodes and 3 OOS transfers, plus summary statistics.
+    """
+    import json
+    grid_path = Path("data/sensitivity_grid.json")
+    if not grid_path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail="Sensitivity grid not yet computed. Run: python scripts/sensitivity_grid.py",
+        )
+    with open(grid_path) as f:
+        rows = json.load(f)
+
+    in_sample_keys = [
+        "graphite_2008", "graphite_2022", "lithium_2022",
+        "soybeans_2011", "soybeans_2015", "soybeans_2018",
+        "soybeans_2020", "soybeans_2022",
+    ]
+    oos_keys = ["oos_graphite_2022", "oos_graphite_2008", "oos_soybeans_2022"]
+
+    def _safe(v):
+        return None if (v is None or (isinstance(v, float) and v != v)) else round(v, 3)
+
+    summaries = []
+    for row in rows:
+        is_vals = [row[k] for k in in_sample_keys if isinstance(row.get(k), float) and row[k] == row[k]]
+        oos_vals = [row[k] for k in oos_keys if isinstance(row.get(k), float) and row[k] == row[k]]
+        summaries.append({
+            "cover_star": row["cover_star"],
+            "u0": row["u0"],
+            "lambda_cover": row["lambda_cover"],
+            "mean_is_da": _safe(sum(is_vals)/len(is_vals) if is_vals else None),
+            "mean_oos_da": _safe(sum(oos_vals)/len(oos_vals) if oos_vals else None),
+            **{k: _safe(row.get(k)) for k in in_sample_keys + oos_keys},
+        })
+
+    return {
+        "n_grid_points": len(rows),
+        "grid_axes": {"cover_star": [0.10,0.15,0.20,0.25], "u0": [0.85,0.90,0.92,0.95], "lambda_cover": [0.40,0.60,0.80]},
+        "results": summaries,
+    }
+
+
+@app.get("/api/validate/extractor")
+def validate_extractor():
+    """
+    Evaluate the rule-based EventShockMapper against a 20-example gold standard.
+
+    Metrics:
+    - commodity F1: does the extractor identify the right commodity?
+    - type F1:      does the extractor identify the right shock type?
+    - direction accuracy: among type-correct extractions, is the sign correct?
+
+    Gold standard: hand-labeled headlines covering graphite, cobalt, lithium,
+    nickel, and soybeans (17 positive + 3 true-negative examples).
+    """
+    from src.minerals.extractor_eval import run_extractor_eval
+    return run_extractor_eval().to_dict()
+
+
+@app.get("/api/validate/baseline-comparison")
+def validate_baseline_comparison():
+    """
+    Compare causal engine directional accuracy against four statistical baselines.
+
+    Baselines (receive no shock information):
+    - Random Walk:    predict no change (P_{t+1} = P_t)
+    - Momentum:       predict same direction as previous year-on-year move
+    - AR(1):          fit on pre-episode history, predict forward
+    - Mean Reversion: predict price moves toward long-run pre-episode mean
+
+    Returns per-episode results plus a summary table showing causal engine
+    improvement over the best statistical baseline.
+    """
+    from src.minerals.baseline_comparison import run_baseline_comparison, summary_stats
+    from src.minerals.predictability import run_predictability_evaluation
+
+    causal_results = run_predictability_evaluation()
+    results = run_baseline_comparison(causal_results=causal_results)
+    return {
+        "episodes": [r.to_dict() for r in results],
+        "summary": summary_stats(results),
+    }
+
+
 @app.get("/api/validate/historical")
 def validate_historical():
     """
@@ -1190,6 +1318,219 @@ def pearl_l1_association(req: ScenarioRequest):
         "substitution_association": sub_summary,
         "fringe_association": fringe_summary,
     }
+
+
+# ── Knowledge Graph — structured causal KG endpoints ─────────────────────────
+
+class KGQueryRequest(BaseModel):
+    commodity: Optional[str] = None  # filter to entities related to this commodity
+    include_relationships: bool = True
+
+
+class ExtractShockRequest(BaseModel):
+    text: str
+    use_llm: bool = False             # True → KGExtractor (requires LLM API key); False → rule-based
+    default_duration: int = 2
+
+
+class PredictFromTextRequest(BaseModel):
+    text: str
+    commodity: str = "graphite"
+    start_year: int = 2023
+    end_year: int = 2026
+    use_llm: bool = False
+    baseline_P0: float = 1.0
+    baseline_K0: float = 108.695652
+
+
+@app.get("/api/knowledge-graph")
+def get_knowledge_graph(commodity: Optional[str] = None, include_relationships: bool = True):
+    """
+    Return the Critical Minerals Causal Knowledge Graph structure.
+
+    Nodes are typed entities (Commodity, Country, Company, Policy, Index).
+    Edges are typed causal relationships (PRODUCES, EXPORTS_TO, REGULATES, etc.).
+
+    Optionally filter to entities related to a specific commodity.
+    """
+    try:
+        from src.minerals.knowledge_graph import build_critical_minerals_kg, EntityType
+
+        kg = build_critical_minerals_kg()
+        data = kg.to_dict()
+
+        if commodity:
+            commodity_lower = commodity.lower()
+            # Find entity IDs that match the commodity
+            commodity_ids = {
+                e["id"] for e in data["entities"]
+                if commodity_lower in e["id"].lower()
+                or any(commodity_lower in a.lower() for a in e.get("aliases", []))
+            }
+            if commodity_ids:
+                # Include entities within 1 hop of the commodity nodes
+                related_ids = set(commodity_ids)
+                for rel in data.get("relationships", []):
+                    if rel["source_id"] in commodity_ids or rel["target_id"] in commodity_ids:
+                        related_ids.add(rel["source_id"])
+                        related_ids.add(rel["target_id"])
+                data["entities"] = [e for e in data["entities"] if e["id"] in related_ids]
+                if include_relationships:
+                    data["relationships"] = [
+                        r for r in data.get("relationships", [])
+                        if r["source_id"] in related_ids and r["target_id"] in related_ids
+                    ]
+                else:
+                    data.pop("relationships", None)
+                data["metadata"]["filtered_by"] = commodity
+                data["metadata"]["num_entities"] = len(data["entities"])
+                data["metadata"]["num_relationships"] = len(data.get("relationships", []))
+
+        if not include_relationships:
+            data.pop("relationships", None)
+
+        return data
+
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.post("/api/extract-shock")
+def extract_shock_from_text(req: ExtractShockRequest):
+    """
+    Extract ShockConfig objects from free-form text (news articles, policy docs).
+
+    Pipeline (Option C — Event Extraction → Shock Graph):
+      1. Rule-based scan for (country, predicate_keyword, commodity) triples
+         — or LLM-based triple extraction if use_llm=True
+      2. Predicate keyword → shock_type mapping
+      3. KG propagation to find affected supply chain entities
+      4. Returns ranked ShockMappings with commodity, shock parameters, and reasoning
+
+    This bridges the Knowledge Graph extraction pipeline to the causal ODE model.
+    Set use_llm=True if an LLM API key is configured and you want higher recall.
+    """
+    try:
+        from src.minerals.event_shock_mapper import EventShockMapper
+
+        mapper = EventShockMapper()
+
+        extractor = None
+        if req.use_llm:
+            try:
+                from src.minerals.kg_extractor import KGExtractor
+                extractor = KGExtractor()
+            except Exception:
+                pass  # fall back to rule-based if extractor unavailable
+
+        mappings = mapper.text_to_shocks(
+            req.text,
+            extractor=extractor,
+            default_duration=req.default_duration,
+        )
+
+        return {
+            "n_shocks_extracted": len(mappings),
+            "extraction_method": "llm" if (req.use_llm and extractor is not None) else "rule_based",
+            "shocks": mapper.mappings_to_dict(mappings),
+        }
+
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.post("/api/predict-from-text")
+def predict_from_text(req: PredictFromTextRequest):
+    """
+    Full pipeline: raw text → extract shocks → run causal scenario → return trajectory.
+
+    Steps:
+      1. Extract ShockConfig objects from text via EventShockMapper
+      2. Filter to shocks for the requested commodity
+      3. Build a ScenarioConfig with the extracted shocks
+      4. Run the causal ODE model
+      5. Return year-by-year trajectory + extracted shocks
+
+    This implements the complete Option A + C multimodal KG pipeline:
+    text → KG event extraction → shock specification → causal model → price trajectory.
+    """
+    try:
+        from src.minerals.event_shock_mapper import EventShockMapper
+        from src.minerals.schema import (
+            BaselineConfig, DemandGrowthConfig, OutputsConfig,
+            ParametersConfig, PolicyConfig, ScenarioConfig,
+            ShockConfig, TimeConfig,
+        )
+        from src.minerals.simulate import run_scenario as _run
+
+        mapper = EventShockMapper()
+
+        extractor = None
+        if req.use_llm:
+            try:
+                from src.minerals.kg_extractor import KGExtractor
+                extractor = KGExtractor()
+            except Exception:
+                pass
+
+        mappings = mapper.text_to_shocks(req.text, extractor=extractor)
+
+        # Filter to requested commodity and within requested time window
+        commodity_shocks = [
+            m for m in mappings
+            if m.commodity == req.commodity.lower()
+            and m.shock.start_year >= req.start_year - 2  # allow some look-back
+        ]
+
+        # Build ShockConfig list from mappings (clamp to time window)
+        shock_cfgs = []
+        for m in commodity_shocks:
+            sc = m.shock
+            shock_cfgs.append(ShockConfig(
+                type=sc.type,
+                start_year=max(sc.start_year, req.start_year),
+                end_year=min(sc.end_year, req.end_year),
+                magnitude=sc.magnitude,
+            ))
+
+        cfg = ScenarioConfig(
+            name=f"text_inferred_{req.commodity}_{req.start_year}",
+            commodity=req.commodity,
+            seed=42,
+            time=TimeConfig(dt=1.0, start_year=req.start_year, end_year=req.end_year),
+            baseline=BaselineConfig(
+                P_ref=1.0,
+                P0=req.baseline_P0,
+                K0=req.baseline_K0,
+                I0=20.0,
+                D0=100.0,
+            ),
+            parameters=ParametersConfig(
+                eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
+                tau_K=3.0, eta_K=0.40, retire_rate=0.0, eta_D=-0.25,
+                demand_growth=DemandGrowthConfig(type="constant", g=1.0),
+                alpha_P=0.80, cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
+            ),
+            policy=PolicyConfig(),
+            shocks=shock_cfgs,
+            outputs=OutputsConfig(metrics=["total_shortage", "peak_shortage", "avg_price"]),
+        )
+
+        df, metrics = _run(cfg)
+
+        return {
+            "commodity": req.commodity,
+            "text_length": len(req.text),
+            "n_shocks_extracted": len(mappings),
+            "n_shocks_applied": len(shock_cfgs),
+            "extraction_method": "llm" if (req.use_llm and extractor is not None) else "rule_based",
+            "extracted_shocks": mapper.mappings_to_dict(commodity_shocks),
+            "trajectory": df.to_dict(orient="records"),
+            "metrics": {k: round(float(v), 4) for k, v in metrics.items()},
+        }
+
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────

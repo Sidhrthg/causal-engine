@@ -1,0 +1,12 @@
+CEPII Trade Flow Data — Cobalt
+Source file: BACI_HS92_Y2022_V202601
+Total records: 13
+
+Year 2022: 13 bilateral flows, total value 1,107 kUSD, total quantity 26 tonnes
+  Top exporters: Australia (1,047 kUSD), 040 (61 kUSD)
+  Top importers: Canada (397 kUSD), USA (321 kUSD), 418 (177 kUSD), 699 (151 kUSD), Italy (47 kUSD)
+  Australia → Canada: 397 kUSD  1 t
+  Australia → USA: 321 kUSD  11 t
+  Australia → 418: 177 kUSD  10 t
+  Australia → 699: 151 kUSD  3 t
+  040 → Italy: 47 kUSD  0 t

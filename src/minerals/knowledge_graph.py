@@ -357,6 +357,33 @@ class Relationship:
     def confidence(self) -> str:
         return self.properties.get("confidence", "MEDIUM")
 
+    def share_at(self, year: int) -> Optional[float]:
+        """Return dominant-exporter share at *year* from CEPII-enriched data.
+
+        Returns the value from ``yearly_share`` dict if populated by
+        ``enrich_from_cepii()``, otherwise falls back to the static
+        ``share`` property, otherwise None.
+        """
+        yearly = self.properties.get("yearly_share")
+        if yearly:
+            years = sorted(int(k) for k in yearly.keys())
+            yearly_int = {int(k): v for k, v in yearly.items()}
+            if not years:
+                pass
+            elif year <= years[0]:
+                return float(yearly_int[years[0]])
+            elif year >= years[-1]:
+                return float(yearly_int[years[-1]])
+            else:
+                # Linear interpolation between surrounding years
+                for i in range(len(years) - 1):
+                    y0, y1 = years[i], years[i + 1]
+                    if y0 <= year <= y1:
+                        t = (year - y0) / (y1 - y0)
+                        return float(yearly_int[y0]) + t * (float(yearly_int[y1]) - float(yearly_int[y0]))
+        static = self.properties.get("share")
+        return float(static) if static is not None else None
+
     @property
     def mechanism(self) -> str:
         return self.properties.get("mechanism", "")
@@ -502,7 +529,10 @@ class CausalKnowledgeGraph:
         """Resolve an alias to its canonical entity ID."""
         if id_or_alias in self._entities:
             return id_or_alias
-        return self._alias_map.get(id_or_alias.lower(), id_or_alias)
+        id_lower = id_or_alias.lower()
+        if id_lower in self._entities:
+            return id_lower
+        return self._alias_map.get(id_lower, id_or_alias)
 
     def get_entities_by_type(self, entity_type: EntityType) -> List[Entity]:
         """Return all entities of a given type."""
@@ -734,8 +764,13 @@ class CausalKnowledgeGraph:
         Return a snapshot of the KG at a specific year.
 
         Includes only entities active at ``year`` and relationships
-        active at ``year`` whose endpoints are both active.
+        active at ``year`` whose endpoints are both active.  For
+        PRODUCES/EXPORTS_TO relationships enriched via
+        ``enrich_from_cepii()``, the snapshot's ``share`` property is
+        set to the CEPII-derived value for *year* rather than the static
+        default, making the KG quantitatively dynamic.
         """
+        import copy
         snapshot = CausalKnowledgeGraph(schema=self.schema, strict=self.strict)
         for entity in self._entities.values():
             if entity.active_at(year):
@@ -747,7 +782,14 @@ class CausalKnowledgeGraph:
                 and u in snapshot._entities
                 and v in snapshot._entities
             ):
-                snapshot.add_relationship(rel)
+                dynamic_share = rel.share_at(year)
+                if dynamic_share is not None and rel.properties.get("yearly_share"):
+                    # Clone relationship with year-specific share set
+                    rel_copy = copy.copy(rel)
+                    rel_copy.properties = {**rel.properties, "share": dynamic_share}
+                    snapshot.add_relationship(rel_copy)
+                else:
+                    snapshot.add_relationship(rel)
         return snapshot
 
     def get_relationships_at(
@@ -771,6 +813,59 @@ class CausalKnowledgeGraph:
                 continue
             results.append(rel)
         return results
+
+    def effective_control_at(self, country: str, commodity: str, year: int) -> Dict[str, Any]:
+        """
+        Return the effective supply-control share for *country* over *commodity*
+        at *year*, combining PRODUCES (raw mining/export) and PROCESSES
+        (downstream refining) shares.
+
+        For commodities where processing is the binding constraint (graphite
+        anode, rare earth separation, cobalt refining), the PROCESSES share
+        exceeds the PRODUCES share and is returned as the dominant metric.
+
+        Returns a dict with keys:
+          ``produces_share``  — CEPII-derived raw export share (or static estimate)
+          ``processes_share`` — USGS-derived processing share (or None)
+          ``effective_share`` — max of the two; the operationally relevant metric
+          ``binding``         — "processing" | "mining" | "unknown"
+        """
+        country_id = self.resolve_id(country)
+        commodity_id = self.resolve_id(commodity)
+
+        produces_share: Optional[float] = None
+        processes_share: Optional[float] = None
+
+        for u, v, data in self._graph.edges(data=True):
+            if v != commodity_id:
+                continue
+            rel: Relationship = data["relationship"]
+            if u != country_id:
+                continue
+            s = rel.share_at(year)
+            if rel.relation_type == RelationType.PRODUCES and s is not None:
+                produces_share = s
+            elif rel.relation_type == RelationType.PROCESSES and s is not None:
+                processes_share = s
+
+        candidates = [s for s in (produces_share, processes_share) if s is not None]
+        effective = max(candidates) if candidates else None
+        if effective is None:
+            binding = "unknown"
+        elif processes_share is not None and processes_share >= (produces_share or 0):
+            binding = "processing"
+        else:
+            binding = "mining"
+
+        return {
+            "country": country_id,
+            "commodity": commodity_id,
+            "year": year,
+            "produces_share": produces_share,
+            "processes_share": processes_share,
+            "effective_share": effective,
+            "binding": binding,
+        }
 
     # ------------------------------------------------------------------
     # Taxonomy / hierarchy (IS_A, PART_OF)
@@ -1442,15 +1537,142 @@ class CausalKnowledgeGraph:
 
 
 # ============================================================================
+# CEPII enrichment — makes PRODUCES relationship shares dynamic per year
+# ============================================================================
+
+# Maps CEPII exporter name strings → KG entity IDs
+_CEPII_COUNTRY_MAP: Dict[str, str] = {
+    "China": "china",
+    "Dem. Rep. Congo": "drc",
+    "Congo, Dem. Rep.": "drc",
+    "Congo": "drc",
+    "Australia": "australia",
+    "Chile": "chile",
+    "Indonesia": "indonesia",
+    "Brazil": "brazil",
+    "Russia": "russia",
+    "Russian Federation": "russia",
+    "United States": "usa",
+    "USA": "usa",
+    "Canada": "canada",
+    "South Africa": "south_africa",
+    "Philippines": "philippines",
+    "Mozambique": "mozambique",
+    "Madagascar": "madagascar",
+    "India": "india",
+    "Japan": "japan",
+    "South Korea": "south_korea",
+    "Korea, Rep.": "south_korea",
+    "Germany": "germany",
+    "Mexico": "mexico",
+    "Zimbabwe": "zimbabwe",
+    "Norway": "norway",
+    "Finland": "finland",
+    "New Caledonia": "new_caledonia",
+    "Kazakhstan": "kazakhstan",
+}
+
+# Maps KG commodity IDs → CEPII canonical CSV filename
+_CEPII_COMMODITY_FILES: Dict[str, str] = {
+    "graphite":    "cepii_graphite.csv",
+    "lithium":     "cepii_lithium.csv",
+    "cobalt":      "cepii_cobalt.csv",
+    "nickel":      "cepii_nickel.csv",
+    "rare_earths": "cepii_rare_earths.csv",
+    "soybeans":    "cepii_soybeans.csv",
+}
+
+
+def enrich_from_cepii(kg: "CausalKnowledgeGraph", data_dir: str) -> Dict[str, Any]:
+    """
+    Enrich PRODUCES relationships in *kg* with per-year dominant-exporter
+    shares computed from CEPII BACI bilateral trade data.
+
+    For each (country, commodity) PRODUCES edge, reads the CEPII CSV for
+    that commodity, computes each exporter's share of total world export
+    volume per year, and stores the result as
+    ``rel.properties["yearly_share"] = {year: share, ...}``.
+
+    Returns a summary dict: commodity → {year: {country: share}}.
+
+    After calling this function, ``kg.query_at_time(year)`` returns
+    relationships whose ``share`` property reflects CEPII-measured
+    supply concentration for that year rather than a static expert estimate.
+    """
+    import os
+    try:
+        import pandas as pd
+    except ImportError:
+        return {}
+
+    summary: Dict[str, Any] = {}
+
+    for commodity, fname in _CEPII_COMMODITY_FILES.items():
+        fpath = os.path.join(data_dir, fname)
+        if not os.path.exists(fpath):
+            continue
+
+        df = pd.read_csv(fpath)
+        if "exporter" not in df.columns or "quantity_tonnes" not in df.columns:
+            continue
+        df = df.dropna(subset=["exporter", "quantity_tonnes", "year"])
+        df["quantity_tonnes"] = pd.to_numeric(df["quantity_tonnes"], errors="coerce").fillna(0)
+
+        commodity_summary: Dict[int, Dict[str, float]] = {}
+
+        for year, grp in df.groupby("year"):
+            year = int(year)
+            total = grp["quantity_tonnes"].sum()
+            if total == 0:
+                continue
+            shares = (grp.groupby("exporter")["quantity_tonnes"].sum() / total).to_dict()
+            # Remap CEPII names to KG IDs
+            remapped = {
+                _CEPII_COUNTRY_MAP[k]: v
+                for k, v in shares.items()
+                if k in _CEPII_COUNTRY_MAP
+            }
+            commodity_summary[year] = remapped
+
+        summary[commodity] = commodity_summary
+
+        # Write yearly_share into matching PRODUCES relationships
+        for u, v, data in kg._graph.edges(data=True):
+            rel: Relationship = data["relationship"]
+            if v != commodity or rel.relation_type != RelationType.PRODUCES:
+                continue
+            kg_country = u
+            yearly: Dict[int, float] = {}
+            for year, country_shares in commodity_summary.items():
+                if kg_country in country_shares:
+                    yearly[year] = country_shares[kg_country]
+            if yearly:
+                rel.properties["yearly_share"] = yearly
+
+    return summary
+
+
+# ============================================================================
 # Pre-built templates
 # ============================================================================
 
 
 def build_critical_minerals_kg(
     with_schema: bool = False,
+    data_dir: Optional[str] = None,
 ) -> CausalKnowledgeGraph:
     """
     Build a starter knowledge graph for critical minerals supply chains.
+
+    Args:
+        with_schema: Attach the supply chain schema for relationship validation.
+        data_dir: Path to directory containing CEPII canonical CSV files
+            (e.g. ``data/canonical/``).  When provided, PRODUCES relationship
+            shares are enriched from actual bilateral trade data via
+            ``enrich_from_cepii()``, making the KG quantitatively dynamic:
+            ``kg.query_at_time(year)`` returns year-specific supply
+            concentration values.  When None, static expert-estimated shares
+            are used.
 
     Includes major commodities, producing countries, key policies,
     downstream industries/technologies, events, risk factors, taxonomy
@@ -1602,6 +1824,63 @@ def build_critical_minerals_kg(
             source_id=country, target_id=commodity,
             relation_type=RelationType.PRODUCES,
             properties={**props, "confidence": "HIGH"},
+        ))
+
+    # ------- PROCESSES relationships (downstream refining/processing share) -------
+    #
+    # Distinct from PRODUCES (mining/raw export).  For graphite and rare earths
+    # the processing share is the binding constraint on supply, not raw mining.
+    # Yearly shares sourced from USGS Mineral Commodity Summaries (2010-2024),
+    # Benchmark Mineral Intelligence (graphite anode), and Cobalt Institute.
+    # Stored as yearly_share dicts so share_at(year) / query_at_time(year) work.
+    processing = [
+        # Graphite: anode-grade spherical graphite processing
+        # Source: USGS MCS 2024; Benchmark Mineral Intelligence
+        ("china", "graphite", {
+            "product": "anode_grade_spherical",
+            "yearly_share": {2008: 0.65, 2012: 0.75, 2015: 0.80, 2019: 0.90, 2022: 0.95},
+            "provenance": "USGS MCS 2024; Benchmark Mineral Intelligence",
+        }),
+        # Rare earths: primary separation and processing
+        # Source: USGS MCS 2024; EC Critical Raw Materials Assessment 2023
+        ("china", "rare_earths", {
+            "product": "primary_separation",
+            "yearly_share": {2005: 0.90, 2010: 0.97, 2014: 0.90, 2018: 0.85, 2022: 0.85},
+            "provenance": "USGS MCS 2024; EC Critical Raw Materials 2023",
+        }),
+        # Cobalt: refined cobalt metal and chemicals
+        # Source: Cobalt Institute Annual Report 2023
+        ("china", "cobalt", {
+            "product": "refined_cobalt",
+            "yearly_share": {2010: 0.40, 2015: 0.50, 2018: 0.65, 2020: 0.70, 2022: 0.72},
+            "provenance": "Cobalt Institute Annual Report 2023",
+        }),
+        # Lithium: battery-grade lithium compounds (carbonate/hydroxide)
+        # Source: USGS MCS 2024; IEA Critical Minerals 2021
+        ("china", "lithium", {
+            "product": "battery_grade_compounds",
+            "yearly_share": {2010: 0.20, 2015: 0.35, 2018: 0.50, 2020: 0.58, 2022: 0.65},
+            "provenance": "USGS MCS 2024; IEA Critical Minerals 2021",
+        }),
+        # Nickel: Class I refined nickel (battery-grade)
+        # Source: USGS MCS 2024; Wood Mackenzie
+        ("china", "nickel", {
+            "product": "class_i_refined",
+            "yearly_share": {2010: 0.15, 2016: 0.25, 2020: 0.35, 2022: 0.40},
+            "provenance": "USGS MCS 2024; Wood Mackenzie Nickel Market Report",
+        }),
+        ("indonesia", "nickel", {
+            "product": "npi_hpal_intermediate",
+            "yearly_share": {2016: 0.15, 2019: 0.30, 2021: 0.45, 2022: 0.50},
+            "provenance": "USGS MCS 2024; Indonesia Ministry of Energy",
+        }),
+    ]
+    for country, commodity, props in processing:
+        kg.add_relationship(Relationship(
+            source_id=country, target_id=commodity,
+            relation_type=RelationType.PROCESSES,
+            properties={**props, "confidence": "HIGH",
+                        "share": props["yearly_share"][max(props["yearly_share"].keys())]},
         ))
 
     # ------- CONSUMES relationships -------
@@ -2319,5 +2598,8 @@ def build_critical_minerals_kg(
         "drc_mining_code_reform", "Capacity", RelationType.CAUSES,
         properties={"mechanism": "Higher royalties reduce investment and constrain capacity", "confidence": "MEDIUM"},
     ))
+
+    if data_dir is not None:
+        enrich_from_cepii(kg, data_dir)
 
     return kg

@@ -1,0 +1,12 @@
+CEPII Trade Flow Data — Cobalt
+Source file: BACI_HS92_Y2021_V202601
+Total records: 17
+
+Year 2021: 17 bilateral flows, total value 1,027 kUSD, total quantity 41 tonnes
+  Top exporters: Australia (1,019 kUSD), 040 (7 kUSD), Algeria (0 kUSD)
+  Top importers: USA (463 kUSD), Canada (407 kUSD), China (125 kUSD), 598 (22 kUSD), 554 (4 kUSD)
+  Australia → USA: 461 kUSD  17 t
+  Australia → Canada: 406 kUSD  12 t
+  Australia → China: 125 kUSD  8 t
+  Australia → 598: 22 kUSD  5 t
+  Australia → 554: 4 kUSD  0 t

@@ -486,7 +486,7 @@ export default function CounterfactualPage() {
                 Methodology
               </p>
               <p className="text-xs text-zinc-500 leading-relaxed">
-                <strong>Abduction:</strong> factual scenario run with seed={result.scenario} — noise sequence ε_t captured.{' '}
+                <strong>Abduction:</strong> factual scenario <code className="bg-zinc-100 px-1 rounded font-mono">{result.scenario}</code> run — noise sequence ε_t captured.{' '}
                 <strong>Action:</strong> structural equation modified (do-operator) per parameters above.{' '}
                 <strong>Prediction:</strong> simulation replayed with same ε_t — identical exogenous shocks, different mechanism.{' '}
                 ATEs are per-year mean differences across the simulation window. The shared noise sequence

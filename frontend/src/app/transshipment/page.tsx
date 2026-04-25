@@ -58,7 +58,7 @@ function TransshipmentForm() {
   const [year, setYear] = useState(2024);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [maxHops, setMaxHops] = useState(4);
-  const [dataPath, setDataPath] = useState('data/canonical');
+  const [dataPath, setDataPath] = useState('');
   const [nominalRestriction, setNominalRestriction] = useState(0.3);
 
   const [loading, setLoading] = useState(false);

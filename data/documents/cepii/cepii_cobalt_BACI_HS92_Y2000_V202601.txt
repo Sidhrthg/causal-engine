@@ -1,0 +1,12 @@
+CEPII Trade Flow Data — Cobalt
+Source file: BACI_HS92_Y2000_V202601
+Total records: 45
+
+Year 2000: 45 bilateral flows, total value 110,744 kUSD, total quantity 4,007 tonnes
+  Top exporters: Belgium (109,948 kUSD), 040 (486 kUSD), Australia (309 kUSD), Argentina (0 kUSD)
+  Top importers: Japan (87,290 kUSD), Italy (5,902 kUSD), South Korea (4,041 kUSD), 490 (3,189 kUSD), Netherlands (2,392 kUSD)
+  Belgium → Japan: 87,290 kUSD  3,085 t
+  Belgium → Italy: 5,899 kUSD  256 t
+  Belgium → South Korea: 4,041 kUSD  166 t
+  Belgium → 490: 3,189 kUSD  101 t
+  Belgium → Netherlands: 2,391 kUSD  96 t

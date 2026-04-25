@@ -1,0 +1,12 @@
+CEPII Trade Flow Data — Cobalt
+Source file: BACI_HS92_Y2023_V202601
+Total records: 13
+
+Year 2023: 13 bilateral flows, total value 560 kUSD, total quantity 20 tonnes
+  Top exporters: Australia (297 kUSD), 040 (263 kUSD)
+  Top importers: USA (281 kUSD), 196 (248 kUSD), Netherlands (13 kUSD), Canada (8 kUSD), 554 (3 kUSD)
+  Australia → USA: 281 kUSD  7 t
+  040 → 196: 248 kUSD  0 t
+  040 → Netherlands: 13 kUSD  1 t
+  Australia → Canada: 8 kUSD  12 t
+  Australia → 554: 3 kUSD  0 t

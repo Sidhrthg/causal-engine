@@ -34,6 +34,7 @@ COPY scenarios/ ./scenarios/
 # The Fly.io volume mounts at /app/data/ (starts empty); the entrypoint copies
 # data_init/ → data/ on first boot so the index survives across restarts.
 COPY data/documents/ ./data_init/documents/
+COPY data/canonical/ ./data_init/canonical/
 # data/canonical/ (CEPII CSVs) are large and gitignored — mount via Fly.io volume
 
 # Non-root user for safety
@@ -46,7 +47,8 @@ USER causal
 # Point all HuggingFace / sentence-transformers downloads to /app/.cache
 ENV HF_HOME=/app/.cache/huggingface \
     TRANSFORMERS_CACHE=/app/.cache/huggingface \
-    SENTENCE_TRANSFORMERS_HOME=/app/.cache/sentence_transformers
+    SENTENCE_TRANSFORMERS_HOME=/app/.cache/sentence_transformers \
+    MPLCONFIGDIR=/tmp/matplotlib
 
 EXPOSE 8000
 
@@ -54,14 +56,13 @@ EXPOSE 8000
 COPY api.py ./
 COPY app.py ./
 COPY configs/ ./configs/
-COPY entrypoint.sh ./
-RUN chmod +x entrypoint.sh
+COPY --chmod=755 entrypoint.sh ./
 
 ENTRYPOINT ["./entrypoint.sh"]
 CMD gunicorn api:app \
     --workers ${WORKERS:-2} \
     --worker-class uvicorn.workers.UvicornWorker \
     --bind 0.0.0.0:8000 \
-    --timeout 120 \
+    --timeout 300 \
     --access-logfile - \
     --error-logfile -

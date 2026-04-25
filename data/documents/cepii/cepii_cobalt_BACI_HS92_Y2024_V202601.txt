@@ -1,0 +1,12 @@
+CEPII Trade Flow Data — Cobalt
+Source file: BACI_HS92_Y2024_V202601
+Total records: 11
+
+Year 2024: 11 bilateral flows, total value 126 kUSD, total quantity 13 tonnes
+  Top exporters: 040 (79 kUSD), Australia (45 kUSD), Argentina (2 kUSD)
+  Top importers: Russia (77 kUSD), Canada (30 kUSD), UAE (12 kUSD), Czech Republic (2 kUSD), Netherlands (2 kUSD)
+  040 → Russia: 77 kUSD  4 t
+  Australia → Canada: 30 kUSD  0 t
+  Australia → UAE: 12 kUSD  8 t
+  040 → Czech Republic: 2 kUSD  0 t
+  Argentina → Netherlands: 2 kUSD  0 t

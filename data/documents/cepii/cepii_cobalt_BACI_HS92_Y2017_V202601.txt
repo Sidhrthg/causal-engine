@@ -1,0 +1,12 @@
+CEPII Trade Flow Data — Cobalt
+Source file: BACI_HS92_Y2017_V202601
+Total records: 18
+
+Year 2017: 18 bilateral flows, total value 981 kUSD, total quantity 40 tonnes
+  Top exporters: Australia (923 kUSD), 040 (58 kUSD), Argentina (0 kUSD)
+  Top importers: 418 (512 kUSD), Canada (379 kUSD), Philippines (26 kUSD), Germany (19 kUSD), 703 (12 kUSD)
+  Australia → 418: 512 kUSD  13 t
+  Australia → Canada: 379 kUSD  1 t
+  Australia → Philippines: 26 kUSD  24 t
+  040 → Germany: 19 kUSD  0 t
+  040 → 703: 12 kUSD  1 t

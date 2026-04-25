@@ -1,0 +1,12 @@
+CEPII Trade Flow Data — Cobalt
+Source file: BACI_HS92_Y2020_V202601
+Total records: 21
+
+Year 2020: 21 bilateral flows, total value 1,384 kUSD, total quantity 46 tonnes
+  Top exporters: Australia (743 kUSD), Belgium (609 kUSD), 040 (23 kUSD), Argentina (7 kUSD), 048 (2 kUSD)
+  Top importers: Argentina (550 kUSD), USA (365 kUSD), Canada (362 kUSD), Australia (35 kUSD), 040 (24 kUSD)
+  Belgium → Argentina: 550 kUSD  19 t
+  Australia → Canada: 362 kUSD  1 t
+  Australia → USA: 360 kUSD  20 t
+  Belgium → Australia: 35 kUSD  1 t
+  Belgium → 040: 24 kUSD  2 t

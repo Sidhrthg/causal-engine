@@ -1,0 +1,12 @@
+CEPII Trade Flow Data — Cobalt
+Source file: BACI_HS92_Y2019_V202601
+Total records: 15
+
+Year 2019: 15 bilateral flows, total value 828 kUSD, total quantity 6 tonnes
+  Top exporters: Australia (769 kUSD), 040 (59 kUSD)
+  Top importers: Indonesia (409 kUSD), Canada (352 kUSD), Romania (25 kUSD), 686 (18 kUSD), USA (7 kUSD)
+  Australia → Indonesia: 409 kUSD  3 t
+  Australia → Canada: 352 kUSD  1 t
+  040 → Romania: 25 kUSD  0 t
+  040 → 686: 18 kUSD  0 t
+  040 → USA: 7 kUSD  0 t

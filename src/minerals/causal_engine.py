@@ -118,8 +118,10 @@ class AbductionResult:
     """Inferred exogenous noise from observed trajectory (Pearl Step 1)."""
 
     years: List[int]
-    inferred_noise: Dict[int, float]  # year -> epsilon that rationalizes observed P
-    fit_error: float  # RMSE of reproduced vs observed prices
+    inferred_noise: Dict[int, float]  # year -> U_t = log(P_cepii_norm) - log(P_model_norm)
+    fit_error: float                  # RMSE of U_t (0 = perfect model)
+    sigma_P: float = 0.0             # std(U_t) — used as formal sigma_P in the SCM
+    corrected_noise: Optional[Dict[int, float]] = None  # endogeneity-corrected U_t (Gap 3)
 
 
 @dataclass(frozen=True)
@@ -321,6 +323,55 @@ class _DeterministicNoiseRNG:
 # ============================================================================
 # CausalInferenceEngine
 # ============================================================================
+
+
+def _correct_endogenous_residuals(
+    log_residuals: "Dict[int, float]",
+    cfg: "ScenarioConfig",
+) -> "Dict[int, float]":
+    """
+    Gap 3 — Remove the restriction-endogenous component from U_t.
+
+    During active restriction years, U_t = log(P_cepii_norm) - log(P_model_norm)
+    may include speculative price dynamics caused by the restriction itself
+    (e.g. the 2011 rare-earths WTO bubble). This violates Pearl L3 exogeneity:
+    U_t must be independent of the intervention being evaluated.
+
+    Fix: estimate the exogenous baseline U_t by linear interpolation across
+    non-restriction anchor years, then replace restriction-year U_t with it.
+
+    For rare earths 2010-2013: U_2011 = +1.575 (CEPII 7x model) is replaced
+    by interpolation from 2009 (U=-0.30) and 2014 (U=+0.04) anchors, giving
+    U_2011_corrected ~ -0.17.  This is the exogenous component — the part
+    that would have existed regardless of the restriction.
+
+    Called when endogeneity_correction=True is passed to counterfactual_l3().
+    Raw residuals stored in AbductionResult.inferred_noise; corrected values
+    in AbductionResult.corrected_noise.
+    """
+    restriction_years: set = set()
+    for shock in cfg.shocks:
+        if shock.type == "export_restriction" and shock.magnitude > 0:
+            for yr in range(shock.start_year, shock.end_year + 1):
+                restriction_years.add(yr)
+
+    if not restriction_years:
+        return dict(log_residuals)
+
+    all_years = sorted(log_residuals.keys())
+    non_restr = [y for y in all_years if y not in restriction_years]
+
+    if len(non_restr) < 2:
+        return dict(log_residuals)  # not enough anchors
+
+    x_anchor = np.array(non_restr, dtype=float)
+    y_anchor = np.array([log_residuals[y] for y in non_restr])
+
+    corrected = dict(log_residuals)
+    for yr in restriction_years:
+        if yr in log_residuals:
+            corrected[yr] = float(np.interp(float(yr), x_anchor, y_anchor))
+    return corrected
 
 
 class CausalInferenceEngine:
@@ -963,6 +1014,215 @@ class CausalInferenceEngine:
             summary=summary,
         )
 
+    def counterfactual_l3(
+        self,
+        observed_prices: Dict[int, float],
+        do_overrides: Dict[int, Dict[str, float]],
+        cfg: Optional[ScenarioConfig] = None,
+        base_year: Optional[int] = None,
+        endogeneity_correction: bool = False,
+        precomputed_log_residuals: Optional[Dict[int, float]] = None,
+    ) -> CounterfactualResult:
+        """
+        Layer 3 — Genuine Pearl counterfactual for deterministic SCMs (sigma_P = 0).
+
+        When sigma_P = 0, the stochastic abduction step yields epsilon_t = 0 for all t
+        and the standard counterfactual() method degenerates to L2.  This method
+        implements genuine L3 by defining exogenous noise as the log-scale structural
+        residual between the observed (CEPII) price trajectory and the model:
+
+            U_t = log(P_obs(t) / P_obs(base)) - log(P_model(t) / P_model(base))
+
+        U_t captures everything not explained by the ODE structural equations:
+        speculative dynamics, microstructure, and model misspecification.  It is
+        treated as exogenous to the policy intervention — i.e., U_t would have been
+        the same even if the restriction had been different.  This holds well for
+        demand-side idiosyncratic shocks and measurement error; it is an approximation
+        for speculative hoarding directly caused by the restriction (stated limitation).
+
+        Three-step Abduction-Action-Prediction:
+
+        Step 1 (Abduction):   Run factual model to get P_model(t).  Load actual
+                              observed prices P_obs(t).  Compute:
+                                  U_t = log(P_obs_norm(t)) - log(P_model_norm(t))
+                              where both series are normalised at base_year.
+
+        Step 2 (Action):      Apply do_overrides to factual shocks year-by-year.
+
+        Step 3 (Prediction):  Run the counterfactual model step-by-step.  After each
+                              step, inject U_{t+1} into the next state:
+                                  logP_CF(t+1) = logP_model_CF(t+1) + U_{t+1}
+                              The injection propagates: the noise-adjusted P_CF(t)
+                              feeds into the structural equations for P_CF(t+1).
+
+        This is formally correct Pearl L3: the exogenous noise U is held fixed across
+        factual and counterfactual worlds, and the counterfactual state evolves through
+        the MODIFIED structural equations, not the factual ones.
+
+        Args:
+            observed_prices: Actual observed prices by year {year: price}.
+                             Should be in the same units as P_model (or normalised
+                             relative to base_year — the ratio is what matters).
+            do_overrides:    {year: {shock_field: value}} specifying the counterfactual
+                             intervention.  E.g., {2024: {"export_restriction": 0.0}}
+                             means "what if the restriction had ended in 2023?"
+            cfg:             ScenarioConfig (defaults to self.cfg).
+            base_year:       Year to use as normalisation anchor for U_t computation.
+                             Defaults to first year in cfg.years.
+        """
+        cfg = cfg or self.cfg
+        if cfg is None:
+            raise ValueError("ScenarioConfig required for L3 counterfactual.")
+
+        eps = cfg.parameters.eps
+        dt  = cfg.time.dt
+
+        # ── Step 1: Abduction ──────────────────────────────────────────────────
+        # Always run the factual scenario — needed for factual_trajectory output
+        # and for log-residual computation when precomputed_log_residuals is None.
+        factual_df, _ = run_scenario(cfg)
+        fd = factual_df.set_index("year")
+
+        if base_year is None:
+            base_year = cfg.years[0]
+
+        if precomputed_log_residuals is not None:
+            # Caller supplied pre-computed residuals (e.g. for NSR-L3 reference).
+            # Skip computation — use the supplied values directly.
+            log_residuals: Dict[int, float] = dict(precomputed_log_residuals)
+        else:
+            P_model_base = max(float(fd.loc[base_year, "P"]) if base_year in fd.index else 1.0, eps)
+            P_obs_base   = max(float(observed_prices.get(base_year, 1.0)), eps)
+            log_residuals = {}
+            for year in cfg.years:
+                if year in observed_prices and year in fd.index:
+                    P_obs_norm   = observed_prices[year] / P_obs_base
+                    P_model_norm = float(fd.loc[year, "P"]) / P_model_base
+                    U_t = np.log(max(P_obs_norm, eps)) - np.log(max(P_model_norm, eps))
+                else:
+                    U_t = 0.0
+                log_residuals[year] = float(U_t)
+
+        # ── Gap 3: Endogeneity correction ──────────────────────────────────────
+        # For restriction years, U_t may be inflated by speculative dynamics
+        # caused by the restriction itself (violating exogeneity). Replace with
+        # linear interpolation from non-restriction anchor years.
+        corrected_residuals: Optional[Dict[int, float]] = None
+        active_residuals = log_residuals  # what gets used in prediction
+        if endogeneity_correction:
+            corrected_residuals = _correct_endogenous_residuals(log_residuals, cfg)
+            active_residuals = corrected_residuals
+
+        # ── Gap 2: Calibrate sigma_P from residuals ─────────────────────────────
+        # std(U_t) gives the formal sigma_P for the structural price equation:
+        #   logP_{t+1} = logP_t + alpha_P*(tight - lambda*(cover-cover*)) + sigma_P*eps_t
+        # With sigma_P calibrated and eps_t = U_t/sigma_P, the noise enters the
+        # structural equation formally (Pearl SCM requirement) rather than as a
+        # post-hoc log-scale correction.  Mathematically equivalent, but structurally correct.
+        non_zero_residuals = [v for v in active_residuals.values() if v != 0.0]
+        sigma_P_cal = float(np.std(non_zero_residuals)) if len(non_zero_residuals) >= 2 else 0.0
+
+        abduction_result = AbductionResult(
+            years=list(cfg.years),
+            inferred_noise=log_residuals,
+            fit_error=float(np.sqrt(np.mean([v ** 2 for v in log_residuals.values()]))),
+            sigma_P=sigma_P_cal,
+            corrected_noise=corrected_residuals,
+        )
+
+        # ── Steps 2 & 3: Action + Prediction ──────────────────────────────────
+        # Build an epsilon sequence: at step i (year -> years[i+1]), the structural
+        # equation should receive eps = U_{t+1} / (sigma_P * sqrt(dt)).
+        # step() computes: logP_next += sigma_P * sqrt(dt) * rng.normal(0,1)
+        # so rng.normal returns eps_t and sigma_P*sqrt(dt)*eps_t = U_{t+1}.  ✓
+        if sigma_P_cal > 0:
+            denom = sigma_P_cal * float(np.sqrt(dt))
+            # Inject incremental innovations ΔU_{t+1} = U_{t+1} - U_t, NOT level
+            # residuals U_{t+1}.  True Pearl L3 abduction solves for the noise
+            # that, when replayed through the UNMODIFIED SCM, exactly reproduces
+            # the observed (CEPII) trajectory.  With an additive-noise SCM:
+            #   logP(t+1) = logP(t) + drift_t + sigma_P*sqrt(dt)*eps_t
+            # abduction gives: sigma_P*sqrt(dt)*eps_t = logP_cepii(t+1) - logP_cepii(t) - drift_t^model
+            #                                        = delta_logP_cepii(t) - delta_logP_model(t)
+            #                                        = ΔU_{t+1}
+            # Verification: replay with do_overrides={} reproduces CEPII exactly.
+            eps_sequence = [
+                (active_residuals.get(cfg.years[i + 1], 0.0)
+                 - active_residuals.get(cfg.years[i],     0.0)) / denom
+                if i + 1 < len(cfg.years) else 0.0
+                for i in range(len(cfg.years))
+            ]
+            params_cf = cfg.parameters.model_copy(update={"sigma_P": sigma_P_cal})
+            cfg_cf    = cfg.model_copy(update={"parameters": params_cf})
+            noise_rng = _DeterministicNoiseRNG(eps_sequence)
+        else:
+            # No CEPII data — sigma_P stays 0, noise sequence unused.
+            cfg_cf    = cfg
+            noise_rng = _DeterministicNoiseRNG([0.0] * (len(cfg.years) + 1))
+
+        # Anchor initial state to the abducted noise at start_year.
+        # This sets P_0 to the CEPII-observed level (not just the model baseline).
+        U_init = active_residuals.get(cfg.years[0], 0.0)
+        s = State(
+            year=cfg.time.start_year,
+            t_index=0,
+            K=cfg.baseline.K0,
+            I=cfg.baseline.I0,
+            P=float(cfg.baseline.P0 * np.exp(U_init)),
+        )
+
+        cf_rows = []
+        for i, year in enumerate(cfg.years):
+            # Action step: apply do_overrides for this year
+            factual_shock = shocks_for_year(cfg.shocks, year)
+            overrides = do_overrides.get(year)
+            if overrides:
+                kwargs = dataclasses.asdict(factual_shock)
+                for key, value in overrides.items():
+                    if key in kwargs:
+                        kwargs[key] = value
+                cf_shock = ShockSignals(**kwargs)
+            else:
+                cf_shock = factual_shock
+
+            # Prediction step: noise enters INSIDE the structural equation via
+            # sigma_P and eps_rng.  No post-hoc injection needed.
+            s_next, res = step(cfg_cf, s, cf_shock, noise_rng)
+
+            cf_rows.append({
+                "year": year,
+                "K": s.K, "I": s.I, "P": s.P,
+                "Q": res.Q, "Q_eff": res.Q_eff, "D": res.D,
+                "shortage": res.shortage, "tight": res.tight, "cover": res.cover,
+            })
+            s = s_next
+
+        df_cf = pd.DataFrame(cf_rows)
+
+        # Compute effect (delta vs factual)
+        outcome_cols = ["P", "K", "I", "Q", "Q_eff", "D", "shortage", "tight", "cover"]
+        factual_cols = [c for c in outcome_cols if c in factual_df.columns]
+        df_effect = pd.DataFrame({"year": list(cfg.years)})
+        for col in factual_cols:
+            if col in df_cf.columns:
+                f_vals  = factual_df[col].values[: len(cfg.years)]
+                cf_vals = df_cf[col].values[: len(cfg.years)]
+                df_effect[col] = cf_vals - f_vals
+
+        summary: Dict[str, float] = {}
+        for col in factual_cols:
+            if col in df_effect.columns:
+                summary[f"mean_delta_{col}"]    = float(df_effect[col].mean())
+                summary[f"max_abs_delta_{col}"] = float(df_effect[col].abs().max())
+
+        return CounterfactualResult(
+            factual_trajectory=factual_df,
+            counterfactual_trajectory=df_cf,
+            effect=df_effect,
+            abduction=abduction_result,
+            do_overrides=do_overrides,
+            summary=summary,
+        )
     def counterfactual_trajectory(
         self,
         state_0: State,

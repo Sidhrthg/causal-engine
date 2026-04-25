@@ -24,3 +24,6 @@ data/chroma_db/
 # Editable install metadata
 causal_engine.egg-info/
 
+# Raw BACI CSV data (too large for git)
+src/minerals/cobalt data/
+
