@@ -4,6 +4,7 @@ import { useState, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import RouteCard from '@/components/RouteCard';
 import CircumventionCard from '@/components/CircumventionCard';
+import HowToUse from '@/components/HowToUse';
 import { analyzeTransshipment } from '@/lib/api';
 import type { TransshipmentResponse } from '@/lib/types';
 
@@ -125,6 +126,17 @@ function TransshipmentForm() {
             Trace multi-hop trade routes and detect circumvention of export restrictions using CEPII BACI bilateral flows (1995–2024).
           </p>
         </div>
+
+        <HowToUse
+          id="transshipment"
+          steps={[
+            <>Pick a <strong>Quick scenario</strong> below — or set commodity, source country, destination, and year manually.</>,
+            <>Optionally add <strong>event years</strong> (when an export restriction was imposed) so the bootstrap test can compare pre-/post- volumes through suspected hubs.</>,
+            <>Click <strong>Run Analysis</strong>. The backend traces top-K paths, runs a circular-block bootstrap, and returns ranked routes plus a circumvention probability.</>,
+            <>Read the <strong>circumvention summary banner</strong> first (color-coded: green = clean, red = strong evasion signal). Then drill into the <strong>route cards</strong> to see which hubs absorb how much restricted volume.</>,
+          ]}
+          tip="Routes with non-producer intermediaries flagged in red are the prime circumvention candidates. The bootstrap CI tells you how confident the signal is."
+        />
 
         {/* Presets */}
         <div className="mb-5">

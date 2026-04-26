@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import HowToUse from '@/components/HowToUse';
 import { extractShocks, predictFromText } from '@/lib/api';
 import type { ExtractedShock, PredictFromTextResponse } from '@/lib/types';
 
@@ -161,6 +162,17 @@ export default function ShockExtractorPage() {
             Paste a news article or policy document. The causal KG extracts shocks and runs the ODE model.
           </p>
         </div>
+
+        <HowToUse
+          id="shock-extractor"
+          steps={[
+            <>Paste a news article, policy announcement, or any prose describing a commodity event into the <strong>Text</strong> box. (Or click an <strong>Example</strong> chip above to prefill.)</>,
+            <>Pick the relevant <strong>commodity</strong> and the <strong>year range</strong> over which to simulate the trajectory.</>,
+            <>Click <strong>Extract Shocks</strong> to see what the LLM identified, then <strong>Run Prediction</strong> to feed those shocks into the ODE model and project a price/quantity trajectory.</>,
+            <>The chart shows the projected <strong>price index</strong> (red stripe = shortage years). Hover any bar for exact values.</>,
+          ]}
+          tip="Best results: text that names countries, specific actions (ban, surge, strike, tariff), and dates. Vague prose may extract zero shocks."
+        />
 
         {/* Examples */}
         <div className="flex flex-wrap gap-2 mb-5">

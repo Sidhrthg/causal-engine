@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
+import HowToUse from '@/components/HowToUse';
 import { getKnowledgeGraph } from '@/lib/api';
 import type { KGEntity, KGRelationship } from '@/lib/types';
 
@@ -333,6 +334,16 @@ export default function KnowledgeGraphPage() {
 
         {/* Sidebar */}
         <div className="w-60 border-l border-zinc-200 bg-white p-4 flex flex-col gap-4 overflow-y-auto shrink-0">
+          <HowToUse
+            id="knowledge-graph"
+            steps={[
+              <>Use the <strong>commodity dropdown</strong> in the header to focus the graph (or pick All).</>,
+              <><strong>Scroll</strong> to zoom, <strong>drag</strong> to pan, <strong>click</strong> any node to inspect its type, degree, and properties.</>,
+              <>Filter edges by relation type (produces, regulates, exports_to, etc.) to declutter the view.</>,
+            ]}
+            tip="Larger dots = higher-degree nodes (more connections). The legend shows which color maps to which entity type."
+          />
+
           {/* Legend */}
           <div>
             <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-2">Node Types</p>

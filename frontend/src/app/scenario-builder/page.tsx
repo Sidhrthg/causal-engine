@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import HowToUse from '@/components/HowToUse';
 import {
   getKnowledgeGraph,
   getScenarioPresets,
@@ -69,7 +70,7 @@ function Autocomplete({
         className="w-full text-sm border border-zinc-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
       />
       {open && filtered.length > 0 && (
-        <div className="absolute z-20 mt-1 w-full bg-white border border-zinc-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+        <div className="absolute z-50 mt-1 w-full bg-white border border-zinc-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
           {filtered.map((s) => (
             <button
               key={s}
@@ -232,6 +233,16 @@ export default function ScenarioBuilderPage() {
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <div className="w-80 border-r border-zinc-200 bg-white p-5 overflow-y-auto shrink-0">
+          <HowToUse
+            id="scenario-builder"
+            steps={[
+              <><strong>Pre-rendered</strong>: instant view of any of the 10 historical episodes (graphite 2008, lithium 2016, cobalt 2016, etc.). Pick from the list — the PNG loads immediately.</>,
+              <><strong>Custom</strong>: build a new scenario. Set year, shock origin (country), commodity, and a free-text title. Or click <strong>Quick Fill</strong> to seed the form from a known scenario.</>,
+              <>Click <strong>Generate Knowledge Graph</strong>. The pipeline runs HippoRAG retrieval → Claude triple extraction → focal-node subgraph render. Takes 30–90s.</>,
+              <>Use <strong>Use as Custom template →</strong> on a preset to copy its fields into the Custom form so you can tweak them.</>,
+            ]}
+            tip="First custom render of the day takes ~30s extra (HippoRAG warmup); subsequent calls reuse the warmed pipeline."
+          />
           {mode === 'preset' ? (
             <PresetSidebar
               loading={presetsLoading}

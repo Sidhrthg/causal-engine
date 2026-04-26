@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import LineChart from '@/components/LineChart';
+import HowToUse from '@/components/HowToUse';
 import { getScenarios, runCounterfactual } from '@/lib/api';
 import type { ScenarioMeta, CounterfactualResponse, TrajectoryRow } from '@/lib/types';
 
@@ -264,7 +265,7 @@ export default function CounterfactualPage() {
 
         {/* Header */}
         <div className="mb-7">
-          <span className="text-[11px] font-semibold text-purple-600 uppercase tracking-widest">
+          <span className="text-[11px] font-semibold text-indigo-600 uppercase tracking-widest">
             Pearl Layer 3 — Imagining
           </span>
           <h1 className="text-2xl font-bold text-zinc-900 mt-1">Counterfactual Analysis</h1>
@@ -273,6 +274,17 @@ export default function CounterfactualPage() {
             change one structural mechanism, replay to see what <em>would have been</em>.
           </p>
         </div>
+
+        <HowToUse
+          id="counterfactual"
+          steps={[
+            <>Pick a <strong>scenario</strong> from the dropdown — these are calibrated YAML files defining a factual world (commodity, shocks, year range).</>,
+            <>Choose a <strong>counterfactual type</strong>: <em>Substitution</em> (change demand-side flexibility), <em>Fringe</em> (change supply-side capacity), or <em>Trajectory</em> (override specific shocks).</>,
+            <>Set the counterfactual parameter values in the panel below. The defaults are sensible starting points.</>,
+            <>Click <strong>Run Counterfactual (L3)</strong>. The engine performs Abduction (recover noise from factual) → Action (apply your CF intervention) → Prediction (replay), then displays factual vs. counterfactual side-by-side.</>,
+          ]}
+          tip="Watch the ATE (Average Treatment Effect) row — it tells you the mean change in price, shortage, and quantities under your intervention. Negative ATE on shortage = your CF would have alleviated it."
+        />
 
         {/* Config card */}
         <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-zinc-200 p-6 mb-6 shadow-sm space-y-5">
@@ -286,7 +298,7 @@ export default function CounterfactualPage() {
               <select
                 value={scenario}
                 onChange={(e) => { setScenario(e.target.value); setResult(null); }}
-                className="w-full text-sm border border-zinc-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full text-sm border border-zinc-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 {scenarios.map((s) => (
                   <option key={s.name} value={s.name}>
@@ -314,7 +326,7 @@ export default function CounterfactualPage() {
                     type="checkbox"
                     checked={useCalibrated}
                     onChange={(e) => setUseCalibrated(e.target.checked)}
-                    className="accent-purple-600"
+                    className="accent-indigo-600"
                   />
                   <span>Prefer calibrated</span>
                 </label>
@@ -363,7 +375,7 @@ export default function CounterfactualPage() {
           <button
             type="submit"
             disabled={loading || scenariosLoading}
-            className="flex items-center gap-2 px-5 py-2.5 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+            className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
           >
             {loading ? (
               <>
@@ -393,11 +405,11 @@ export default function CounterfactualPage() {
         {result && (
           <div className="space-y-6">
             {/* Description */}
-            <div className="rounded-xl border border-purple-100 bg-purple-50 px-5 py-4">
-              <p className="text-[11px] font-semibold text-purple-500 uppercase tracking-wider mb-1">
+            <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-5 py-4">
+              <p className="text-[11px] font-semibold text-indigo-500 uppercase tracking-wider mb-1">
                 L3 query
               </p>
-              <p className="text-sm text-purple-800 font-mono leading-relaxed">{result.description}</p>
+              <p className="text-sm text-indigo-800 font-mono leading-relaxed">{result.description}</p>
             </div>
 
             {/* ATE summary */}
@@ -442,8 +454,8 @@ export default function CounterfactualPage() {
                 <div className="border-l border-zinc-100 pl-8">
                   <p className="text-[10px] text-zinc-400 mb-2">Counterfactual (do-operator)</p>
                   {Object.entries(result.cf_params).map(([k, v]) => (
-                    <div key={k} className="flex gap-3 font-mono text-xs text-purple-700 font-semibold">
-                      <span className="text-purple-400 w-32">{k}</span>
+                    <div key={k} className="flex gap-3 font-mono text-xs text-indigo-700 font-semibold">
+                      <span className="text-indigo-400 w-32">{k}</span>
                       <span>{typeof v === 'number' ? v.toFixed(4) : JSON.stringify(v)}</span>
                     </div>
                   ))}

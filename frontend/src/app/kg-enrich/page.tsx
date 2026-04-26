@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import HowToUse from '@/components/HowToUse';
 import { batchEnrichKG, enrichKG } from '@/lib/api';
 
 interface RunRecord {
@@ -81,6 +82,16 @@ export default function KGEnrichPage() {
       <div className="flex flex-1 overflow-hidden">
         {/* Form */}
         <div className="w-96 border-r border-zinc-200 bg-white p-5 overflow-y-auto shrink-0">
+          <HowToUse
+            id="kg-enrich"
+            steps={[
+              <>Type a query about a supply-chain topic, or click one of the <strong>Suggested Queries</strong> below the form.</>,
+              <>Adjust <strong>Top-K</strong> to control how many document chunks are retrieved (more = more candidate triples but slower).</>,
+              <>Click <strong>Enrich KG</strong>. HippoRAG retrieves chunks, Claude extracts (subject, relation, object) triples, and they&apos;re merged into the live KG.</>,
+              <>Or use <strong>Enrich for all 6 minerals</strong> to run a canonical query for each commodity in one shot (~1–3 min).</>,
+            ]}
+            tip="Each successful run permanently grows enriched_kg.json. The Knowledge Graph and Scenario Builder pages will pick up the new entities automatically."
+          />
           <div className="flex flex-col gap-5">
             {/* Pipeline diagram */}
             <div className="bg-indigo-50 border border-indigo-100 rounded-lg p-3">

@@ -68,6 +68,30 @@ const FEATURES = [
     accent: 'bg-amber-50 text-amber-600 border-amber-100',
     cta: 'Extract shocks →',
   },
+  {
+    href: '/scenario-builder',
+    label: 'Scenario Builder',
+    desc: 'Pick a pre-rendered episode or generate a custom KG render via HippoRAG + Claude triple extraction.',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+      </svg>
+    ),
+    accent: 'bg-violet-50 text-violet-600 border-violet-100',
+    cta: 'Build a scenario →',
+  },
+  {
+    href: '/kg-enrich',
+    label: 'KG Enrich',
+    desc: 'Grow the causal KG: HippoRAG retrieves chunks, Claude extracts triples, merged into the live graph.',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 4v16m8-8H4" />
+      </svg>
+    ),
+    accent: 'bg-rose-50 text-rose-600 border-rose-100',
+    cta: 'Enrich the KG →',
+  },
 ];
 
 const METHODS = [
