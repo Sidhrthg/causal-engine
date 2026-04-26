@@ -110,3 +110,16 @@ export async function getScenarioPresets(): Promise<import('./types').ScenarioPr
   if (!res.ok) throw new Error('Failed to fetch scenario presets');
   return res.json();
 }
+
+export async function enrichKG(params: {
+  query: string;
+  top_k?: number;
+}): Promise<import('./types').KGEnrichResponse> {
+  return post<import('./types').KGEnrichResponse>('/api/kg/enrich', params);
+}
+
+export async function batchEnrichKG(params: {
+  top_k?: number;
+}): Promise<import('./types').KGEnrichResponse> {
+  return post<import('./types').KGEnrichResponse>('/api/kg/batch-enrich', params);
+}

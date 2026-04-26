@@ -178,3 +178,9 @@ export interface ScenarioPresetsResponse {
   validation: ScenarioPreset[];
   predictive: ScenarioPreset[];
 }
+
+// ─── KG Enrichment ────────────────────────────────────────────────────────────
+
+export interface KGEnrichResponse {
+  result: string;
+}
