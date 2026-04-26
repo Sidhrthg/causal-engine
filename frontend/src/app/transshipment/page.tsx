@@ -319,6 +319,23 @@ function TransshipmentForm() {
           </div>
         )}
 
+        {/* Empty state */}
+        {!result && !loading && !error && (
+          <div className="rounded-xl border border-dashed border-zinc-200 bg-white px-6 py-10 text-center mb-6">
+            <svg className="w-10 h-10 mx-auto text-zinc-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+            </svg>
+            <p className="text-sm font-medium text-zinc-700 mb-1">No analysis run yet</p>
+            <p className="text-xs text-zinc-400 max-w-md mx-auto">
+              Pick a Quick scenario above or set commodity/source/destination and click{' '}
+              <span className="font-semibold text-zinc-600">Run Analysis</span> to trace
+              top-K trade routes and compute a circumvention rate. Or click{' '}
+              <span className="font-semibold text-zinc-600">View sample results →</span>{' '}
+              to see what output looks like.
+            </p>
+          </div>
+        )}
+
         {/* Demo banner */}
         {isDemo && (
           <div className="flex items-center gap-3 rounded-xl bg-amber-50 border border-amber-200 px-5 py-3 mb-6">

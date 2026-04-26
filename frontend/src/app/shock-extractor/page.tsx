@@ -48,9 +48,11 @@ function ShockBadge({ type }: { type: string }) {
 function MagnitudeBar({ magnitude }: { magnitude: number }) {
   const abs = Math.abs(magnitude);
   const pct = Math.min(abs * 100, 100);
-  const color = magnitude < 0 ? 'bg-blue-400' : 'bg-red-400';
+  const isPositive = magnitude >= 0;
+  const color = isPositive ? 'bg-red-400' : 'bg-blue-400';
+  const label = isPositive ? 'tightening (price ↑)' : 'loosening (price ↓)';
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2" title={label}>
       <div className="w-20 h-1.5 bg-zinc-100 rounded-full overflow-hidden">
         <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
       </div>
@@ -66,30 +68,70 @@ function TrajectoryChart({ trajectory }: { trajectory: PredictFromTextResponse['
   const maxP = Math.max(...trajectory.map((r) => r.P));
   const minP = Math.min(...trajectory.map((r) => r.P));
   const range = maxP - minP || 1;
+  const midP = (maxP + minP) / 2;
+  const startYear = trajectory[0].year;
+  const endYear = trajectory.at(-1)?.year ?? startYear;
 
   return (
     <div className="mt-4">
-      <p className="text-xs font-semibold text-zinc-500 mb-2 uppercase tracking-wider">Price Index</p>
-      <div className="flex items-end gap-1 h-24">
-        {trajectory.map((row) => {
-          const height = ((row.P - minP) / range) * 80 + 8;
-          return (
-            <div key={row.year} className="flex flex-col items-center flex-1 group">
-              <div
-                className="w-full bg-indigo-500 rounded-t-sm transition-all group-hover:bg-indigo-600 relative"
-                style={{ height: `${height}px` }}
-                title={`${row.year}: P=${row.P.toFixed(3)}, shortage=${row.shortage.toFixed(1)}`}
-              >
-                {row.shortage > 0 && (
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-red-400 rounded-t-sm" />
-                )}
+      <p className="text-xs font-semibold text-zinc-500 mb-2 uppercase tracking-wider">
+        Price Index (P)
+        <span className="ml-2 font-normal normal-case tracking-normal text-[10px] text-zinc-400">
+          normalised; 1.0 = baseline
+        </span>
+      </p>
+      <div className="flex items-stretch gap-2">
+        {/* Y-axis labels */}
+        <div className="flex flex-col justify-between text-right text-[9px] font-mono text-zinc-400 py-0.5 w-10 shrink-0">
+          <span>{maxP.toFixed(2)}</span>
+          <span>{midP.toFixed(2)}</span>
+          <span>{minP.toFixed(2)}</span>
+        </div>
+        {/* Bars */}
+        <div className="flex items-end gap-1 h-24 flex-1 border-l border-zinc-100 pl-1">
+          {trajectory.map((row) => {
+            const height = ((row.P - minP) / range) * 80 + 8;
+            return (
+              <div key={row.year} className="flex flex-col items-center flex-1 group">
+                <div
+                  className="w-full bg-indigo-500 rounded-t-sm transition-all group-hover:bg-indigo-600 relative"
+                  style={{ height: `${height}px` }}
+                  title={`${row.year}\nP = ${row.P.toFixed(3)}\nshortage = ${row.shortage.toFixed(1)}\nQ_total = ${row.Q_total.toFixed(1)}`}
+                >
+                  {row.shortage > 0 && (
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-red-400 rounded-t-sm" />
+                  )}
+                </div>
+                <span className="text-[9px] text-zinc-400 mt-1">{row.year}</span>
               </div>
-              <span className="text-[9px] text-zinc-400 mt-1">{row.year}</span>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
-      <p className="text-[10px] text-zinc-400 mt-1">Red stripe = shortage · hover for values</p>
+      <div className="flex items-center justify-between mt-1.5 ml-12">
+        <p className="text-[10px] text-zinc-400">
+          <span className="inline-block h-1 w-3 bg-red-400 rounded-sm align-middle mr-1" />
+          shortage years · hover bars for values
+        </p>
+        <p className="text-[10px] text-zinc-400 font-mono">
+          Year axis: {startYear}–{endYear}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function MagnitudeLegend() {
+  return (
+    <div className="flex items-center gap-4 text-[10px] text-zinc-500 border-t border-zinc-100 pt-2 mt-2">
+      <span className="flex items-center gap-1.5">
+        <span className="inline-block h-1.5 w-3 bg-red-400 rounded-full" />
+        positive magnitude — supply tightens / price ↑
+      </span>
+      <span className="flex items-center gap-1.5">
+        <span className="inline-block h-1.5 w-3 bg-blue-400 rounded-full" />
+        negative — supply loosens / price ↓
+      </span>
     </div>
   );
 }
@@ -259,8 +301,14 @@ export default function ShockExtractorPage() {
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-sm text-red-700">
-                {error}
+              <div className="bg-red-50 border border-red-200 rounded-xl p-3">
+                <p className="text-sm font-semibold text-red-700 mb-1">Extraction failed</p>
+                <p className="text-sm text-red-600 mb-2">{error}</p>
+                <p className="text-[11px] text-red-500 leading-relaxed">
+                  <span className="font-semibold">Common fixes:</span> make sure the text mentions a
+                  country, an action (ban, tariff, strike, surge), and the selected commodity. Also
+                  confirm the year range covers the events described.
+                </p>
               </div>
             )}
           </div>
@@ -359,6 +407,8 @@ export default function ShockExtractorPage() {
                     No shocks extracted. Try adding country + commodity + action keywords.
                   </p>
                 )}
+
+                {shocks.length > 0 && <MagnitudeLegend />}
               </div>
             )}
 

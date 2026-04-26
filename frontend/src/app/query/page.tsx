@@ -80,8 +80,9 @@ function CopyButton({ text }: { text: string }) {
   return (
     <button
       onClick={copy}
+      aria-label={copied ? 'Copied to clipboard' : 'Copy answer to clipboard'}
+      title={copied ? 'Copied!' : 'Copy answer to clipboard'}
       className="p-1 text-zinc-300 hover:text-zinc-500 transition-colors rounded"
-      title="Copy"
     >
       {copied ? (
         <svg className="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -359,7 +360,7 @@ export default function QueryPage() {
                 sendMessage(input);
               }
             }}
-            placeholder="Ask about mineral supply chains, price drivers, trade patterns… (Enter to send)"
+            placeholder="Ask a question… (Enter to send)"
             disabled={loading}
             className="flex-1 text-sm border border-zinc-200 rounded-xl px-4 py-2.5 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 leading-relaxed"
             style={{ minHeight: '42px', maxHeight: '120px' }}
