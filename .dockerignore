@@ -12,7 +12,8 @@ data
 !data/documents
 !data/documents/**
 !data/canonical
-!data/canonical/**
+!data/canonical/*.csv
+!data/canonical/*.json
 outputs
 runs
 *.egg-info

@@ -1,0 +1,13 @@
+date,series,value,unit,material,from_entity,to_entity,source
+2000,trade_value_usd,32457554,USD,graphite_natural,country:World,country:USA,UN_Comtrade
+2001,trade_value_usd,23494623,USD,graphite_natural,country:World,country:USA,UN_Comtrade
+2002,trade_value_usd,24808780,USD,graphite_natural,country:World,country:USA,UN_Comtrade
+2003,trade_value_usd,27246300,USD,graphite_natural,country:World,country:USA,UN_Comtrade
+2004,trade_value_usd,32088118,USD,graphite_natural,country:World,country:USA,UN_Comtrade
+2005,trade_value_usd,37594265,USD,graphite_natural,country:World,country:USA,UN_Comtrade
+2006,trade_value_usd,31369969,USD,graphite_natural,country:World,country:USA,UN_Comtrade
+2007,trade_value_usd,40399502,USD,graphite_natural,country:World,country:USA,UN_Comtrade
+2008,trade_value_usd,53422791,USD,graphite_natural,country:World,country:USA,UN_Comtrade
+2009,trade_value_usd,31816389,USD,graphite_natural,country:World,country:USA,UN_Comtrade
+2010,trade_value_usd,56755830,USD,graphite_natural,country:World,country:USA,UN_Comtrade
+2011,trade_value_usd,86833498,USD,graphite_natural,country:World,country:USA,UN_Comtrade

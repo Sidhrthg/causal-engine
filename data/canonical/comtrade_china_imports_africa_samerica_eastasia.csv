@@ -1,0 +1,251 @@
+year,reporter,reporter_code,partner,partner_code,flow,commodity_code,trade_value_usd,quantity_kg
+2022,China,156,Argentina,32,import,2504,519.0,60.0
+1996,China,156,Brazil,76,import,2504,24304.0,12875.0
+1997,China,156,Brazil,76,import,2504,47266.0,24808.0
+1998,China,156,Brazil,76,import,2504,264397.0,113949.0
+1999,China,156,Brazil,76,import,2504,783387.0,319288.0
+2000,China,156,Brazil,76,import,2504,316191.0,129430.0
+2001,China,156,Brazil,76,import,2504,329900.0,144400.0
+2002,China,156,Brazil,76,import,2504,346831.0,156985.0
+2003,China,156,Brazil,76,import,2504,354083.0,225000.0
+2004,China,156,Brazil,76,import,2504,68910.0,48150.0
+2005,China,156,Brazil,76,import,2504,13860.0,9000.0
+2006,China,156,Brazil,76,import,2504,131032.0,120810.0
+2007,China,156,Brazil,76,import,2504,46365.0,41113.0
+2008,China,156,Brazil,76,import,2504,12796.0,5394.0
+2009,China,156,Brazil,76,import,2504,97669.0,44648.0
+2010,China,156,Brazil,76,import,2504,231106.0,106356.0
+2011,China,156,Brazil,76,import,2504,161855.0,17200.0
+2012,China,156,Brazil,76,import,2504,111122.0,28960.0
+2013,China,156,Brazil,76,import,2504,92786.0,11330.0
+2014,China,156,Brazil,76,import,2504,334116.0,32020.0
+2015,China,156,Brazil,76,import,2504,297404.0,31360.0
+2015,China,156,Brazil,76,import,2504,297404.0,31360.0
+2016,China,156,Brazil,76,import,2504,297218.0,254797.004
+2016,China,156,Brazil,76,import,2504,297218.0,254797.004
+2017,China,156,Brazil,76,import,2504,417099.0,48200.0
+2017,China,156,Brazil,76,import,2504,416990.0,48100.0
+2017,China,156,Brazil,76,import,2504,109.0,100.0
+2018,China,156,Brazil,76,import,2504,389507.0,48480.0
+2019,China,156,Brazil,76,import,2504,422254.0,47200.0
+2020,China,156,Brazil,76,import,2504,487884.0,61473.0
+2021,China,156,Brazil,76,import,2504,359858.0,49060.0
+2022,China,156,Brazil,76,import,2504,172800.0,26792.0
+2023,China,156,Brazil,76,import,2504,4307.0,800.0
+2024,China,156,Brazil,76,import,2504,51549.0,9220.0
+1995,China,156,"China, Hong Kong SAR",344,import,2504,7956.0,824.0
+1996,China,156,"China, Hong Kong SAR",344,import,2504,99024.0,48695.0
+1997,China,156,"China, Hong Kong SAR",344,import,2504,71165.0,4445.0
+1998,China,156,"China, Hong Kong SAR",344,import,2504,12258.0,10124.0
+1999,China,156,"China, Hong Kong SAR",344,import,2504,65615.0,10687.0
+2000,China,156,"China, Hong Kong SAR",344,import,2504,2070.0,1287.0
+2001,China,156,"China, Hong Kong SAR",344,import,2504,10011.0,1353.0
+2002,China,156,"China, Hong Kong SAR",344,import,2504,13549.0,440.0
+2003,China,156,"China, Hong Kong SAR",344,import,2504,13090.0,3600.0
+2004,China,156,"China, Hong Kong SAR",344,import,2504,21185.0,961.0
+2015,China,156,"China, Hong Kong SAR",344,import,2504,798.0,77.0
+2015,China,156,"China, Hong Kong SAR",344,import,2504,798.0,77.0
+2016,China,156,"China, Hong Kong SAR",344,import,2504,252.0,216.225
+2016,China,156,"China, Hong Kong SAR",344,import,2504,252.0,216.225
+2017,China,156,"China, Hong Kong SAR",344,import,2504,474.0,50.0
+2017,China,156,"China, Hong Kong SAR",344,import,2504,474.0,50.0
+2023,China,156,Colombia,170,import,2504,149.0,1.0
+1995,China,156,Dem. People's Rep. of Korea,408,import,2504,2159.0,12000.0
+1997,China,156,Dem. People's Rep. of Korea,408,import,2504,16800.0,260000.0
+1998,China,156,Dem. People's Rep. of Korea,408,import,2504,74630.0,770312.0
+1999,China,156,Dem. People's Rep. of Korea,408,import,2504,24014.0,240144.0
+2000,China,156,Dem. People's Rep. of Korea,408,import,2504,2400.0,60000.0
+2001,China,156,Dem. People's Rep. of Korea,408,import,2504,68400.0,2280000.0
+2003,China,156,Dem. People's Rep. of Korea,408,import,2504,23977.0,637000.0
+2004,China,156,Dem. People's Rep. of Korea,408,import,2504,110358.0,3489455.0
+2005,China,156,Dem. People's Rep. of Korea,408,import,2504,829243.0,20515550.0
+2006,China,156,Dem. People's Rep. of Korea,408,import,2504,2051551.0,47960592.0
+2007,China,156,Dem. People's Rep. of Korea,408,import,2504,3072127.0,65800616.0
+2008,China,156,Dem. People's Rep. of Korea,408,import,2504,4565769.0,60200024.0
+2009,China,156,Dem. People's Rep. of Korea,408,import,2504,8532616.0,108110783.0
+2010,China,156,Dem. People's Rep. of Korea,408,import,2504,6712978.0,74904578.0
+2011,China,156,Dem. People's Rep. of Korea,408,import,2504,17235182.0,129213531.0
+2012,China,156,Dem. People's Rep. of Korea,408,import,2504,7271233.0,54248741.0
+2013,China,156,Dem. People's Rep. of Korea,408,import,2504,8012286.0,67534188.0
+2014,China,156,Dem. People's Rep. of Korea,408,import,2504,7859691.0,60779886.0
+2015,China,156,Dem. People's Rep. of Korea,408,import,2504,11019897.0,82808590.0
+2015,China,156,Dem. People's Rep. of Korea,408,import,2504,11019897.0,82808590.0
+2016,China,156,Dem. People's Rep. of Korea,408,import,2504,6160546.0,4667849.926
+2016,China,156,Dem. People's Rep. of Korea,408,import,2504,6160546.0,4667849.926
+2017,China,156,Dem. People's Rep. of Korea,408,import,2504,14032785.0,141491390.0
+2017,China,156,Dem. People's Rep. of Korea,408,import,2504,14032785.0,141491390.0
+2018,China,156,Dem. People's Rep. of Korea,408,import,2504,4794393.0,44965430.0
+2020,China,156,Ethiopia,231,import,2504,829.0,160.0
+2016,China,156,Ghana,288,import,2504,230.0,169.462
+2016,China,156,Ghana,288,import,2504,230.0,169.462
+2019,China,156,Guinea,324,import,2504,754.0,58.0
+2021,China,156,Guinea,324,import,2504,30.0,46.491
+2023,China,156,Guinea,324,import,2504,22162.0,800.0
+2024,China,156,Guinea,324,import,2504,14040.0,1200.0
+1995,China,156,Japan,392,import,2504,35526.0,1690.0
+1996,China,156,Japan,392,import,2504,92198.0,109276.0
+1997,China,156,Japan,392,import,2504,98907.0,17999.0
+1998,China,156,Japan,392,import,2504,447412.0,272687.0
+1999,China,156,Japan,392,import,2504,877801.0,119737.0
+2000,China,156,Japan,392,import,2504,1739267.0,208424.0
+2001,China,156,Japan,392,import,2504,922960.0,123278.0
+2002,China,156,Japan,392,import,2504,1915188.0,135395.0
+2003,China,156,Japan,392,import,2504,2803783.0,203477.0
+2004,China,156,Japan,392,import,2504,1339807.0,146917.0
+2005,China,156,Japan,392,import,2504,1658237.0,225820.0
+2006,China,156,Japan,392,import,2504,4914596.0,370231.0
+2007,China,156,Japan,392,import,2504,7337817.0,581103.0
+2008,China,156,Japan,392,import,2504,4704967.0,402278.0
+2009,China,156,Japan,392,import,2504,4243140.0,363489.0
+2010,China,156,Japan,392,import,2504,6713358.0,532597.0
+2011,China,156,Japan,392,import,2504,13057148.0,971495.0
+2012,China,156,Japan,392,import,2504,14700132.0,1069946.0
+2013,China,156,Japan,392,import,2504,14238064.0,1070496.0
+2014,China,156,Japan,392,import,2504,11912143.0,1033890.0
+2015,China,156,Japan,392,import,2504,63280.0,6400.0
+2015,China,156,Japan,392,import,2504,639114.0,66157.0
+2015,China,156,Japan,392,import,2504,5276507.0,520606.0
+2015,China,156,Japan,392,import,2504,4462.0,650.0
+2015,China,156,Japan,392,import,2504,4569651.0,447399.0
+2016,China,156,Japan,392,import,2504,7452955.0,6394061.513
+2016,China,156,Japan,392,import,2504,1650.0,1415.757
+2016,China,156,Japan,392,import,2504,45130.0,38723.089
+2016,China,156,Japan,392,import,2504,815852.0,700029.017
+2016,China,156,Japan,392,import,2504,8315587.0,7134229.376
+2017,China,156,Japan,392,import,2504,6622.0,500.0
+2017,China,156,Japan,392,import,2504,94157.0,8960.0
+2017,China,156,Japan,392,import,2504,1650.0,200.0
+2017,China,156,Japan,392,import,2504,502174.0,45632.0
+2017,China,156,Japan,392,import,2504,8022720.0,986287.256
+2017,China,156,Japan,392,import,2504,7418117.0,930995.256
+2018,China,156,Japan,392,import,2504,12883483.0,1677104.055
+2019,China,156,Japan,392,import,2504,4493548.0,724282.0
+2020,China,156,Japan,392,import,2504,1791858.0,381525.0
+2021,China,156,Japan,392,import,2504,2632809.0,1244452.0
+2022,China,156,Japan,392,import,2504,2938722.0,1585441.0
+2023,China,156,Japan,392,import,2504,1114385.0,255563.0
+2024,China,156,Japan,392,import,2504,1122722.0,278917.0
+2024,China,156,Kenya,404,import,2504,4780.0,250.0
+2011,China,156,Madagascar,450,import,2504,275.0,40.0
+2012,China,156,Madagascar,450,import,2504,19608.0,19656.0
+2015,China,156,Madagascar,450,import,2504,11928.0,150050.0
+2015,China,156,Madagascar,450,import,2504,11928.0,150050.0
+2016,China,156,Madagascar,450,import,2504,214179.0,183172.29
+2016,China,156,Madagascar,450,import,2504,214179.0,183172.29
+2017,China,156,Madagascar,450,import,2504,1167791.0,3007395.0
+2017,China,156,Madagascar,450,import,2504,301.0,29.0
+2017,China,156,Madagascar,450,import,2504,1167490.0,3007366.0
+2018,China,156,Madagascar,450,import,2504,16176151.0,28076270.0
+2019,China,156,Madagascar,450,import,2504,21352110.0,35764235.0
+2020,China,156,Madagascar,450,import,2504,6894676.0,13669641.0
+2021,China,156,Madagascar,450,import,2504,19447850.0,32732020.0
+2022,China,156,Madagascar,450,import,2504,37048124.0,51163630.0
+2023,China,156,Madagascar,450,import,2504,16558336.0,24895201.0
+2024,China,156,Madagascar,450,import,2504,8307840.0,11886365.0
+2024,China,156,Malawi,454,import,2504,129.0,23.0
+2015,China,156,Mongolia,496,import,2504,3716.0,2115.0
+2015,China,156,Mongolia,496,import,2504,3716.0,2115.0
+2017,China,156,Mongolia,496,import,2504,4602.0,9429.287
+2017,China,156,Mongolia,496,import,2504,4275.0,9036.0
+2017,China,156,Mongolia,496,import,2504,327.0,393.287
+2018,China,156,Mongolia,496,import,2504,2050.0,521.0
+2019,China,156,Mongolia,496,import,2504,1724.0,2866.435
+2021,China,156,Mongolia,496,import,2504,1593.0,135.0
+2024,China,156,Mongolia,496,import,2504,372.0,420.0
+2024,China,156,Morocco,504,import,2504,52891.0,14290.0
+2012,China,156,Mozambique,508,import,2504,57378.0,27550.0
+2013,China,156,Mozambique,508,import,2504,27317.0,3570.0
+2014,China,156,Mozambique,508,import,2504,43790.0,118071.0
+2015,China,156,Mozambique,508,import,2504,5594.0,296.0
+2015,China,156,Mozambique,508,import,2504,5594.0,296.0
+2016,China,156,Mozambique,508,import,2504,700.0,600.624
+2016,China,156,Mozambique,508,import,2504,700.0,600.624
+2017,China,156,Mozambique,508,import,2504,8917.0,2389.0
+2017,China,156,Mozambique,508,import,2504,8917.0,2389.0
+2018,China,156,Mozambique,508,import,2504,12182380.0,29005792.0
+2019,China,156,Mozambique,508,import,2504,63067081.0,145918610.0
+2020,China,156,Mozambique,508,import,2504,1744509.0,4204699.0
+2021,China,156,Mozambique,508,import,2504,9969464.0,23139614.0
+2022,China,156,Mozambique,508,import,2504,71270501.0,108432473.0
+2023,China,156,Mozambique,508,import,2504,31814760.0,55154710.0
+2024,China,156,Mozambique,508,import,2504,5022606.0,11771149.0
+2017,China,156,Namibia,516,import,2504,488.0,50.0
+2017,China,156,Namibia,516,import,2504,488.0,50.0
+2018,China,156,Namibia,516,import,2504,21000.0,30000.0
+2019,China,156,Namibia,516,import,2504,80342.0,183000.0
+2020,China,156,Namibia,516,import,2504,710348.0,2028000.0
+2021,China,156,Namibia,516,import,2504,120424.0,338000.0
+2022,China,156,Namibia,516,import,2504,49778.0,126802.0
+2018,China,156,Nigeria,566,import,2504,50.0,1000.0
+2019,China,156,Nigeria,566,import,2504,912.0,180.0
+2024,China,156,Nigeria,566,import,2504,49829.0,248000.0
+2007,China,156,South Africa,710,import,2504,133.0,15.0
+2011,China,156,South Africa,710,import,2504,30330.0,40000.0
+2012,China,156,South Africa,710,import,2504,1164.0,180.0
+2018,China,156,South Africa,710,import,2504,530.0,143.0
+2019,China,156,South Africa,710,import,2504,985.0,500.0
+2024,China,156,South Africa,710,import,2504,3254.0,19342.0
+1995,China,156,South Korea,410,import,2504,4319.0,18006.0
+1996,China,156,South Korea,410,import,2504,358684.0,38405.0
+1997,China,156,South Korea,410,import,2504,663597.0,109456.0
+1998,China,156,South Korea,410,import,2504,859304.0,163315.0
+1999,China,156,South Korea,410,import,2504,208897.0,82257.0
+2000,China,156,South Korea,410,import,2504,131387.0,73008.0
+2001,China,156,South Korea,410,import,2504,49388.0,44795.0
+2002,China,156,South Korea,410,import,2504,180260.0,62809.0
+2003,China,156,South Korea,410,import,2504,678531.0,77507.0
+2004,China,156,South Korea,410,import,2504,2781389.0,165660.0
+2005,China,156,South Korea,410,import,2504,1496037.0,105395.0
+2006,China,156,South Korea,410,import,2504,172553.0,171014.0
+2007,China,156,South Korea,410,import,2504,157354.0,63398.0
+2008,China,156,South Korea,410,import,2504,136606.0,31897.0
+2009,China,156,South Korea,410,import,2504,191420.0,61886.0
+2010,China,156,South Korea,410,import,2504,121562.0,39382.0
+2011,China,156,South Korea,410,import,2504,151970.0,34961.0
+2012,China,156,South Korea,410,import,2504,349555.0,160467.0
+2013,China,156,South Korea,410,import,2504,260175.0,57779.0
+2014,China,156,South Korea,410,import,2504,406852.0,45307.0
+2015,China,156,South Korea,410,import,2504,928623.0,105622.0
+2015,China,156,South Korea,410,import,2504,928623.0,105622.0
+2016,China,156,South Korea,410,import,2504,431111.0,369908.034
+2016,China,156,South Korea,410,import,2504,431111.0,369908.034
+2017,China,156,South Korea,410,import,2504,1998151.0,359938.0
+2017,China,156,South Korea,410,import,2504,1998151.0,359938.0
+2018,China,156,South Korea,410,import,2504,2086209.0,388589.0
+2019,China,156,South Korea,410,import,2504,1271841.0,372293.0
+2020,China,156,South Korea,410,import,2504,244835.0,391688.0
+2021,China,156,South Korea,410,import,2504,113299.0,112112.314
+2022,China,156,South Korea,410,import,2504,854579.0,180341.0
+2023,China,156,South Korea,410,import,2504,341490.0,102174.395
+2024,China,156,South Korea,410,import,2504,93370.0,117623.0
+2012,China,156,Tanzania,834,import,2504,96204.0,500000.0
+2013,China,156,Tanzania,834,import,2504,674.0,100.0
+2014,China,156,Tanzania,834,import,2504,13290.0,265000.0
+2016,China,156,Tanzania,834,import,2504,9176.0,7417.93
+2016,China,156,Tanzania,834,import,2504,385.0,283.664
+2016,China,156,Tanzania,834,import,2504,8791.0,7134.266
+2017,China,156,Tanzania,834,import,2504,33739.0,473559.0
+2017,China,156,Tanzania,834,import,2504,33739.0,473559.0
+2018,China,156,Tanzania,834,import,2504,443815.0,1453745.0
+2019,China,156,Tanzania,834,import,2504,3369900.0,10034489.0
+2020,China,156,Tanzania,834,import,2504,866958.0,2418635.0
+2021,China,156,Tanzania,834,import,2504,95160.0,237001.0
+2022,China,156,Tanzania,834,import,2504,3141130.0,7310697.0
+2023,China,156,Tanzania,834,import,2504,4752716.0,10934557.0
+2024,China,156,Tanzania,834,import,2504,13557966.0,25340300.0
+2023,China,156,Uganda,800,import,2504,16000.0,100000.0
+2024,China,156,Uganda,800,import,2504,78347.0,599629.0
+2013,China,156,Zimbabwe,716,import,2504,36.0,25.0
+2015,China,156,Zimbabwe,716,import,2504,1478.0,500.0
+2015,China,156,Zimbabwe,716,import,2504,1478.0,500.0
+2016,China,156,Zimbabwe,716,import,2504,10578.0,7845.66
+2016,China,156,Zimbabwe,716,import,2504,10392.0,7686.066
+2016,China,156,Zimbabwe,716,import,2504,186.0,159.594
+2017,China,156,Zimbabwe,716,import,2504,23129.0,5000.0
+2017,China,156,Zimbabwe,716,import,2504,17651.0,3785.0
+2017,China,156,Zimbabwe,716,import,2504,5478.0,1215.0
+2018,China,156,Zimbabwe,716,import,2504,1245.0,865.0
+2019,China,156,Zimbabwe,716,import,2504,697.0,300.0
+2020,China,156,Zimbabwe,716,import,2504,2317.0,600.0
+2023,China,156,Zimbabwe,716,import,2504,10882.0,1086.0
+2024,China,156,Zimbabwe,716,import,2504,651.0,896.0

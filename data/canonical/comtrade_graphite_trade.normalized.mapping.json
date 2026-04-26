@@ -1,0 +1,21 @@
+{
+  "mapping": {
+    "year": "date",
+    "P": "value",
+    "D": "date",
+    "source": "source",
+    "units": "unit",
+    "I": "from_entity"
+  },
+  "confidence": 0.525,
+  "rationale": "year <- date (alias match); P <- value (alias match); D <- date (substring match); Q <- None (no heuristic match); I ambiguous substrings: from_entity, material, series, to_entity, unit; source <- source (substring match); units <- unit (substring match); notes <- None (no heuristic match); LLM (mock-llm) consulted for unresolved fields",
+  "provider": "mock-llm",
+  "ambiguous": [
+    "I"
+  ],
+  "missing": [
+    "Q",
+    "notes"
+  ],
+  "target_schema": "TimeSeriesSchema"
+}

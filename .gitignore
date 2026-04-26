@@ -1,6 +1,8 @@
 # Data artifacts
 data/raw/
-data/canonical/
+# Large BACI raw data inside canonical (11GB+ each)
+data/canonical/BACI_HS07/
+data/canonical/BACI_HS07_V202601/
 outputs/
 
 # HippoRAG index (large parquets; not in repo)

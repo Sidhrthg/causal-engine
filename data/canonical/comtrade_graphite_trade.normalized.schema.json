@@ -1,0 +1,121 @@
+{
+  "schema": "TimeSeriesSchema",
+  "json_schema": {
+    "additionalProperties": false,
+    "description": "Canonical schema for annual minerals time series.",
+    "properties": {
+      "year": {
+        "description": "Year (calendar)",
+        "title": "Year",
+        "type": "integer"
+      },
+      "P": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Price level",
+        "title": "P"
+      },
+      "D": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Demand",
+        "title": "D"
+      },
+      "Q": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Production/Supply",
+        "title": "Q"
+      },
+      "I": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Inventory/stock levels",
+        "title": "I"
+      },
+      "source": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Data provenance",
+        "title": "Source"
+      },
+      "units": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Units for numeric columns",
+        "title": "Units"
+      },
+      "notes": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Freeform notes or caveats",
+        "title": "Notes"
+      }
+    },
+    "required": [
+      "year"
+    ],
+    "title": "TimeSeriesSchema",
+    "type": "object"
+  },
+  "row_count": 12,
+  "columns": [
+    "year",
+    "P",
+    "D",
+    "Q",
+    "I",
+    "source",
+    "units",
+    "notes"
+  ]
+}

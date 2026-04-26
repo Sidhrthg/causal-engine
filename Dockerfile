@@ -35,7 +35,6 @@ COPY scenarios/ ./scenarios/
 # data_init/ → data/ on first boot so the index survives across restarts.
 COPY data/documents/ ./data_init/documents/
 COPY data/canonical/ ./data_init/canonical/
-# data/canonical/ (CEPII CSVs) are large and gitignored — mount via Fly.io volume
 
 # Non-root user for safety
 # Create cache dir before switching user so HuggingFace model downloads work
@@ -55,7 +54,6 @@ EXPOSE 8000
 # 2 workers is a good default for a 2-core VM; override via WORKERS env var
 COPY api.py ./
 COPY app.py ./
-COPY configs/ ./configs/
 COPY --chmod=755 entrypoint.sh ./
 
 ENTRYPOINT ["./entrypoint.sh"]
