@@ -3,7 +3,17 @@ data/raw/
 # Large BACI raw data inside canonical (11GB+ each)
 data/canonical/BACI_HS07/
 data/canonical/BACI_HS07_V202601/
-outputs/
+# Outputs are gitignored except pre-rendered KG scenario PNGs (used by the
+# Scenario Builder page; baked into the Docker image)
+outputs/*
+!outputs/kg_scenarios/
+outputs/kg_scenarios/*
+!outputs/kg_scenarios/validation/
+!outputs/kg_scenarios/predictive/
+outputs/kg_scenarios/validation/*
+outputs/kg_scenarios/predictive/*
+!outputs/kg_scenarios/validation/*.png
+!outputs/kg_scenarios/predictive/*.png
 
 # HippoRAG index (large parquets; not in repo)
 data/documents/hipporag_index/

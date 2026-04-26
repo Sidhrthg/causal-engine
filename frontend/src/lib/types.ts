@@ -162,3 +162,19 @@ export interface ScenarioResult {
   query: string;
   skipped: boolean;
 }
+
+export interface ScenarioPreset {
+  scenario_id: string;
+  kind: 'validation' | 'predictive';
+  year: number;
+  shock_origin: string;
+  commodity: string;
+  title: string;
+  image_url: string;
+  available: boolean;
+}
+
+export interface ScenarioPresetsResponse {
+  validation: ScenarioPreset[];
+  predictive: ScenarioPreset[];
+}

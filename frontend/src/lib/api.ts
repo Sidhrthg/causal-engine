@@ -104,3 +104,9 @@ export async function renderScenario(
     payload,
   );
 }
+
+export async function getScenarioPresets(): Promise<import('./types').ScenarioPresetsResponse> {
+  const res = await fetch('/api/kg/scenario-presets');
+  if (!res.ok) throw new Error('Failed to fetch scenario presets');
+  return res.json();
+}

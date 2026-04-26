@@ -1184,6 +1184,40 @@ def _get_scenario_renderer():
 _SCENARIO_ID_RE = re.compile(r"[^A-Za-z0-9_\-]+")
 
 
+@app.get("/api/kg/scenario-presets")
+def kg_scenario_presets():
+    """
+    Return the catalogue of pre-rendered scenarios (10 validation + 6 predictive)
+    plus their PNG URLs. Validation PNGs are baked into the Docker image and
+    served instantly; predictive PNGs may not exist yet (404 if so).
+
+    Frontend uses this to populate the scenario dropdown / gallery on the
+    Scenario Builder page.
+    """
+    from scripts.run_knowledge_graph import VALIDATION_SCENARIOS, PREDICTIVE_SCENARIOS
+
+    def _entries(table: dict, kind: str, subdir: str):
+        items = []
+        for sid, s in table.items():
+            png_path = _KG_SCENARIO_DIR / subdir / f"{sid}.png"
+            items.append({
+                "scenario_id": sid,
+                "kind": kind,
+                "year": s["year"],
+                "shock_origin": s["shock_origin"],
+                "commodity": s["commodity"],
+                "title": s["title"],
+                "image_url": f"/api/static/kg_scenarios/{subdir}/{sid}.png",
+                "available": png_path.exists(),
+            })
+        return items
+
+    return {
+        "validation": _entries(VALIDATION_SCENARIOS, "validation", "validation"),
+        "predictive": _entries(PREDICTIVE_SCENARIOS, "predictive", "predictive"),
+    }
+
+
 @app.post("/api/kg/render-scenario")
 def render_scenario(req: KGRenderScenarioRequest):
     """

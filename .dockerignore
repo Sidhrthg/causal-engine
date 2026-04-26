@@ -15,6 +15,13 @@ data
 !data/canonical/*.csv
 !data/canonical/*.json
 outputs
+# Bake pre-rendered validation/predictive scenarios into the image so they're
+# instantly available at /api/static/kg_scenarios/{validation,predictive}/*.png
+!outputs/kg_scenarios
+!outputs/kg_scenarios/validation
+!outputs/kg_scenarios/validation/*.png
+!outputs/kg_scenarios/predictive
+!outputs/kg_scenarios/predictive/*.png
 runs
 *.egg-info
 dist

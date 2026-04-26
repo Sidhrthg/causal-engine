@@ -35,6 +35,11 @@ COPY scenarios/ ./scenarios/
 # data_init/ → data/ on first boot so the index survives across restarts.
 COPY data/documents/ ./data_init/documents/
 COPY data/canonical/ ./data_init/canonical/
+# Pre-rendered KG scenario PNGs (validation + predictive). Served instantly
+# at /api/static/kg_scenarios/{validation,predictive}/*.png.
+COPY outputs/kg_scenarios/ ./outputs/kg_scenarios/
+# scripts/run_knowledge_graph.py is imported by /api/kg/render-scenario
+COPY scripts/ ./scripts/
 
 # Non-root user for safety
 # Create cache dir before switching user so HuggingFace model downloads work
