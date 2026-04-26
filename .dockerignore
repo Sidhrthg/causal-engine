@@ -24,4 +24,7 @@ build
 "src/minerals/cobalt data"
 thesis writing
 data/comtrade
+# Exclude scripts/ but keep run_knowledge_graph.py (imported by /api/kg/render-scenario)
 scripts
+!scripts/run_knowledge_graph.py
+!scripts/__init__.py

@@ -139,3 +139,26 @@ export interface CounterfactualResponse {
   factual_params: Record<string, number>;
   cf_params: Record<string, unknown>;
 }
+
+// ─── Scenario Builder ─────────────────────────────────────────────────────────
+
+export interface ScenarioPayload {
+  year: number;
+  shock_origin: string;
+  commodity: string;
+  title: string;
+  scenario_id?: string;
+}
+
+export interface ScenarioResult {
+  scenario_id: string;
+  image_url: string;
+  node_count: number;
+  focal_count: number;
+  edge_count: number;
+  impact_count: number;
+  effective_share: number | null;
+  binding: string | null;
+  query: string;
+  skipped: boolean;
+}

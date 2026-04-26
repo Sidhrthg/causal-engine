@@ -95,3 +95,12 @@ export async function runCounterfactual(params: {
 }): Promise<import('./types').CounterfactualResponse> {
   return post('/api/counterfactual', params);
 }
+
+export async function renderScenario(
+  payload: import('./types').ScenarioPayload,
+): Promise<import('./types').ScenarioResult> {
+  return post<import('./types').ScenarioResult>(
+    '/api/kg/render-scenario',
+    payload,
+  );
+}

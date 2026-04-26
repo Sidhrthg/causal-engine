@@ -56,6 +56,16 @@ const links = [
     desc: 'Entities & causal edges',
   },
   {
+    href: '/scenario-builder',
+    label: 'Scenario Builder',
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+      </svg>
+    ),
+    desc: 'Custom scenario → KG render',
+  },
+  {
     href: '/shock-extractor',
     label: 'Shock Extractor',
     icon: (

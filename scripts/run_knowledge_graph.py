@@ -29,6 +29,7 @@ Usage
 """
 
 import argparse
+import json
 import re
 import sys
 from pathlib import Path
@@ -125,26 +126,72 @@ Commodity Summaries, IEA Critical Minerals reports, and trade databases.
 Reply with ONLY the query string, no explanation."""
 
 
-def _generate_hipporag_query(scenario: dict) -> str:
-    """Ask Claude to generate the best HippoRAG retrieval query for a scenario."""
+_QUERY_CACHE_PATH = Path("outputs/kg_scenarios/_query_cache.json")
+
+
+def _load_query_cache() -> dict:
+    try:
+        if _QUERY_CACHE_PATH.exists():
+            return json.loads(_QUERY_CACHE_PATH.read_text())
+    except Exception:
+        pass
+    return {}
+
+
+def _save_query_cache(cache: dict) -> None:
+    try:
+        _QUERY_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        _QUERY_CACHE_PATH.write_text(json.dumps(cache, indent=2))
+    except Exception as exc:
+        print(f"    [warn] could not write query cache: {exc}")
+
+
+def _template_query(scenario: dict) -> str:
+    """Deterministic fallback query, good enough for HippoRAG retrieval."""
+    return (f"{scenario['shock_origin']} {scenario['commodity']} "
+            f"{scenario.get('title', '')} {scenario['year']} "
+            f"supply chain disruption mineral commodity").strip()
+
+
+def _generate_hipporag_query(scenario: dict, cache_key: str = "") -> str:
+    """
+    Return a HippoRAG retrieval query. Order of preference:
+      1. Disk cache (keyed by scenario id).
+      2. Claude (if API is up and has credits).
+      3. Deterministic template built from scenario fields.
+    """
     from src.llm.chat import chat_completion, is_chat_available
+
+    cache = _load_query_cache()
+    if cache_key and cache_key in cache:
+        return cache[cache_key]
+
     if not is_chat_available():
-        # Fallback: construct a basic query from scenario fields
-        return (f"{scenario['shock_origin']} {scenario['commodity']} "
-                f"supply chain {scenario['year']}")
+        return _template_query(scenario)
+
     prompt = _QUERY_GEN_PROMPT.format(
         title=scenario["title"],
         year=scenario["year"],
         shock_origin=scenario["shock_origin"],
         commodity=scenario["commodity"],
     )
-    query = chat_completion([{"role": "user", "content": prompt}],
-                            max_tokens=60).strip().strip('"')
+    try:
+        query = chat_completion([{"role": "user", "content": prompt}],
+                                max_tokens=60).strip().strip('"')
+    except Exception as exc:
+        print(f"    [warn] LLM query generation failed ({type(exc).__name__}); "
+              f"using template fallback.")
+        query = _template_query(scenario)
+
+    if cache_key:
+        cache[cache_key] = query
+        _save_query_cache(cache)
     return query
 
 
 def _focal_nodes_from_hipporag(extractor, pipeline, scenario: dict,
-                                kg_entity_ids: set, top_k: int = 6) -> tuple:
+                                kg_entity_ids: set, top_k: int = 6,
+                                scenario_id: str = "") -> tuple:
     """
     1. Claude generates a targeted HippoRAG query from the scenario metadata.
     2. HippoRAG retrieves top-k document chunks.
@@ -153,7 +200,7 @@ def _focal_nodes_from_hipporag(extractor, pipeline, scenario: dict,
 
     Returns (focal_node_set, query_used).
     """
-    query = _generate_hipporag_query(scenario)
+    query = _generate_hipporag_query(scenario, cache_key=scenario_id)
 
     try:
         chunks = pipeline.retrieve(query, top_k=top_k)
@@ -161,17 +208,23 @@ def _focal_nodes_from_hipporag(extractor, pipeline, scenario: dict,
         print(f"    [warn] HippoRAG retrieval failed: {exc}")
         return set(), query
 
-    # Extract triples from each chunk via Claude
+    # Extract triples from each chunk via Claude (best-effort; skip on API failure)
     all_triples = []
     for chunk in chunks:
         text = chunk.get("text", "")
-        if text:
+        if not text:
+            continue
+        try:
             triples = extractor.extract_from_text(
                 text,
                 source=chunk.get("metadata", {}).get("source", ""),
                 year=str(scenario["year"]),
             )
             all_triples.extend(triples)
+        except Exception as exc:
+            print(f"    [warn] triple extraction failed ({type(exc).__name__}); "
+                  f"continuing with remaining chunks.")
+            break
 
     # Resolve triple subjects/objects to KG entity IDs
     focal = set()
@@ -226,7 +279,7 @@ def _build_subgraph(snap_data: dict, focal_nodes: set, max_hops: int = 1):
 
 def _render_scenario(kg_obj, scenario_id: str, scenario: dict,
                      output_path: str, pipeline, extractor,
-                     enriched: bool = False) -> None:
+                     enriched: bool = False) -> dict:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -242,7 +295,8 @@ def _render_scenario(kg_obj, scenario_id: str, scenario: dict,
     # ── 1. Claude generates query → HippoRAG retrieves → Claude extracts triples → focal nodes
     all_entity_ids = {e["id"] for e in kg_obj.to_dict()["entities"]}
     hippo_focal, query = _focal_nodes_from_hipporag(
-        extractor, pipeline, scenario, all_entity_ids, top_k=6)
+        extractor, pipeline, scenario, all_entity_ids, top_k=6,
+        scenario_id=scenario_id)
     focal = {shock_origin, commodity} | hippo_focal
     print(f"    Query (Claude): {query!r}")
     print(f"    Focal nodes ({len(hippo_focal)}): "
@@ -265,7 +319,14 @@ def _render_scenario(kg_obj, scenario_id: str, scenario: dict,
 
     if G.number_of_nodes() == 0:
         print(f"  [skip] {scenario_id}: no nodes in snapshot @ {year}")
-        return
+        return {
+            "scenario_id": scenario_id,
+            "output_path": str(output_path),
+            "node_count": 0,
+            "focal_count": len(hippo_focal),
+            "query": query,
+            "skipped": True,
+        }
 
     # ── 3. Shock propagation ──────────────────────────────────────────────────
     try:
@@ -411,6 +472,19 @@ def _render_scenario(kg_obj, scenario_id: str, scenario: dict,
     print(f"  Saved: {out.resolve()}  "
           f"({n_nodes} nodes, impact={len(impact)}, eff={eff_share})")
 
+    return {
+        "scenario_id": scenario_id,
+        "output_path": str(out),
+        "node_count": int(n_nodes),
+        "focal_count": int(len(hippo_focal)),
+        "edge_count": int(G.number_of_edges()),
+        "impact_count": int(len(impact)),
+        "effective_share": float(eff_share) if eff_share is not None else None,
+        "binding": binding,
+        "query": query,
+        "skipped": False,
+    }
+
 
 # ── Full-KG DAG visualisation (--dag-image) ───────────────────────────────────
 
@@ -506,6 +580,8 @@ def main():
                         help="Generate all 16 scenario PNGs.")
     parser.add_argument("--scenario-dir", type=str, default="outputs/kg_scenarios",
                         help="Output directory (default: outputs/kg_scenarios/).")
+    parser.add_argument("--skip-existing", action="store_true",
+                        help="Skip scenarios whose output PNG already exists.")
     parser.add_argument("--dag-image", type=str, metavar="PATH",
                         help="Write full KG overview PNG.")
     parser.add_argument("--summary", action="store_true", default=True)
@@ -589,14 +665,25 @@ def main():
 
     if to_run:
         print(f"Generating {len(to_run)} scenario PNGs → {args.scenario_dir}/")
+        failures = []
         for sid, s in to_run.items():
             subdir = "predictive" if sid.startswith("pred_") else "validation"
             out    = Path(args.scenario_dir) / subdir / f"{sid}.png"
+            if args.skip_existing and out.exists():
+                print(f"\n[{sid}]  skipped (PNG already exists)")
+                continue
             print(f"\n[{sid}]  year={s['year']}  origin={s['shock_origin']}")
-            _render_scenario(kg_obj, sid, s, str(out),
-                             pipeline=pipeline, extractor=extractor,
-                             enriched=args.enriched)
-        print("\nDone.")
+            try:
+                _render_scenario(kg_obj, sid, s, str(out),
+                                 pipeline=pipeline, extractor=extractor,
+                                 enriched=args.enriched)
+            except Exception as exc:
+                print(f"  [error] {sid} failed: {type(exc).__name__}: {exc}")
+                failures.append(sid)
+        if failures:
+            print(f"\nDone with {len(failures)} failure(s): {failures}")
+        else:
+            print("\nDone.")
 
 
 if __name__ == "__main__":

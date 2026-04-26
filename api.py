@@ -7,8 +7,10 @@ Run with:
 """
 
 import math
+import re
 import shutil
 import tempfile
+import time
 from pathlib import Path
 from typing import Optional
 
@@ -20,6 +22,7 @@ matplotlib.use("Agg")
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 # Import all business logic from app.py.
@@ -34,6 +37,17 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+# Serve generated KG scenario PNGs. Mounted under /api/static/* so the Next.js
+# /api/:path* rewrite proxies it in production without extra config.
+_KG_SCENARIO_DIR = Path("outputs/kg_scenarios")
+_KG_SCENARIO_DIR.mkdir(parents=True, exist_ok=True)
+(_KG_SCENARIO_DIR / "custom").mkdir(parents=True, exist_ok=True)
+app.mount(
+    "/api/static/kg_scenarios",
+    StaticFiles(directory=str(_KG_SCENARIO_DIR)),
+    name="kg_scenarios",
 )
 
 
@@ -96,6 +110,14 @@ class KGBatchEnrichRequest(BaseModel):
 
 class KGDAGRequest(BaseModel):
     simplified: bool = True
+
+class KGRenderScenarioRequest(BaseModel):
+    """User-defined scenario for the on-demand KG renderer."""
+    year: int
+    shock_origin: str
+    commodity: str
+    title: str
+    scenario_id: Optional[str] = None
 
 class ScenarioRequest(BaseModel):
     scenario_name: str
@@ -1128,6 +1150,102 @@ def kg_enrich(req: KGEnrichRequest):
 @app.post("/api/kg/batch-enrich")
 def kg_batch_enrich(req: KGBatchEnrichRequest):
     return {"result": engine.kg_batch_enrich(req.top_k)}
+
+
+# ── KG Scenario Renderer (custom user scenarios) ─────────────────────────────
+
+# Lazy singletons. The first call to /api/kg/render-scenario warms them up
+# (~30s for HippoRAG init); subsequent calls reuse the same objects, so each
+# render is dominated by Claude API time (~30-90s) rather than re-init.
+_KG_RENDERER_STATE: dict = {"kg_obj": None, "pipeline": None, "extractor": None}
+
+
+def _get_scenario_renderer():
+    state = _KG_RENDERER_STATE
+    if state["kg_obj"] is None:
+        from src.minerals.knowledge_graph import CausalKnowledgeGraph
+        enriched_path = Path("data/canonical/enriched_kg.json")
+        if not enriched_path.exists():
+            raise HTTPException(
+                status_code=500,
+                detail=f"Enriched KG not found at {enriched_path}. "
+                       "Run scripts/build_enriched_kg.py first.",
+            )
+        state["kg_obj"] = CausalKnowledgeGraph.load(str(enriched_path))
+    if state["pipeline"] is None:
+        from src.minerals.rag_pipeline import RAGPipeline
+        state["pipeline"] = RAGPipeline(backend="hipporag")
+    if state["extractor"] is None:
+        from src.minerals.kg_extractor import KGExtractor
+        state["extractor"] = KGExtractor(pipeline=state["pipeline"])
+    return state["kg_obj"], state["pipeline"], state["extractor"]
+
+
+_SCENARIO_ID_RE = re.compile(r"[^A-Za-z0-9_\-]+")
+
+
+@app.post("/api/kg/render-scenario")
+def render_scenario(req: KGRenderScenarioRequest):
+    """
+    Generate a knowledge-graph PNG for a user-defined scenario.
+
+    Reuses _render_scenario from scripts/run_knowledge_graph.py — same
+    HippoRAG retrieval → Claude triple extraction → focal nodes → subgraph
+    render pipeline as the validation/predictive scenario suite.
+
+    Takes 30-90s per call (Claude API time). The first request also warms
+    up the HippoRAG + KGExtractor singletons (~30s extra).
+    """
+    try:
+        commodity = req.commodity.strip().lower()
+        shock_origin = req.shock_origin.strip().lower()
+        if not commodity or not shock_origin or not req.title.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="commodity, shock_origin, and title are all required",
+            )
+
+        scenario_id = req.scenario_id or f"{commodity}_{req.year}_custom_{int(time.time())}"
+        scenario_id = _SCENARIO_ID_RE.sub("_", scenario_id).strip("_") or f"custom_{int(time.time())}"
+
+        out_path = _KG_SCENARIO_DIR / "custom" / f"{scenario_id}.png"
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+
+        kg_obj, pipeline, extractor = _get_scenario_renderer()
+
+        from scripts.run_knowledge_graph import _render_scenario as render_fn
+        scenario_dict = {
+            "year": int(req.year),
+            "shock_origin": shock_origin,
+            "commodity": commodity,
+            "title": req.title.strip(),
+        }
+        stats = render_fn(
+            kg_obj=kg_obj,
+            scenario_id=scenario_id,
+            scenario=scenario_dict,
+            output_path=str(out_path),
+            pipeline=pipeline,
+            extractor=extractor,
+            enriched=True,
+        )
+
+        return {
+            "scenario_id": scenario_id,
+            "image_url": f"/api/static/kg_scenarios/custom/{scenario_id}.png",
+            "node_count": stats.get("node_count", 0),
+            "focal_count": stats.get("focal_count", 0),
+            "edge_count": stats.get("edge_count", 0),
+            "impact_count": stats.get("impact_count", 0),
+            "effective_share": stats.get("effective_share"),
+            "binding": stats.get("binding"),
+            "query": stats.get("query", ""),
+            "skipped": stats.get("skipped", False),
+        }
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"{type(exc).__name__}: {exc}")
 
 
 # ── Three Layers ──────────────────────────────────────────────────────────────
