@@ -66,25 +66,38 @@ In-sample validation, even with independent price data, raises the question of w
 | soybeans_2022_oos | Soybeans | 2020–2024 | 2011 | 0.750 | No |
 | lithium_2016_oos | Lithium | 2014–2019 | 2022 | 0.600 | No |
 | lithium_2022_oos | Lithium | 2021–2024 | 2016 | **1.000** | No |
+| rare_earths_2010_oos | Rare earths | 2008–2014 | 2014 (oversupply) | 0.333 | No |
+| rare_earths_2014_oos | Rare earths | 2014–2018 | 2010 (restriction) | 0.250 | No |
 | nickel_2022_oos | Nickel | 2020–2024 | 2006 | 0.750 | Partial† |
 | nickel_2006_oos | Nickel | 2003–2008 | 2022 | 0.750 | Partial† |
 | cobalt_2022_oos | Cobalt | 2020–2023 | 2016 | **1.000** | Partial† |
 | cobalt_2016_oos | Cobalt | 2016–2019 | 2022 | **1.000** | Partial† |
-| **Mean (all 9 pairs)** | | | | **0.754** | |
-| **Mean (clean: graphite + soybeans + lithium)** | | | | **0.657** | |
-| *(prior 3-pair clean baseline)* | | | | *(0.561)* | |
+| **Mean (all 11 pairs)** | | | | **0.670** | |
+| **Mean (clean: graphite + soybeans + lithium + rare earths)** | | | | **0.552** | |
+| *(prior 3-pair clean baseline, no rare earths)* | | | | *(0.561)* | |
 
 *Parameters calibrated on the training episode only; validation receives the same structural parameters with episode-specific shocks.*
 
 *† Partial circularity: cobalt and nickel OOS pairs validate against World Bank LME price data, which also serves as the calibration target for those commodities. Training and validation periods are non-overlapping (2016 vs. 2022), so this is a weaker form of circularity than in-sample validation, but the same data source is involved.*
 
-**Primary headline: clean OOS mean DA = 0.657** across the five pairs that use independent CEPII BACI unit values as the validation series (graphite ×2, soybeans ×1, lithium ×2). The full 9-pair mean of 0.754 is reported for completeness; Section 4.2.1 explains why the cobalt/nickel pairs carry residual circularity risk.
+**Primary headline: clean OOS mean DA = 0.552** across the seven pairs that use independent CEPII BACI unit values as the validation series (graphite ×2, soybeans ×1, lithium ×2, rare earths ×2). The full 11-pair mean of 0.670 is reported for completeness; Section 4.2.1 explains why the cobalt/nickel pairs carry residual circularity risk.
 
-The lithium cross-epoch transfers are notable: applying 2022 parameters to the 2016 EV first-wave episode yields DA = 0.600, while applying 2016 parameters to the 2022 episode yields DA = 1.000. The asymmetry reflects the structural break in lithium demand circa 2022: 2016 parameters under-estimate the 2022 EV acceleration, whereas the stronger 2022 parameters still correctly capture the 2016 first-wave directionality. The lithium_2016_oos pair (DA = 0.600) is the only non-China-dominant clean OOS pair in the evaluation (Chile, ~43% global production), confirming that the ODE structure generalises beyond supply-restriction episodes in China-dominated markets.
+The OOS results split cleanly into two groups, and this split is itself the central empirical finding of the chapter:
 
-The mean OOS DA of 0.754 (full) / **0.657** (clean) represents a degradation of 26 / 26 percentage points relative to in-sample performance (mean 0.917), which is consistent with the expected behaviour of a correctly-specified structural model. A fully data-driven model with no out-of-sample validity would degrade to near 0.50 (random); the causal engine retains above-chance accuracy on clean OOS episodes.
+**Group A — regime-stable (DA ≥ 0.60 across regimes):** lithium 2016 ↔ 2022, cobalt 2016 ↔ 2022, soybeans 2011 → 2022, nickel 2006 ↔ 2022. Structural parameters calibrated on one episode predict directional behaviour in a different episode of the same commodity. This is the expected behaviour of a correctly-specified structural model and supports the claim that {α_P, η_D, τ_K, g} reflect commodity-level supply-chain physics rather than episode-specific fits.
 
-The graphite cross-epoch transfer (2008 ↔ 2022) shows the largest degradation (0.333, 0.600), which is expected: the 2008 episode reflects a pre-EV commodity cycle with α_P ≈ 0.5 (low price responsiveness), whereas the 2022 episode is characterised by EV-driven structural demand acceleration (α_P ≈ 2.6). Applying 2008 parameters to the 2022 EV regime produces a model that under-predicts the price sensitivity of the EV transition. This is not a model failure — it reflects a genuine structural break in the graphite market circa 2020, which is itself a finding (corroborated by the fixed-parameter sensitivity grid in Section 4.9, which shows the same structural break independently).
+**Group B — regime-dependent (DA ≤ 0.60):** graphite 2008 ↔ 2022 (0.333, 0.600), rare earths 2010 ↔ 2014 (0.333, 0.250). For these commodities, parameters do not transfer across regimes. The interpretation is structural, not a model failure: each pair spans a documented regime break.
+
+- **Graphite**: 2008 was a pre-EV commodity cycle with low price responsiveness (α_P ≈ 0.5); 2022 is the EV-driven structural acceleration (α_P ≈ 2.6). The market's underlying demand-pull mechanism changed.
+- **Rare earths**: 2010 was the China quota restriction era with documented panic-buying (α_P ≈ 1.75, η_D ≈ −0.93); 2014 is the post-WTO Chinese supply flood (α_P ≈ 1.61, η_D ≈ −1.50). Same commodity, opposite supply-demand regime — speculative restriction vs. structural oversupply.
+
+The split is corroborated by Section 4.9.4, which reports that calibrated α_P ranges from 0.50 (graphite 2008) to 2.62 (graphite 2022) across episodes — direct evidence that these parameters are regime-specific rather than commodity-stable constants. The OOS degradation in Group B and the calibration-level α_P variation are two views of the same regime break.
+
+The lithium cross-epoch transfers within Group A are notable for their asymmetry: applying 2022 parameters to the 2016 EV first-wave episode yields DA = 0.600, while applying 2016 parameters to the 2022 episode yields DA = 1.000. The asymmetry reflects the structural intensification (not break) of lithium demand circa 2022: 2016 parameters under-estimate the 2022 EV acceleration, whereas the stronger 2022 parameters still correctly capture the 2016 first-wave directionality. Lithium remains in Group A because both episodes share the same demand-driven mechanism — only the magnitude differs.
+
+The clean OOS mean of 0.552 represents a degradation of 36 percentage points relative to in-sample performance (mean 0.917). A fully data-driven model with no out-of-sample validity would degrade to near 0.50 (random); the causal engine retains above-chance accuracy across the full panel, with the regime-stable subset (Group A clean: lithium ×2, soybeans ×1) achieving mean DA = 0.783 — well above chance.
+
+**Policy implication of the regime-dependence finding.** Forward projections must specify the assumed regime. For graphite, the relevant parameters depend on whether the 2025+ environment continues the EV-driven structural acceleration of the 2022 era or reverts to a 2008-style commodity cycle. For rare earths, the relevant parameters depend on whether China is restricting (2010 regime) or flooding (2014 regime) — both have occurred within the past 15 years and either is plausible as a 2026+ scenario. Forward scenarios in Chapter 6 use 2022-era parameters for both, on the assumption that current geopolitical conditions resemble the restriction regime more than the post-WTO normalisation regime; this assumption is documented as a sensitivity dependency, not a free choice.
 
 Cobalt shows perfect OOS transfer (DA = 1.000 in both directions), suggesting that cobalt structural parameters are genuinely stable across the 2016 and 2022 episodes. This may reflect cobalt's simpler supply structure (DRC-dominated, limited substitution), in contrast to graphite's technology-driven demand dynamics. However, because the validation series for cobalt is LME-sourced (matching the calibration series), the cobalt OOS figures are noted but not used in the primary headline.
 

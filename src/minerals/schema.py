@@ -128,6 +128,15 @@ class ShockConfig(BaseModel):
     )
     quota_reduction: Optional[float] = Field(default=None, description="Specific quota % (policy_shock)")
     demand_destruction: Optional[float] = Field(default=None, description="Demand drop % (macro_demand_shock)")
+    country: Optional[str] = Field(
+        default=None,
+        description=(
+            "Restricting country for export_restriction shocks. When set and a KG is passed to "
+            "run_scenario(), magnitude is interpreted as a fraction of that country's exports "
+            "and is automatically scaled by effective_control_at(country, commodity, year). "
+            "Leave None to treat magnitude as a direct global-supply fraction (legacy behaviour)."
+        ),
+    )
 
 
 class OutputsConfig(BaseModel):
@@ -152,7 +161,10 @@ class ScenarioConfig(BaseModel):
     shocks: List[ShockConfig] = Field(default_factory=list, description="Shock list")
     outputs: OutputsConfig = Field(..., description="Output configuration")
     
-    SUPPORTED_COMMODITIES: ClassVar[set] = {"graphite", "lithium", "cobalt", "nickel", "copper", "soybeans"}
+    SUPPORTED_COMMODITIES: ClassVar[set] = {
+        "graphite", "lithium", "cobalt", "nickel", "copper", "soybeans",
+        "rare_earths", "uranium",
+    }
 
     @field_validator("commodity")
     @classmethod

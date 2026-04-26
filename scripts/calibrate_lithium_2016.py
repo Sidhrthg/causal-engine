@@ -25,6 +25,7 @@ from src.minerals.schema import (
 )
 from src.minerals.simulate import run_scenario
 from src.minerals.predictability import _cepii_series, _directional_accuracy, _spearman_rho
+from src.minerals.constants import ODE_DEFAULTS
 
 # ── Episode definition ─────────────────────────────────────────────────────────
 
@@ -58,15 +59,9 @@ EXTRA = dict(fringe_capacity_share=0.35, fringe_entry_price=1.40)
 # ── Calibration objective ──────────────────────────────────────────────────────
 
 def _run(alpha_P, eta_D, tau_K, g, cepii):
-    kw = dict(
-        eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-        eta_K=0.40, retire_rate=0.0,
-        cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
-        tau_K=tau_K, eta_D=eta_D,
-        demand_growth=DemandGrowthConfig(type="constant", g=g),
-        alpha_P=alpha_P,
-        **EXTRA,
-    )
+    kw = {**ODE_DEFAULTS, "tau_K": tau_K, "eta_D": eta_D,
+          "demand_growth": DemandGrowthConfig(type="constant", g=g),
+          "alpha_P": alpha_P, **EXTRA}
     cfg = ScenarioConfig(
         name="li16_cal", commodity="lithium", seed=42,
         time=TIME_CFG, baseline=BASELINE,
@@ -95,14 +90,9 @@ def objective(x):
     # Without this, DE exploits Spearman/DA being rank-only and finds
     # parameters that produce correct directions but wildly wrong magnitudes.
     try:
-        kw = dict(
-            eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-            eta_K=0.40, retire_rate=0.0,
-            cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
-            tau_K=tau_K, eta_D=eta_D,
-            demand_growth=DemandGrowthConfig(type="constant", g=g),
-            alpha_P=alpha_P, **EXTRA,
-        )
+        kw = {**ODE_DEFAULTS, "tau_K": tau_K, "eta_D": eta_D,
+              "demand_growth": DemandGrowthConfig(type="constant", g=g),
+              "alpha_P": alpha_P, **EXTRA}
         cfg = ScenarioConfig(
             name="li16_mag", commodity="lithium", seed=42,
             time=TIME_CFG, baseline=BASELINE,
@@ -174,14 +164,9 @@ def main():
     # Also show year-by-year
     print()
     print("Year-by-year model vs data:")
-    kw = dict(
-        eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-        eta_K=0.40, retire_rate=0.0,
-        cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
-        tau_K=tau_K, eta_D=eta_D,
-        demand_growth=DemandGrowthConfig(type="constant", g=g),
-        alpha_P=alpha_P, **EXTRA,
-    )
+    kw = {**ODE_DEFAULTS, "tau_K": tau_K, "eta_D": eta_D,
+          "demand_growth": DemandGrowthConfig(type="constant", g=g),
+          "alpha_P": alpha_P, **EXTRA}
     cfg = ScenarioConfig(
         name="li16_final", commodity="lithium", seed=42,
         time=TIME_CFG, baseline=BASELINE,

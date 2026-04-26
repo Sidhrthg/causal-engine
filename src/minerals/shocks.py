@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import TYPE_CHECKING, Dict, List, Optional
 
 from .schema import ShockConfig
+
+if TYPE_CHECKING:
+    from .knowledge_graph import CausalKnowledgeGraph
 
 
 @dataclass(frozen=True)
@@ -60,7 +63,23 @@ def apply_shocks(t: float, shocks: List[ShockConfig]) -> Dict[str, float]:
     return shock_impacts
 
 
-def shocks_for_year(shocks: List[ShockConfig], year: int) -> ShockSignals:
+def shocks_for_year(
+    shocks: List[ShockConfig],
+    year: int,
+    kg: Optional["CausalKnowledgeGraph"] = None,
+    commodity: str = "",
+) -> ShockSignals:
+    """
+    Build ShockSignals for *year*.
+
+    When *kg* and *commodity* are provided, any ShockConfig with a ``country``
+    field set has its ``export_restriction`` magnitude scaled by
+    ``kg.effective_control_at(country, commodity, year)['effective_share']``.
+    This converts "fraction of country's exports restricted" into the
+    equivalent global-supply fraction that the ODE model consumes.
+
+    Callers that do not pass *kg* get the original, unscaled behaviour.
+    """
     # Build multipliers from apply_shocks
     impacts = apply_shocks(float(year), shocks)
 
@@ -74,7 +93,12 @@ def shocks_for_year(shocks: List[ShockConfig], year: int) -> ShockSignals:
         if not _active(s, year):
             continue
         if s.type == "export_restriction":
-            export_restriction += s.magnitude
+            mag = s.magnitude
+            if s.country and kg is not None and commodity:
+                eff = kg.effective_control_at(s.country, commodity, year)
+                if eff["effective_share"] is not None:
+                    mag = s.magnitude * eff["effective_share"]
+            export_restriction += mag
         elif s.type == "demand_surge":
             demand_surge += s.magnitude
         elif s.type == "capex_shock":

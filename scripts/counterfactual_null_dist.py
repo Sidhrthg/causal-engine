@@ -23,6 +23,7 @@ from src.minerals.schema import (
     ShockConfig, TimeConfig, load_scenario,
 )
 from src.minerals.simulate import run_scenario
+from src.minerals.constants import ODE_DEFAULTS
 from src.minerals.predictability import (
     _GRAPHITE_2008_PARAMS, _GRAPHITE_2022_PARAMS,
     _LITHIUM_2022_PARAMS, _SOYBEANS_2022_PARAMS,
@@ -70,12 +71,7 @@ def _run_l3(cfg_actual, cfg_cf, cepii_series, years, base_year, episode_name, do
 
 
 def _std_params(**kwargs):
-    return dict(
-        eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-        eta_K=0.40, retire_rate=0.0,
-        cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
-        **kwargs,
-    )
+    return {**ODE_DEFAULTS, **kwargs}
 
 
 def _std_baseline():

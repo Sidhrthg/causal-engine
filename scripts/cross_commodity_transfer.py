@@ -37,6 +37,7 @@ from src.minerals.schema import (
     ShockConfig, TimeConfig,
 )
 from src.minerals.simulate import run_scenario
+from src.minerals.constants import ODE_DEFAULTS
 from src.minerals.predictability import (
     _GRAPHITE_2008_PARAMS, _GRAPHITE_2022_PARAMS,
     _LITHIUM_2022_PARAMS, _SOYBEANS_2022_PARAMS,
@@ -47,14 +48,12 @@ from src.minerals.predictability import (
 
 
 def _std(p, extra=None):
-    d = dict(
-        eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-        eta_K=0.40, retire_rate=0.0,
-        cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
-        tau_K=p["tau_K"], eta_D=p["eta_D"],
-        demand_growth=DemandGrowthConfig(type="constant", g=p["g"]),
-        alpha_P=p["alpha_P"],
-    )
+    d = {
+        **ODE_DEFAULTS,
+        "tau_K": p["tau_K"], "eta_D": p["eta_D"],
+        "demand_growth": DemandGrowthConfig(type="constant", g=p["g"]),
+        "alpha_P": p["alpha_P"],
+    }
     if extra:
         d.update(extra)
     return ParametersConfig(**d)

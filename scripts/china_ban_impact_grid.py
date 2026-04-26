@@ -49,6 +49,7 @@ from src.minerals.predictability import (
     _URANIUM_2022_PARAMS,
 )
 from src.minerals.knowledge_graph import build_critical_minerals_kg
+from src.minerals.constants import ODE_DEFAULTS, SCENARIO_EXTRAS
 
 BASELINE_CFG   = BaselineConfig(P_ref=1.0, P0=1.0, K0=108.695652, I0=20.0, D0=100.0)
 EULER_SAFETY   = 0.9
@@ -65,14 +66,7 @@ _MINERAL_PARAMS = {
     "uranium":     _URANIUM_2022_PARAMS,
 }
 
-# China's effective control at the binding processing stage — queried live from KG.
-# Uranium has no CEPII/USGS processing data in the KG; 0.20 is a Russia-SWU proxy.
 _KG = build_critical_minerals_kg(data_dir="data/canonical")
-_CHINA_PROCESSING_SHARE = {
-    mineral: (_KG.effective_control_at("China", mineral, 2022)["effective_share"] or 0.20)
-    for mineral in ("graphite", "rare_earths", "cobalt", "lithium", "nickel")
-}
-_CHINA_PROCESSING_SHARE["uranium"] = 0.20  # Russia SWU proxy — no KG data
 
 _US_IMPORT_RELIANCE = {
     "graphite":    1.00,
@@ -111,26 +105,24 @@ def _build_cfg(
     label: str,
 ) -> ScenarioConfig:
     alpha_P = _stable_alpha_P(params)
-    kw = dict(
-        eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-        tau_K=params["tau_K"], eta_K=0.40, retire_rate=0.0,
-        eta_D=params["eta_D"],
-        demand_growth=DemandGrowthConfig(type="constant", g=params["g"]),
-        alpha_P=alpha_P,
-        cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
-    )
+    kw = {**ODE_DEFAULTS,
+          "tau_K": params["tau_K"], "eta_D": params["eta_D"],
+          "demand_growth": DemandGrowthConfig(type="constant", g=params["g"]),
+          "alpha_P": alpha_P}
     kw.update(extra)
     shocks = []
     if magnitude > 0:
+        # country="China" triggers KG scaling: ODE receives magnitude × effective_share
         shocks.append(ShockConfig(
             type="export_restriction",
             start_year=start_year,
             end_year=end_year,
             magnitude=magnitude,
+            country="China",
         ))
     return ScenarioConfig(
         name=f"{mineral}_{label}",
-        commodity="graphite",
+        commodity=mineral,
         seed=42,
         time=TimeConfig(dt=1.0, start_year=2024, end_year=PROJECTION_END),
         baseline=BASELINE_CFG,
@@ -161,7 +153,7 @@ def run_mineral_grid(mineral: str, params: dict, extra: dict) -> list[dict]:
 
     # Run baseline once
     bl_cfg = _build_cfg(mineral, params, extra, 0.0, 2026, 2026, "baseline")
-    bl_df, _ = run_scenario(bl_cfg)
+    bl_df, _ = run_scenario(bl_cfg, kg=_KG)
 
     rows = []
     for start_yr in start_years:
@@ -169,7 +161,7 @@ def run_mineral_grid(mineral: str, params: dict, extra: dict) -> list[dict]:
         for mag in magnitudes:
             label = f"start{start_yr}_ban{int(mag*100)}"
             cfg   = _build_cfg(mineral, params, extra, mag, start_yr, end_yr, label)
-            df, _ = run_scenario(cfg)
+            df, _ = run_scenario(cfg, kg=_KG)
 
             sc      = df.set_index("year")["P"]
             sc_base = sc.loc[base_year]
@@ -187,8 +179,8 @@ def run_mineral_grid(mineral: str, params: dict, extra: dict) -> list[dict]:
             # Total years affected = from start to normalisation
             total_affected = (norm_yr - start_yr) if norm_yr else None
 
-            # Effective global supply reduction = magnitude × China processing share
-            china_share = _CHINA_PROCESSING_SHARE[mineral]
+            # KG-derived effective global supply reduction
+            china_share = _KG.effective_control_at("China", mineral, start_yr)["effective_share"] or 0.0
             global_supply_reduction = mag * china_share
 
             rows.append({
@@ -213,7 +205,7 @@ def run_mineral_grid(mineral: str, params: dict, extra: dict) -> list[dict]:
 
 
 def print_mineral_table(mineral: str, rows: list[dict]) -> None:
-    china_share    = _CHINA_PROCESSING_SHARE[mineral]
+    china_share    = _KG.effective_control_at("China", mineral, 2022)["effective_share"] or 0.0
     us_reliance    = _US_IMPORT_RELIANCE[mineral]
     params         = _MINERAL_PARAMS[mineral]
     tau_K          = params["tau_K"]

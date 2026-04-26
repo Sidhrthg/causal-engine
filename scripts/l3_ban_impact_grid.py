@@ -58,6 +58,7 @@ from src.minerals.predictability import (
     _cepii_series,
 )
 from src.minerals.knowledge_graph import build_critical_minerals_kg
+from src.minerals.constants import ODE_DEFAULTS
 
 _KG = build_critical_minerals_kg(data_dir="data/canonical")
 
@@ -188,17 +189,14 @@ def _build_cfg(mineral, m_cfg, extra_shocks, end_year, label):
     """Build scenario config for one mineral with optional forward ban shocks."""
     p = m_cfg["params"]
     alpha_P = _stable_alpha_P(p["alpha_P"], p["eta_D"])
-    kw = dict(
-        eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-        tau_K=p["tau_K"], eta_K=0.40, retire_rate=0.0, eta_D=p["eta_D"],
-        demand_growth=DemandGrowthConfig(type="constant", g=p["g"]),
-        alpha_P=alpha_P,
-        cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
-    )
+    kw = {**ODE_DEFAULTS,
+          "tau_K": p["tau_K"], "eta_D": p["eta_D"],
+          "demand_growth": DemandGrowthConfig(type="constant", g=p["g"]),
+          "alpha_P": alpha_P}
     kw.update(m_cfg["extra"])
     return ScenarioConfig(
         name=f"{mineral}_{label}",
-        commodity="graphite",
+        commodity=mineral,
         seed=42,
         time=TimeConfig(dt=1.0, start_year=m_cfg["history_start"], end_year=end_year),
         baseline=BASELINE,
@@ -248,7 +246,7 @@ def run_l3_ban(mineral, m_cfg, magnitude, start_yr):
     # ── Step 1: Abduct U_t from ACTUAL historical trajectory ──────────────────
     # Use historical-only config (no forward ban) for abduction
     hist_cfg   = _build_cfg(mineral, m_cfg, [], PROJECTION_END, "hist_only")
-    hist_engine = CausalInferenceEngine(dag=dag, cfg=hist_cfg, seed=42)
+    hist_engine = CausalInferenceEngine(dag=dag, cfg=hist_cfg, seed=42, kg=_KG)
     abduction  = hist_engine.counterfactual_l3(
         observed_prices=observed,
         do_overrides={},
@@ -258,15 +256,17 @@ def run_l3_ban(mineral, m_cfg, magnitude, start_yr):
     log_residuals = abduction.abduction.inferred_noise
 
     # ── Step 2/3: Action + Prediction ─────────────────────────────────────────
+    # country="China" triggers KG scaling inside counterfactual_l3 via shocks_for_year
     ban_shocks = [ShockConfig(
         type="export_restriction",
         start_year=start_yr, end_year=end_yr,
         magnitude=magnitude,
+        country="China",
     )]
 
     # "With ban" — historical U_t + forward ban
     with_ban_cfg = _build_cfg(mineral, m_cfg, ban_shocks, PROJECTION_END, f"ban{int(magnitude*100)}")
-    with_ban_engine = CausalInferenceEngine(dag=dag, cfg=with_ban_cfg, seed=42)
+    with_ban_engine = CausalInferenceEngine(dag=dag, cfg=with_ban_cfg, seed=42, kg=_KG)
     with_ban_result = with_ban_engine.counterfactual_l3(
         observed_prices={},
         do_overrides={},
@@ -278,7 +278,7 @@ def run_l3_ban(mineral, m_cfg, magnitude, start_yr):
 
     # "No ban" reference — historical U_t only, no forward ban
     no_ban_cfg    = _build_cfg(mineral, m_cfg, [], PROJECTION_END, "no_ban")
-    no_ban_engine = CausalInferenceEngine(dag=dag, cfg=no_ban_cfg, seed=42)
+    no_ban_engine = CausalInferenceEngine(dag=dag, cfg=no_ban_cfg, seed=42, kg=_KG)
     no_ban_result = no_ban_engine.counterfactual_l3(
         observed_prices={},
         do_overrides={},

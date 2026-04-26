@@ -39,6 +39,7 @@ from src.minerals.simulate import run_scenario
 from src.minerals.predictability import (
     _GRAPHITE_2022_PARAMS, _RARE_EARTHS_2010_PARAMS,
 )
+from src.minerals.constants import ODE_DEFAULTS, SCENARIO_EXTRAS
 
 # ── L1 baseline: observational correlation (for comparison) ──────────────────
 
@@ -93,14 +94,11 @@ def _graphite_2022_cfg(restriction_magnitude: float) -> ScenarioConfig:
         time=TimeConfig(dt=1.0, start_year=2019, end_year=2027),
         baseline=BASELINE,
         parameters=ParametersConfig(
-            eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-            tau_K=p["tau_K"], eta_K=0.40, retire_rate=0.0,
-            eta_D=p["eta_D"],
+            **ODE_DEFAULTS,
+            tau_K=p["tau_K"], eta_D=p["eta_D"],
             demand_growth=DemandGrowthConfig(type="constant", g=p["g"]),
             alpha_P=p["alpha_P"],
-            cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
-            substitution_elasticity=0.8,   # documented L2 sub mechanism
-            substitution_cap=0.6,
+            **SCENARIO_EXTRAS["graphite"],
         ),
         policy=PolicyConfig(),
         shocks=[
@@ -126,18 +124,16 @@ def _rare_earths_cfg(restriction_magnitude: float) -> ScenarioConfig:
     p = _RARE_EARTHS_2010_PARAMS
     return ScenarioConfig(
         name=f"rare_earths_do_restriction_{restriction_magnitude:.2f}",
-        commodity="graphite",  # schema placeholder
+        commodity="rare_earths",
         seed=42,
         time=TimeConfig(dt=1.0, start_year=2005, end_year=2017),
         baseline=BASELINE,
         parameters=ParametersConfig(
-            eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-            tau_K=p["tau_K"], eta_K=0.40, retire_rate=0.0,
-            eta_D=p["eta_D"],
+            **ODE_DEFAULTS,
+            tau_K=p["tau_K"], eta_D=p["eta_D"],
             demand_growth=DemandGrowthConfig(type="constant", g=p["g"]),
             alpha_P=p["alpha_P"],
-            cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
-            substitution_elasticity=0.5, substitution_cap=0.4,
+            **SCENARIO_EXTRAS["rare_earths"],
         ),
         policy=PolicyConfig(),
         shocks=[

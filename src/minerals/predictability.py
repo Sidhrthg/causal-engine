@@ -52,6 +52,7 @@ from .schema import (
     ShockConfig, TimeConfig, load_scenario,
 )
 from .simulate import run_scenario
+from .constants import ODE_DEFAULTS, SCENARIO_EXTRAS
 
 
 # ── Per-commodity calibrated parameters ──────────────────────────────────────
@@ -72,6 +73,7 @@ _GRAPHITE_2022_PARAMS = dict(alpha_P=2.615, eta_D=-0.777, tau_K=7.830,  g=0.9727
 _LITHIUM_2016_PARAMS      = dict(alpha_P=1.229, eta_D=-0.010, tau_K=18.198, g=1.0262)
 _LITHIUM_2022_PARAMS      = dict(alpha_P=1.660, eta_D=-0.062, tau_K=1.337,  g=1.1098)
 _RARE_EARTHS_2010_PARAMS  = dict(alpha_P=1.754, eta_D=-0.933, tau_K=0.505,  g=1.0842)
+_RARE_EARTHS_2014_PARAMS  = dict(alpha_P=1.614, eta_D=-1.500, tau_K=1.589,  g=1.0999)
 _SOYBEANS_2022_PARAMS = dict(alpha_P=1.600, eta_D=-0.791, tau_K=8.445, g=1.0891)
 # cobalt_2016   2.800   -0.050   2.500  1.150   EV speculation, inelastic demand
 # cobalt_2022   1.800   -0.120   2.800  0.950   LFP adoption, DRC oversupply
@@ -525,8 +527,66 @@ def _rare_earths_2010() -> EpisodeResult:
             "substantially undershoots peak magnitude (model ~2× vs data ~7× at 2011). "
             "The extraordinary 644%% price spike reflects speculative hoarding and "
             "industry substitution lag that ODE exponential dampening cannot reproduce. "
-            "No same-commodity OOS pair available (single crisis episode); "
-            "cross-mineral transfer to/from graphite_2022 reported in Chapter 5."
+            "Same-commodity OOS pair: rare_earths_2014 (post-WTO oversupply regime). "
+            "Cross-mineral transfer to/from graphite_2022 reported in Chapter 5."
+        ),
+        model_idx=model_idx,
+        data_idx=data_idx,
+    )
+
+
+def _rare_earths_2014() -> EpisodeResult:
+    # L2 intervention: do(stockpile_release) — post-WTO Chinese inventory dump
+    # WTO ruled against China's quotas in Aug 2014. Chinese suppliers responded by
+    # flooding the market to reassert share, driving CEPII unit value from
+    # $13.11/kg (2014) to $8.43/kg (2017). Mountain Pass (Molycorp) entered
+    # bankruptcy 2015. China consolidated SOEs into six majors 2016.
+    # This is the structural complement to rare_earths_2010 — same commodity,
+    # opposite regime (oversupply not restriction).
+    p = _RARE_EARTHS_2014_PARAMS
+    cfg = ScenarioConfig(
+        name="rare_earths_2014",
+        commodity="rare_earths",
+        seed=42,
+        time=TimeConfig(dt=1.0, start_year=2012, end_year=2020),
+        baseline=BaselineConfig(P_ref=1.0, P0=1.0, K0=108.695652, I0=20.0, D0=100.0),
+        parameters=ParametersConfig(
+            **ODE_DEFAULTS,
+            tau_K=p["tau_K"], eta_D=p["eta_D"],
+            demand_growth=DemandGrowthConfig(type="constant", g=p["g"]),
+            alpha_P=p["alpha_P"],
+            **SCENARIO_EXTRAS["rare_earths"],
+        ),
+        policy=PolicyConfig(),
+        shocks=[
+            ShockConfig(type="stockpile_release", start_year=2015, end_year=2015, magnitude=15.0),
+            ShockConfig(type="demand_surge",      start_year=2015, end_year=2015, magnitude=-0.20),
+            ShockConfig(type="demand_surge",      start_year=2016, end_year=2016, magnitude=-0.10),
+            ShockConfig(type="demand_surge",      start_year=2017, end_year=2017, magnitude=-0.15),
+        ],
+        outputs=OutputsConfig(metrics=["avg_price"]),
+    )
+    df, _ = run_scenario(cfg)
+    m = df.set_index("year")
+    cepii = _cepii_series("data/canonical/cepii_rare_earths.csv", "China")
+    years = [2014, 2015, 2016, 2017, 2018]
+    base  = 2014
+    model_idx = m.loc[years, "P"] / m.loc[base, "P"]
+    data_idx  = cepii.loc[years, "implied_price"] / cepii.loc[base, "implied_price"]
+    return EpisodeResult(
+        name="rare_earths_2014_post_wto_oversupply",
+        commodity="rare_earths",
+        years=years,
+        directional_accuracy=_directional_accuracy(model_idx, data_idx),
+        spearman_rho=_spearman_rho(model_idx, data_idx),
+        log_price_rmse=_log_price_rmse(model_idx, data_idx),
+        magnitude_ratio=_magnitude_ratio(model_idx, data_idx),
+        known_gap=(
+            "Post-WTO Chinese supply flood: stockpile_release + demand_surge_negative "
+            "captures inventory dump and substitution-adoption demand erosion. "
+            "Calibrated via differential_evolution: DA=1.000, rho=0.900. "
+            "Structural params (alpha_P=1.614, eta_D=-1.500, tau_K=1.589) differ from "
+            "2010 restriction era — confirms regime-dependent calibration."
         ),
         model_idx=model_idx,
         data_idx=data_idx,
@@ -1271,6 +1331,99 @@ def _uranium_2022_sanctions() -> EpisodeResult:
 # Only the shocks are episode-specific (documented historical events).
 # This tests whether the causal mechanism generalises across time periods.
 
+def _rare_earths_2010_oos() -> EpisodeResult:
+    """Rare earths 2010 episode (restriction era) with structural params from 2014 (OOS)."""
+    p = _RARE_EARTHS_2014_PARAMS
+    cfg = ScenarioConfig(
+        name="rare_earths_2010_oos",
+        commodity="rare_earths",
+        seed=42,
+        time=TimeConfig(dt=1.0, start_year=2005, end_year=2016),
+        baseline=BaselineConfig(P_ref=1.0, P0=1.0, K0=108.695652, I0=20.0, D0=100.0),
+        parameters=ParametersConfig(
+            **ODE_DEFAULTS,
+            tau_K=p["tau_K"], eta_D=p["eta_D"],
+            demand_growth=DemandGrowthConfig(type="constant", g=p["g"]),
+            alpha_P=p["alpha_P"],
+            **SCENARIO_EXTRAS["rare_earths"],
+        ),
+        policy=PolicyConfig(),
+        shocks=[
+            ShockConfig(type="export_restriction", start_year=2010, end_year=2010, magnitude=0.25),
+            ShockConfig(type="export_restriction", start_year=2011, end_year=2011, magnitude=0.40),
+            ShockConfig(type="export_restriction", start_year=2012, end_year=2013, magnitude=0.20),
+            ShockConfig(type="demand_surge",       start_year=2013, end_year=2013, magnitude=-0.15),
+            ShockConfig(type="demand_surge",       start_year=2014, end_year=2014, magnitude=-0.20),
+        ],
+        outputs=OutputsConfig(metrics=["avg_price"]),
+    )
+    df, _ = run_scenario(cfg)
+    m = df.set_index("year")
+    cepii = _cepii_series("data/canonical/cepii_rare_earths.csv", "China")
+    years = [2008, 2009, 2010, 2011, 2012, 2013, 2014]
+    base = 2008
+    model_idx = m.loc[years, "P"] / m.loc[base, "P"]
+    data_idx = cepii.loc[years, "implied_price"] / cepii.loc[base, "implied_price"]
+    return EpisodeResult(
+        name="rare_earths_2010_oos",
+        commodity="rare_earths",
+        years=years,
+        directional_accuracy=_directional_accuracy(model_idx, data_idx),
+        spearman_rho=_spearman_rho(model_idx, data_idx),
+        log_price_rmse=_log_price_rmse(model_idx, data_idx),
+        magnitude_ratio=_magnitude_ratio(model_idx, data_idx),
+        known_gap="OOS: 2010 restriction episode run with 2014 oversupply structural params.",
+        model_idx=model_idx,
+        data_idx=data_idx,
+    )
+
+
+def _rare_earths_2014_oos() -> EpisodeResult:
+    """Rare earths 2014 episode (oversupply) with structural params from 2010 (OOS)."""
+    p = _RARE_EARTHS_2010_PARAMS
+    cfg = ScenarioConfig(
+        name="rare_earths_2014_oos",
+        commodity="rare_earths",
+        seed=42,
+        time=TimeConfig(dt=1.0, start_year=2012, end_year=2020),
+        baseline=BaselineConfig(P_ref=1.0, P0=1.0, K0=108.695652, I0=20.0, D0=100.0),
+        parameters=ParametersConfig(
+            **ODE_DEFAULTS,
+            tau_K=p["tau_K"], eta_D=p["eta_D"],
+            demand_growth=DemandGrowthConfig(type="constant", g=p["g"]),
+            alpha_P=p["alpha_P"],
+            **SCENARIO_EXTRAS["rare_earths"],
+        ),
+        policy=PolicyConfig(),
+        shocks=[
+            ShockConfig(type="stockpile_release", start_year=2015, end_year=2015, magnitude=15.0),
+            ShockConfig(type="demand_surge",      start_year=2015, end_year=2015, magnitude=-0.20),
+            ShockConfig(type="demand_surge",      start_year=2016, end_year=2016, magnitude=-0.10),
+            ShockConfig(type="demand_surge",      start_year=2017, end_year=2017, magnitude=-0.15),
+        ],
+        outputs=OutputsConfig(metrics=["avg_price"]),
+    )
+    df, _ = run_scenario(cfg)
+    m = df.set_index("year")
+    cepii = _cepii_series("data/canonical/cepii_rare_earths.csv", "China")
+    years = [2014, 2015, 2016, 2017, 2018]
+    base = 2014
+    model_idx = m.loc[years, "P"] / m.loc[base, "P"]
+    data_idx = cepii.loc[years, "implied_price"] / cepii.loc[base, "implied_price"]
+    return EpisodeResult(
+        name="rare_earths_2014_oos",
+        commodity="rare_earths",
+        years=years,
+        directional_accuracy=_directional_accuracy(model_idx, data_idx),
+        spearman_rho=_spearman_rho(model_idx, data_idx),
+        log_price_rmse=_log_price_rmse(model_idx, data_idx),
+        magnitude_ratio=_magnitude_ratio(model_idx, data_idx),
+        known_gap="OOS: 2014 oversupply episode run with 2010 restriction-era structural params.",
+        model_idx=model_idx,
+        data_idx=data_idx,
+    )
+
+
 def _graphite_2022_oos() -> EpisodeResult:
     """Graphite 2022 episode with structural params calibrated on 2008 (OOS)."""
     p = _GRAPHITE_2008_PARAMS  # ← out-of-sample: params from prior decade
@@ -1816,6 +1969,7 @@ def run_oos_evaluation() -> dict:
         _nickel_2022_oos(), _nickel_2006_oos(),
         _cobalt_2022_oos(), _cobalt_2016_oos(),
         _uranium_2022_oos(), _uranium_2007_oos(),
+        _rare_earths_2010_oos(), _rare_earths_2014_oos(),
     ]
 
     in_sample_da = {r.name: r.directional_accuracy for r in in_sample + excluded_in_sample}
@@ -1831,6 +1985,8 @@ def run_oos_evaluation() -> dict:
         "cobalt_2016_oos":    "cobalt_2016_ev_hype_and_crash",
         "uranium_2022_oos":   "uranium_2022_russia_sanctions_and_ban",
         "uranium_2007_oos":   "uranium_2007_cigar_lake_supply_squeeze",
+        "rare_earths_2010_oos": "rare_earths_2010_china_export_quota",
+        "rare_earths_2014_oos": "rare_earths_2014_post_wto_oversupply",
     }
 
     comparison = []
@@ -1852,6 +2008,8 @@ def run_oos_evaluation() -> dict:
                 "lithium_2022_oos":  "lithium_2016",
                 "uranium_2022_oos":   "uranium_2007",
                 "uranium_2007_oos":   "uranium_2022",
+                "rare_earths_2010_oos": "rare_earths_2014",
+                "rare_earths_2014_oos": "rare_earths_2010",
             }.get(r.name, "unknown"),
         })
 
@@ -1875,6 +2033,7 @@ def run_predictability_evaluation() -> List[EpisodeResult]:
         _graphite_2008(),
         _graphite_2023(),
         _rare_earths_2010(),
+        _rare_earths_2014(),
         _lithium_2016(),
         _lithium_2022(),
         _cobalt_2016_ev_hype(),

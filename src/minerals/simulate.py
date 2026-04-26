@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict
-from typing import Dict, Tuple
+from typing import TYPE_CHECKING, Dict, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -11,8 +11,24 @@ from .shocks import shocks_for_year
 from .model import State, step
 from .metrics import compute_metrics
 
+if TYPE_CHECKING:
+    from .knowledge_graph import CausalKnowledgeGraph
 
-def run_scenario(cfg: ScenarioConfig) -> Tuple[pd.DataFrame, Dict[str, float]]:
+
+def run_scenario(
+    cfg: ScenarioConfig,
+    kg: Optional["CausalKnowledgeGraph"] = None,
+) -> Tuple[pd.DataFrame, Dict[str, float]]:
+    """
+    Run a scenario simulation.
+
+    Args:
+        cfg: Scenario configuration.
+        kg:  Optional knowledge graph. When provided, any ShockConfig with a
+             ``country`` field has its export_restriction magnitude scaled by
+             ``kg.effective_control_at(country, cfg.commodity, year)``.
+             Shocks without a country are unaffected.
+    """
     rng = np.random.default_rng(cfg.seed)
 
     # initialize
@@ -28,7 +44,7 @@ def run_scenario(cfg: ScenarioConfig) -> Tuple[pd.DataFrame, Dict[str, float]]:
     years = cfg.years
     # run transitions for each year except last (since next state uses year+dt)
     for idx, year in enumerate(years):
-        shock = shocks_for_year(cfg.shocks, year)
+        shock = shocks_for_year(cfg.shocks, year, kg=kg, commodity=cfg.commodity)
         # record current state row first (pre-step)
         # step to next
         s_next, res = step(cfg, s, shock, rng)

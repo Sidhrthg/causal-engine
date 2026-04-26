@@ -38,6 +38,7 @@ from src.minerals.predictability import (
     _RARE_EARTHS_2010_PARAMS,
     _URANIUM_2007_PARAMS, _URANIUM_2022_PARAMS,
 )
+from src.minerals.constants import ODE_DEFAULTS
 
 
 # ── Stability fix ─────────────────────────────────────────────────────────────
@@ -59,9 +60,7 @@ def _verify_baseline_stable(params: dict, time_cfg, baseline, label: str) -> boo
         name=f"{label}_baseline", commodity="graphite", seed=42,
         time=time_cfg, baseline=baseline,
         parameters=ParametersConfig(
-            eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-            eta_K=0.40, retire_rate=0.0,
-            cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
+            **ODE_DEFAULTS,
             tau_K=params["tau_K"], eta_D=params["eta_D"],
             demand_growth=DemandGrowthConfig(type="constant", g=params["g"]),
             alpha_P=aP,
@@ -85,14 +84,13 @@ def _verify_baseline_stable(params: dict, time_cfg, baseline, label: str) -> boo
 
 def _build_cfg(name, params, time_cfg, baseline, shocks, extra=None):
     aP = _projection_alpha_P(params)
-    kw = dict(
-        eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-        eta_K=0.40, retire_rate=0.0,
-        cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
-        tau_K=params["tau_K"], eta_D=params["eta_D"],
-        demand_growth=DemandGrowthConfig(type="constant", g=params["g"]),
-        alpha_P=aP,
-    )
+    kw = {
+        **ODE_DEFAULTS,
+        "tau_K": params["tau_K"],
+        "eta_D": params["eta_D"],
+        "demand_growth": DemandGrowthConfig(type="constant", g=params["g"]),
+        "alpha_P": aP,
+    }
     if extra:
         kw.update(extra)
     return ScenarioConfig(

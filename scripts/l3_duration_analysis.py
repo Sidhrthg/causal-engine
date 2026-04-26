@@ -60,20 +60,11 @@ from src.minerals.predictability import (
     _URANIUM_2007_PARAMS, _URANIUM_2022_PARAMS,
     _cepii_series,
 )
+from src.minerals.constants import ODE_DEFAULTS, SCENARIO_EXTRAS, US_IMPORT_RELIANCE
 
 BASELINE = BaselineConfig(P_ref=1.0, P0=1.0, K0=108.695652, I0=20.0, D0=100.0)
 NORM_THRESHOLD = 0.10   # price "normalised" when within 10% of no-restriction baseline
 EULER_SAFETY  = 0.9     # cap |α_P × η_D| ≤ 0.9 for multi-year projection stability
-
-# US import reliance by mineral (USGS Mineral Commodity Summaries 2024, net import reliance %)
-_US_IMPORT_RELIANCE = {
-    "graphite":    100,
-    "rare_earths":  14,   # net; processing reliance on China is ~80%
-    "cobalt":       76,
-    "lithium":      50,   # domestic production ramping (Thacker Pass)
-    "nickel":       40,
-    "uranium":      95,   # enriched fuel nearly all imported
-}
 
 
 def _stable_alpha_P(alpha_P: float, eta_D: float) -> float:
@@ -101,12 +92,11 @@ def _graphite_factual_cfg() -> ScenarioConfig:
         time=TimeConfig(dt=1.0, start_year=2019, end_year=2030),
         baseline=BASELINE,
         parameters=ParametersConfig(
-            eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-            tau_K=p["tau_K"], eta_K=0.40, retire_rate=0.0, eta_D=p["eta_D"],
+            **ODE_DEFAULTS,
+            tau_K=p["tau_K"], eta_D=p["eta_D"],
             demand_growth=DemandGrowthConfig(type="constant", g=p["g"]),
             alpha_P=alpha_P_stable,          # stabilised: 1.158 (from 2.615)
-            cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
-            substitution_elasticity=0.8, substitution_cap=0.6,
+            **SCENARIO_EXTRAS["graphite"],
         ),
         policy=PolicyConfig(),
         shocks=[
@@ -129,17 +119,16 @@ def _rare_earths_factual_cfg() -> ScenarioConfig:
     alpha_P_stable = _stable_alpha_P(p["alpha_P"], p["eta_D"])  # 1.754 → 0.965
     return ScenarioConfig(
         name="rare_earths_2010_factual_stable",
-        commodity="graphite",  # schema placeholder
+        commodity="rare_earths",
         seed=42,
         time=TimeConfig(dt=1.0, start_year=2005, end_year=2020),
         baseline=BASELINE,
         parameters=ParametersConfig(
-            eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-            tau_K=p["tau_K"], eta_K=0.40, retire_rate=0.0, eta_D=p["eta_D"],
+            **ODE_DEFAULTS,
+            tau_K=p["tau_K"], eta_D=p["eta_D"],
             demand_growth=DemandGrowthConfig(type="constant", g=p["g"]),
             alpha_P=alpha_P_stable,          # stabilised: 0.965 (from 1.754)
-            cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
-            substitution_elasticity=0.5, substitution_cap=0.4,
+            **SCENARIO_EXTRAS["rare_earths"],
         ),
         policy=PolicyConfig(),
         shocks=[
@@ -163,17 +152,16 @@ def _cobalt_2016_factual_cfg() -> ScenarioConfig:
     alpha_P_stable = _stable_alpha_P(p["alpha_P"], p["eta_D"])  # → 1.661
     return ScenarioConfig(
         name="cobalt_2016_factual_stable",
-        commodity="graphite",
+        commodity="cobalt",
         seed=42,
         time=TimeConfig(dt=1.0, start_year=2013, end_year=2025),
         baseline=BASELINE,
         parameters=ParametersConfig(
-            eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-            tau_K=p["tau_K"], eta_K=0.40, retire_rate=0.0, eta_D=p["eta_D"],
+            **ODE_DEFAULTS,
+            tau_K=p["tau_K"], eta_D=p["eta_D"],
             demand_growth=DemandGrowthConfig(type="constant", g=p["g"]),
             alpha_P=alpha_P_stable,
-            cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
-            substitution_elasticity=0.5, substitution_cap=0.4,
+            **SCENARIO_EXTRAS["cobalt"],
         ),
         policy=PolicyConfig(),
         shocks=[
@@ -193,18 +181,16 @@ def _lithium_2022_factual_cfg() -> ScenarioConfig:
     alpha_P_stable = _stable_alpha_P(p["alpha_P"], p["eta_D"])  # 1.660 (stable)
     return ScenarioConfig(
         name="lithium_2022_factual_stable",
-        commodity="graphite",
+        commodity="lithium",
         seed=42,
         time=TimeConfig(dt=1.0, start_year=2019, end_year=2030),
         baseline=BASELINE,
         parameters=ParametersConfig(
-            eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-            tau_K=p["tau_K"], eta_K=0.40, retire_rate=0.0, eta_D=p["eta_D"],
+            **ODE_DEFAULTS,
+            tau_K=p["tau_K"], eta_D=p["eta_D"],
             demand_growth=DemandGrowthConfig(type="constant", g=p["g"]),
             alpha_P=alpha_P_stable,
-            cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
-            substitution_elasticity=0.6, substitution_cap=0.5,
-            fringe_capacity_share=0.4, fringe_entry_price=1.1,
+            **SCENARIO_EXTRAS["lithium"],
         ),
         policy=PolicyConfig(),
         shocks=[
@@ -225,16 +211,16 @@ def _uranium_2007_factual_cfg() -> ScenarioConfig:
     alpha_P_stable = _stable_alpha_P(p["alpha_P"], p["eta_D"])  # → 2.064
     return ScenarioConfig(
         name="uranium_2007_factual_stable",
-        commodity="graphite",
+        commodity="uranium",
         seed=42,
         time=TimeConfig(dt=1.0, start_year=2003, end_year=2015),
         baseline=BASELINE,
         parameters=ParametersConfig(
-            eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-            tau_K=p["tau_K"], eta_K=0.40, retire_rate=0.0, eta_D=p["eta_D"],
+            **ODE_DEFAULTS,
+            tau_K=p["tau_K"], eta_D=p["eta_D"],
             demand_growth=DemandGrowthConfig(type="constant", g=p["g"]),
             alpha_P=alpha_P_stable,
-            cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
+            **SCENARIO_EXTRAS["uranium"],
         ),
         policy=PolicyConfig(),
         shocks=[
@@ -274,18 +260,16 @@ def _nickel_2020_factual_cfg() -> ScenarioConfig:
     alpha_P_stable = _stable_alpha_P(p["alpha_P"], p["eta_D"])  # 1.621 (stable)
     return ScenarioConfig(
         name="nickel_2020_factual_stable",
-        commodity="graphite",
+        commodity="nickel",
         seed=42,
         time=TimeConfig(dt=1.0, start_year=2017, end_year=2028),
         baseline=BASELINE,
         parameters=ParametersConfig(
-            eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-            tau_K=p["tau_K"], eta_K=0.40, retire_rate=0.0, eta_D=p["eta_D"],
+            **ODE_DEFAULTS,
+            tau_K=p["tau_K"], eta_D=p["eta_D"],
             demand_growth=DemandGrowthConfig(type="constant", g=p["g"]),
             alpha_P=alpha_P_stable,
-            cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
-            substitution_elasticity=0.5, substitution_cap=0.4,
-            fringe_capacity_share=0.45, fringe_entry_price=1.15,
+            **SCENARIO_EXTRAS["nickel"],
         ),
         policy=PolicyConfig(),
         shocks=[
@@ -310,16 +294,16 @@ def _uranium_2022_factual_cfg() -> ScenarioConfig:
     alpha_P_stable = _stable_alpha_P(p["alpha_P"], p["eta_D"])  # → 0.890 (stable)
     return ScenarioConfig(
         name="uranium_2022_factual_stable",
-        commodity="graphite",
+        commodity="uranium",
         seed=42,
         time=TimeConfig(dt=1.0, start_year=2019, end_year=2032),
         baseline=BASELINE,
         parameters=ParametersConfig(
-            eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-            tau_K=p["tau_K"], eta_K=0.40, retire_rate=0.0, eta_D=p["eta_D"],
+            **ODE_DEFAULTS,
+            tau_K=p["tau_K"], eta_D=p["eta_D"],
             demand_growth=DemandGrowthConfig(type="constant", g=p["g"]),
             alpha_P=alpha_P_stable,
-            cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
+            **SCENARIO_EXTRAS["uranium"],
         ),
         policy=PolicyConfig(),
         shocks=[
@@ -808,7 +792,7 @@ Pearl Layer 3 — why this cannot be answered by L1 or L2:
 
     for row in sorted(summary_rows, key=_sort_key):
         mineral = row.get("mineral", "?")
-        us_rely = _US_IMPORT_RELIANCE.get(mineral, "?")
+        us_rely = int(US_IMPORT_RELIANCE.get(mineral, 0) * 100) if mineral in US_IMPORT_RELIANCE else "?"
         tau_K   = row["tau_K"]
         bT      = row["benchmark_T"]
         ny      = row["norm_yr"]

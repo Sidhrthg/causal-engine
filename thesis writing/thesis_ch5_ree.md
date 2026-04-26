@@ -121,9 +121,18 @@ The RMSE = 0.72 and MagR = 0.18 document the primary limitation: **magnitude und
 
 The model correctly signals that a restriction of this magnitude causes a large price increase. It correctly predicts the direction and timing of the subsequent price collapse (2012–2014). What it cannot do is predict the extreme speculative overshoot. For policy purposes, the model's +2× prediction at peak provides a conservative lower bound; the historical +7× establishes the speculative ceiling under panic-buying conditions.
 
-### 5.4.4 No Same-Commodity OOS Pair
+### 5.4.4 Same-Commodity OOS: Regime-Dependence Finding
 
-The rare_earths_2010 episode has no same-commodity out-of-sample validation pair — there is only one major REE restriction crisis in the dataset. Cross-mineral OOS tests are reported in Chapter 4 of the results (cross-commodity parameter transfer table). The REE episode is used as a source for cross-mineral transfer to graphite_2022, which shares the processing-bottleneck structural feature; this transfer achieves DA = 0.667.
+A second REE episode — `rare_earths_2014_post_wto_oversupply` — was calibrated against the post-WTO China supply flood window (2014–2018). The WTO ruled against China's quotas in August 2014; Chinese suppliers reasserted market share by flooding the market, driving CEPII unit values from $13.11/kg (2014) to $8.43/kg (2017). Mountain Pass (Molycorp) entered Chapter 11 bankruptcy in 2015. The 2014 episode in-sample calibration achieves DA = 1.000, ρ = 0.900 with structural parameters α_P = 1.614, η_D = −1.500, τ_K = 1.589, g = 1.100 — qualitatively different from the 2010 restriction-era values (α_P = 1.754, η_D = −0.933, τ_K = 0.505).
+
+The same-commodity OOS test is now available and produces a stark result:
+
+- **2010 episode with 2014 (oversupply) parameters: DA = 0.333**
+- **2014 episode with 2010 (restriction) parameters: DA = 0.250**
+
+Neither parameter set generalises to the other regime. This is the strongest regime-dependence signal in the dataset: lithium and cobalt OOS pairs achieve DA ≥ 0.600 (cobalt: 1.000) across regimes, while rare earths drops to ≤ 0.333. The interpretation is structural rather than a model failure. A market under quota restriction with documented panic-buying and speculative hoarding (η_D ≈ −0.93, demand-pull amplification α_P ≈ 1.75) behaves nothing like the same market under post-quota flooding (η_D ≈ −1.50, more elastic demand response, faster supply ramp τ_K ≈ 1.6). The structural parameters of rare earths are regime-specific, not commodity-stable. This finding has direct policy implications: forward projections for rare earths must specify the assumed regime (restriction vs. oversupply); a single set of parameters does not predict both.
+
+Cross-mineral OOS tests are reported in Chapter 4 of the results (cross-commodity parameter transfer table). The REE 2010 parameters are also used as a source for cross-mineral transfer to graphite_2022, which shares the processing-bottleneck structural feature; this transfer achieves DA = 0.667.
 
 ---
 

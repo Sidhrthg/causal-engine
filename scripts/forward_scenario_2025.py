@@ -52,6 +52,7 @@ from src.minerals.predictability import (
     _NICKEL_2022_PARAMS,
     _URANIUM_2022_PARAMS,
 )
+from src.minerals.constants import ODE_DEFAULTS, SCENARIO_EXTRAS
 
 BASELINE_CFG = BaselineConfig(P_ref=1.0, P0=1.0, K0=108.695652, I0=20.0, D0=100.0)
 EULER_SAFETY  = 0.9
@@ -91,17 +92,6 @@ _DOMINANT_EXPORTER = {
     "uranium":     "Kazakhstan (43%) / Russia (15% pre-2023)",
 }
 
-# Substitution params by mineral (from predictability.py calibrations)
-_EXTRA_PARAMS = {
-    "graphite":    dict(substitution_elasticity=0.8, substitution_cap=0.6),
-    "rare_earths": dict(substitution_elasticity=0.5, substitution_cap=0.4),
-    "cobalt":      dict(substitution_elasticity=0.5, substitution_cap=0.4),
-    "lithium":     dict(substitution_elasticity=0.6, substitution_cap=0.5,
-                        fringe_capacity_share=0.4, fringe_entry_price=1.1),
-    "nickel":      dict(substitution_elasticity=0.5, substitution_cap=0.4,
-                        fringe_capacity_share=0.45, fringe_entry_price=1.15),
-    "uranium":     {},
-}
 
 
 def _build_forward_cfg(
@@ -115,14 +105,13 @@ def _build_forward_cfg(
 ) -> ScenarioConfig:
     """Build a 2025-forward ScenarioConfig for L2 projection."""
     alpha_P = _stable_alpha_P(params)
-    kw = dict(
-        eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-        tau_K=params["tau_K"], eta_K=0.40, retire_rate=0.0,
-        eta_D=params["eta_D"],
-        demand_growth=DemandGrowthConfig(type="constant", g=params["g"]),
-        alpha_P=alpha_P,
-        cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
-    )
+    kw = {
+        **ODE_DEFAULTS,
+        "tau_K": params["tau_K"],
+        "eta_D": params["eta_D"],
+        "demand_growth": DemandGrowthConfig(type="constant", g=params["g"]),
+        "alpha_P": alpha_P,
+    }
     kw.update(extra_params)
 
     shocks = []
@@ -136,7 +125,7 @@ def _build_forward_cfg(
 
     return ScenarioConfig(
         name=f"{mineral}_2025_{name_suffix}",
-        commodity="graphite",   # ODE is commodity-agnostic
+        commodity=mineral,
         seed=42,
         time=TimeConfig(dt=1.0, start_year=2024, end_year=2032),
         baseline=BASELINE_CFG,
@@ -294,7 +283,7 @@ Scenarios:
 
     all_meta = {}
     for mineral, params in _MINERAL_PARAMS.items():
-        extra = _EXTRA_PARAMS.get(mineral, {})
+        extra = SCENARIO_EXTRAS.get(mineral, {})
         meta = run_mineral_scenario(mineral, params, extra)
         all_meta[mineral] = meta
 

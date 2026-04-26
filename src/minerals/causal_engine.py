@@ -403,9 +403,11 @@ class CausalInferenceEngine:
         dag: CausalDAG,
         cfg: Optional[ScenarioConfig] = None,
         seed: int = 42,
+        kg=None,
     ) -> None:
         self.dag = dag
         self.cfg = cfg
+        self.kg = kg
         self._rng = np.random.default_rng(seed)
 
     # ------------------------------------------------------------------ #
@@ -735,6 +737,7 @@ class CausalInferenceEngine:
         treatment_var: str,
         treatment_value: float,
         outcome_vars: Optional[List[str]] = None,
+        country: Optional[str] = None,
     ) -> SimulationDoResult:
         """
         Layer 2 — Estimate P(Y|do(X=x)) by running the structural model.
@@ -760,7 +763,7 @@ class CausalInferenceEngine:
             outcome_vars = ["P", "shortage", "D", "Q_eff", "cover"]
 
         # Baseline run (no additional shock)
-        df_base, metrics_base = run_scenario(self.cfg)
+        df_base, metrics_base = run_scenario(self.cfg, kg=self.kg)
 
         # Build intervention config
         cfg_do = self.cfg.model_copy(deep=True)
@@ -772,6 +775,7 @@ class CausalInferenceEngine:
                 start_year=cfg_do.time.start_year,
                 end_year=cfg_do.time.end_year,
                 magnitude=treatment_value,
+                country=country,
             )
             cfg_do.shocks = list(cfg_do.shocks) + [new_shock]
         else:
@@ -782,7 +786,7 @@ class CausalInferenceEngine:
                 f"'export restriction', 'capacity', 'demand', 'stockpile', 'quota'."
             )
 
-        df_do, metrics_do = run_scenario(cfg_do)
+        df_do, metrics_do = run_scenario(cfg_do, kg=self.kg)
 
         # Compute effect on each outcome variable
         effect = {}
@@ -957,7 +961,7 @@ class CausalInferenceEngine:
         cf_rows = []
         for year in cfg.years:
             # Get factual shock
-            factual_shock = shocks_for_year(cfg.shocks, year)
+            factual_shock = shocks_for_year(cfg.shocks, year, kg=self.kg, commodity=cfg.commodity)
 
             # Apply counterfactual overrides (Action step)
             overrides = do_overrides.get(year)
@@ -1080,7 +1084,7 @@ class CausalInferenceEngine:
         # ── Step 1: Abduction ──────────────────────────────────────────────────
         # Always run the factual scenario — needed for factual_trajectory output
         # and for log-residual computation when precomputed_log_residuals is None.
-        factual_df, _ = run_scenario(cfg)
+        factual_df, _ = run_scenario(cfg, kg=self.kg)
         fd = factual_df.set_index("year")
 
         if base_year is None:
@@ -1174,7 +1178,7 @@ class CausalInferenceEngine:
         cf_rows = []
         for i, year in enumerate(cfg.years):
             # Action step: apply do_overrides for this year
-            factual_shock = shocks_for_year(cfg.shocks, year)
+            factual_shock = shocks_for_year(cfg.shocks, year, kg=self.kg, commodity=cfg.commodity)
             overrides = do_overrides.get(year)
             if overrides:
                 kwargs = dataclasses.asdict(factual_shock)
@@ -1257,7 +1261,7 @@ class CausalInferenceEngine:
         f_results: List[StepResult] = []
         s = state_0
         for year in years:
-            shock = shocks_for_year(cfg.shocks, year)
+            shock = shocks_for_year(cfg.shocks, year, kg=self.kg, commodity=cfg.commodity)
             s_next, res = step(cfg, s, shock, rng_f)
             f_states.append(s_next)
             f_results.append(res)
@@ -1268,7 +1272,7 @@ class CausalInferenceEngine:
         cf_results: List[StepResult] = []
         s = state_0
         for year in years:
-            factual_shock = shocks_for_year(cfg.shocks, year)
+            factual_shock = shocks_for_year(cfg.shocks, year, kg=self.kg, commodity=cfg.commodity)
             overrides = do_overrides_by_year.get(year)
             if overrides:
                 kwargs = dataclasses.asdict(factual_shock)
@@ -1321,8 +1325,8 @@ class CausalInferenceEngine:
             cfg_factual:        The scenario that actually happened.
             cfg_counterfactual: The alternative scenario.
         """
-        df_f, _ = run_scenario(cfg_factual)
-        df_cf, _ = run_scenario(cfg_counterfactual)
+        df_f, _ = run_scenario(cfg_factual, kg=self.kg)
+        df_cf, _ = run_scenario(cfg_counterfactual, kg=self.kg)
 
         # Build State/StepResult lists from DataFrames
         f_states = [

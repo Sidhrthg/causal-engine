@@ -27,6 +27,7 @@ from src.minerals.schema import (
 )
 from src.minerals.simulate import run_scenario
 from src.minerals.predictability import _eia_uranium_series, _directional_accuracy, _spearman_rho
+from src.minerals.constants import ODE_DEFAULTS
 
 # Documented historical shocks — fixed, not calibrated
 SHOCKS = [
@@ -54,16 +55,11 @@ BASE_YEAR = 2004
 
 
 def _run(alpha_P, eta_D, tau_K, g, eia):
-    kw = dict(
-        eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-        eta_K=0.40, retire_rate=0.0,
-        cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
-        tau_K=tau_K, eta_D=eta_D,
-        demand_growth=DemandGrowthConfig(type="constant", g=g),
-        alpha_P=alpha_P,
-    )
+    kw = {**ODE_DEFAULTS, "tau_K": tau_K, "eta_D": eta_D,
+          "demand_growth": DemandGrowthConfig(type="constant", g=g),
+          "alpha_P": alpha_P}
     cfg = ScenarioConfig(
-        name="u07_cal", commodity="graphite", seed=42,
+        name="u07_cal", commodity="uranium", seed=42,
         time=TIME_CFG, baseline=BASELINE,
         parameters=ParametersConfig(**kw),
         policy=PolicyConfig(), shocks=SHOCKS,
@@ -147,16 +143,11 @@ def main():
           f"tau_K={tau_K:.3f}, g={g:.4f})")
 
     # Year-by-year table
-    kw = dict(
-        eps=1e-9, u0=0.92, beta_u=0.10, u_min=0.70, u_max=1.00,
-        eta_K=0.40, retire_rate=0.0,
-        cover_star=0.20, lambda_cover=0.60, sigma_P=0.0,
-        tau_K=tau_K, eta_D=eta_D,
-        demand_growth=DemandGrowthConfig(type="constant", g=g),
-        alpha_P=alpha_P,
-    )
+    kw = {**ODE_DEFAULTS, "tau_K": tau_K, "eta_D": eta_D,
+          "demand_growth": DemandGrowthConfig(type="constant", g=g),
+          "alpha_P": alpha_P}
     cfg = ScenarioConfig(
-        name="u07_final", commodity="graphite", seed=42,
+        name="u07_final", commodity="uranium", seed=42,
         time=TIME_CFG, baseline=BASELINE,
         parameters=ParametersConfig(**kw),
         policy=PolicyConfig(), shocks=SHOCKS,
