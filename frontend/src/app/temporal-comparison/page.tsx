@@ -282,6 +282,13 @@ export default function TemporalComparisonPage() {
             </h1>
           </div>
           <div className="flex items-center gap-2">
+            <a
+              href="/api/kg/trajectory-export"
+              className="text-xs px-3 py-1.5 border border-indigo-200 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100"
+              title="Download all 6 commodities as a multi-page PDF (2 charts/page) — for the thesis appendix."
+            >
+              Download appendix PDF
+            </a>
             <label className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">
               Commodity
             </label>

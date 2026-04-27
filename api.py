@@ -1356,6 +1356,147 @@ def kg_yearly_shares(commodity: str):
     return {"commodity": commodity, "years": full_years, "series": out_series}
 
 
+@app.get("/api/kg/trajectory-export")
+def kg_trajectory_export():
+    """
+    Render share-trajectory line charts for all 6 critical minerals as a
+    publication-ready multi-page PDF (2 charts per page, landscape A4).
+
+    Used as the thesis appendix figure: every year's PRODUCES (dashed) and
+    PROCESSES (solid) share for every supplier, per commodity.
+    """
+    import io
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.backends.backend_pdf import PdfPages
+    from src.minerals.knowledge_graph import CausalKnowledgeGraph, RelationType
+
+    enriched_path = Path("data/canonical/enriched_kg.json")
+    if not enriched_path.exists():
+        raise HTTPException(status_code=500, detail="Enriched KG not loaded.")
+    kg = CausalKnowledgeGraph.load(str(enriched_path))
+
+    commodities = ["graphite", "rare_earths", "cobalt", "lithium", "nickel", "uranium"]
+    commodity_titles = {
+        "graphite": "Graphite — supplier shares 1995–2024",
+        "rare_earths": "Rare Earths — supplier shares 2005–2024",
+        "cobalt": "Cobalt — supplier shares 2010–2024",
+        "lithium": "Lithium — supplier shares 2010–2024",
+        "nickel": "Nickel — supplier shares 2010–2024",
+        "uranium": "Uranium — supplier shares 2003–2024",
+    }
+    country_color = {
+        "china": "#dc2626", "drc": "#a16207", "indonesia": "#7c3aed",
+        "australia": "#16a34a", "chile": "#2563eb", "russia": "#475569",
+        "kazakhstan": "#0891b2", "canada": "#ea580c", "philippines": "#9333ea",
+        "mozambique": "#65a30d", "madagascar": "#84cc16", "brazil": "#10b981",
+    }
+
+    def _series_for(commodity: str):
+        cid = kg.resolve_id(commodity)
+        bucket: dict = {}
+        all_years: set[int] = set()
+        for u, v, data in kg._graph.edges(data=True):
+            if v != cid:
+                continue
+            rel = data["relationship"]
+            if rel.relation_type not in (RelationType.PRODUCES, RelationType.PROCESSES):
+                continue
+            kind = "produces" if rel.relation_type == RelationType.PRODUCES else "processes"
+            yearly = (rel.properties or {}).get("yearly_share") or {}
+            if not yearly:
+                continue
+            data_dict = {int(y): float(s) for y, s in yearly.items()}
+            bucket[(u, kind)] = data_dict
+            all_years.update(data_dict.keys())
+        if not all_years:
+            return [], []
+        years = list(range(min(all_years), max(all_years) + 1))
+        out = []
+        for (country, kind), d in bucket.items():
+            sorted_keys = sorted(d.keys())
+            interp = []
+            for y in years:
+                if y in d:
+                    interp.append(d[y])
+                elif y < sorted_keys[0]:
+                    interp.append(d[sorted_keys[0]])
+                elif y > sorted_keys[-1]:
+                    interp.append(d[sorted_keys[-1]])
+                else:
+                    lo = max(k for k in sorted_keys if k <= y)
+                    hi = min(k for k in sorted_keys if k >= y)
+                    t = 0 if lo == hi else (y - lo) / (hi - lo)
+                    interp.append(d[lo] * (1 - t) + d[hi] * t)
+            peak = max(interp) if interp else 0
+            out.append({"country": country, "kind": kind, "share": interp, "peak": peak})
+        out.sort(key=lambda s: (s["kind"] != "processes", -s["peak"]))
+        return years, out
+
+    def _plot(ax, commodity: str):
+        years, series = _series_for(commodity)
+        if not series:
+            ax.text(0.5, 0.5, f"No share data for {commodity}", ha="center", va="center",
+                    transform=ax.transAxes, fontsize=11, color="#94a3b8")
+            ax.set_axis_off()
+            return
+        for s in series:
+            color = country_color.get(s["country"], "#94a3b8")
+            linestyle = "--" if s["kind"] == "produces" else "-"
+            label = f"{s['country']} {s['kind']}"
+            ax.plot(years, s["share"], color=color, linestyle=linestyle,
+                    linewidth=1.8, label=label, alpha=0.9)
+        ax.set_title(commodity_titles[commodity], fontsize=11, fontweight="bold", loc="left", pad=8)
+        ax.set_xlabel("Year", fontsize=9)
+        ax.set_ylabel("Share of global supply", fontsize=9)
+        ax.set_ylim(0, 1.0)
+        ax.set_xlim(years[0], years[-1])
+        ax.grid(True, alpha=0.25, linewidth=0.5)
+        ax.tick_params(axis="both", which="major", labelsize=8)
+        ax.set_yticks([0, 0.25, 0.5, 0.75, 1.0])
+        ax.set_yticklabels(["0%", "25%", "50%", "75%", "100%"])
+        ax.legend(loc="best", fontsize=7, framealpha=0.9, ncol=2)
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+
+    buf = io.BytesIO()
+    with PdfPages(buf) as pdf:
+        # Title page
+        fig = plt.figure(figsize=(11, 8.5))
+        fig.text(0.5, 0.65, "Critical Minerals Causal Engine",
+                 ha="center", fontsize=22, fontweight="bold")
+        fig.text(0.5, 0.55, "Appendix — Year-by-Year Supplier Share Trajectories",
+                 ha="center", fontsize=14, color="#475569")
+        fig.text(0.5, 0.45,
+                 "PRODUCES (dashed) and PROCESSES (solid) share per supplier, per commodity.\n"
+                 "Sources: USGS MCS 2024, World Nuclear Association, CEPII BACI,\n"
+                 "Cobalt Institute, Benchmark Mineral Intelligence.",
+                 ha="center", fontsize=10, color="#64748b")
+        pdf.savefig(fig, bbox_inches="tight")
+        plt.close(fig)
+
+        # 2 charts per page (landscape A4 ≈ 11" × 8.5")
+        for i in range(0, len(commodities), 2):
+            fig, axes = plt.subplots(2, 1, figsize=(11, 8.5),
+                                     gridspec_kw={"hspace": 0.45})
+            _plot(axes[0], commodities[i])
+            if i + 1 < len(commodities):
+                _plot(axes[1], commodities[i + 1])
+            else:
+                axes[1].set_axis_off()
+            pdf.savefig(fig, bbox_inches="tight")
+            plt.close(fig)
+
+    buf.seek(0)
+    from fastapi.responses import StreamingResponse
+    return StreamingResponse(
+        buf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": 'attachment; filename="kg_supplier_share_trajectories.pdf"'},
+    )
+
+
 @app.get("/api/kg/year-snapshot")
 def kg_year_snapshot(commodity: str, year: int, shock_origin: Optional[str] = None):
     """
