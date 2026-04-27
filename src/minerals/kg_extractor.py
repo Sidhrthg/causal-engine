@@ -34,8 +34,11 @@ Usage
 
 from __future__ import annotations
 
+import hashlib
 import json
+import os
 import re
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from src.llm.chat import chat_completion, is_chat_available
@@ -172,9 +175,45 @@ class KGExtractor:
         self,
         pipeline=None,
         min_confidence: float = 0.4,
+        cache_path: Optional[str] = None,
+        use_cache: bool = True,
     ):
         self.pipeline = pipeline
         self.min_confidence = min_confidence
+        # Triple extraction cache: sha1(text+source+year) -> list of triples.
+        # Avoids repeat Claude calls when the same doc chunk is seen across
+        # multiple scenarios or reruns. Override path via KG_EXTRACTOR_CACHE env.
+        default_path = os.getenv(
+            "KG_EXTRACTOR_CACHE",
+            "outputs/cache/kg_extractor_triples.json",
+        )
+        self._cache_path: Path = Path(cache_path or default_path)
+        self._use_cache: bool = use_cache
+        self._cache: Dict[str, List[Dict[str, Any]]] = self._load_cache()
+
+    def _load_cache(self) -> Dict[str, List[Dict[str, Any]]]:
+        if not self._use_cache:
+            return {}
+        try:
+            if self._cache_path.exists():
+                return json.loads(self._cache_path.read_text())
+        except Exception as exc:
+            logger.warning(f"Could not load triple cache {self._cache_path}: {exc}")
+        return {}
+
+    def _save_cache(self) -> None:
+        if not self._use_cache:
+            return
+        try:
+            self._cache_path.parent.mkdir(parents=True, exist_ok=True)
+            self._cache_path.write_text(json.dumps(self._cache, indent=2))
+        except Exception as exc:
+            logger.warning(f"Could not write triple cache {self._cache_path}: {exc}")
+
+    @staticmethod
+    def _cache_key(text: str, source: str, year: Optional[str]) -> str:
+        payload = f"{text[:3000]}||{source}||{year or ''}"
+        return hashlib.sha1(payload.encode("utf-8")).hexdigest()
 
     # ------------------------------------------------------------------
     # Core extraction
@@ -201,6 +240,10 @@ class KGExtractor:
                  "confidence": float, "evidence": str,
                  "year": str | None, "source": str}
         """
+        cache_key = self._cache_key(text, source, year) if self._use_cache else ""
+        if cache_key and cache_key in self._cache:
+            return self._cache[cache_key]
+
         if not is_chat_available():
             logger.warning("No LLM backend — extract_from_text returns []")
             return []
@@ -244,6 +287,11 @@ class KGExtractor:
             })
 
         logger.debug(f"Extracted {len(results)} triples from '{source}'")
+
+        if cache_key:
+            self._cache[cache_key] = results
+            self._save_cache()
+
         return results
 
     # ------------------------------------------------------------------
