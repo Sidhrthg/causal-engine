@@ -1379,6 +1379,28 @@ def kg_snapshots_export():
     )
 
 
+@app.get("/api/kg/commodity-pdf")
+def kg_commodity_pdf(commodity: str):
+    """
+    Per-commodity year-by-year KG PDF (one PNG per page, every year covered
+    by yearly_share data). Built locally via scripts/build_knowledge_graphs_folder.py
+    and shipped in the Docker image.
+
+    Valid commodities: graphite, rare_earths, cobalt, lithium, nickel, uranium.
+    """
+    safe = re.sub(r"[^a-z_]", "", commodity.lower())
+    if not safe:
+        raise HTTPException(status_code=400, detail="commodity is required")
+    pdf_path = Path("Knowledge Graphs") / safe / f"{safe}_kg.pdf"
+    if not pdf_path.exists():
+        raise HTTPException(status_code=404, detail=f"PDF not found for {safe}.")
+    return FileResponse(
+        path=str(pdf_path),
+        media_type="application/pdf",
+        filename=f"{safe}_knowledge_graphs.pdf",
+    )
+
+
 @app.get("/api/kg/yearly-grid-export")
 def kg_yearly_grid_export():
     """

@@ -22,6 +22,13 @@ outputs/kg_scenarios/temporal/*
 !outputs/kg_scenarios/kg_snapshots_appendix.pdf
 !outputs/kg_scenarios/kg_yearly_grid_appendix.pdf
 
+# Knowledge Graphs/ folder: track per-commodity PDFs and the README, but
+# gitignore the per-year PNGs (~114MB total, regen via
+# scripts/build_knowledge_graphs_folder.py).
+Knowledge Graphs/*/*.png
+!Knowledge Graphs/*/*.pdf
+!Knowledge Graphs/README.md
+
 # HippoRAG index (large parquets; not in repo)
 data/documents/hipporag_index/
 

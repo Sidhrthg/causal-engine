@@ -38,6 +38,9 @@ COPY data/canonical/ ./data_init/canonical/
 # Pre-rendered KG scenario PNGs (validation + predictive). Served instantly
 # at /api/static/kg_scenarios/{validation,predictive}/*.png.
 COPY outputs/kg_scenarios/ ./outputs/kg_scenarios/
+# Per-commodity year-by-year KG PDFs (one PDF per commodity, served via
+# /api/kg/commodity-pdf?commodity=X). Per-year PNGs excluded for size.
+COPY ["Knowledge Graphs/", "./Knowledge Graphs/"]
 # scripts/run_knowledge_graph.py is imported by /api/kg/render-scenario
 COPY scripts/ ./scripts/
 

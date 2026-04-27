@@ -297,11 +297,11 @@ export default function TemporalComparisonPage() {
               KG Renders PDF
             </a>
             <a
-              href="/api/kg/yearly-grid-export"
+              href={`/api/kg/commodity-pdf?commodity=${commodity}`}
               className="text-xs px-3 py-1.5 border border-rose-200 bg-rose-50 text-rose-700 rounded-lg hover:bg-rose-100"
-              title="Every-2-year KG snapshots per commodity, 1/page (76 KGs, 16MB) — full yearly grid for thesis."
+              title={`Every year for ${commodity} (1 KG per page) — for thesis chapter on this mineral.`}
             >
-              Yearly Grid PDF
+              {commodity.replace('_', ' ')} (every year) PDF
             </a>
             <label className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">
               Commodity

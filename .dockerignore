@@ -26,6 +26,14 @@ outputs
 !outputs/kg_scenarios/temporal/*.png
 !outputs/kg_scenarios/kg_snapshots_appendix.pdf
 !outputs/kg_scenarios/kg_yearly_grid_appendix.pdf
+
+# Per-commodity PDFs from Knowledge Graphs/ folder (PNGs excluded for size)
+!Knowledge Graphs
+!Knowledge Graphs/*
+!Knowledge Graphs/*/
+!Knowledge Graphs/*/*.pdf
+!Knowledge Graphs/README.md
+Knowledge Graphs/*/*.png
 runs
 *.egg-info
 dist
