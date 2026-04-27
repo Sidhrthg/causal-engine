@@ -10,10 +10,13 @@ outputs/*
 outputs/kg_scenarios/*
 !outputs/kg_scenarios/validation/
 !outputs/kg_scenarios/predictive/
+!outputs/kg_scenarios/temporal/
 outputs/kg_scenarios/validation/*
 outputs/kg_scenarios/predictive/*
+outputs/kg_scenarios/temporal/*
 !outputs/kg_scenarios/validation/*.png
 !outputs/kg_scenarios/predictive/*.png
+!outputs/kg_scenarios/temporal/*.png
 
 # HippoRAG index (large parquets; not in repo)
 data/documents/hipporag_index/

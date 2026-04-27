@@ -1188,6 +1188,81 @@ def _get_scenario_renderer():
 _SCENARIO_ID_RE = re.compile(r"[^A-Za-z0-9_\-]+")
 
 
+@app.get("/api/kg/temporal-comparison")
+def kg_temporal_comparison(commodity: Optional[str] = None):
+    """
+    Return year-by-year KG snapshots for one or all commodities.
+
+    For each commodity, returns 3 chronological snapshots (pre/during/post
+    a structural break) with PNG URLs and effective-control deltas — useful
+    for showing how supply chains shift over time (thesis figures).
+
+    Query params:
+      commodity: filter to one commodity (graphite, rare_earths, cobalt,
+                 lithium, nickel, uranium). Omit to return all 6 series.
+    """
+    from scripts.run_knowledge_graph import TEMPORAL_SERIES_DEFS, VALIDATION_SCENARIOS
+
+    def _png_url(sid: str) -> tuple[str, bool]:
+        # Validation PNGs live under validation/, temporal-only under temporal/
+        for subdir in ("validation", "temporal", "predictive"):
+            png_path = _KG_SCENARIO_DIR / subdir / f"{sid}.png"
+            if png_path.exists():
+                return f"/api/static/kg_scenarios/{subdir}/{sid}.png", True
+        return f"/api/static/kg_scenarios/temporal/{sid}.png", False
+
+    # Compute effective control at each snapshot year via the live KG so the
+    # frontend can show structural deltas (e.g. China graphite PROCESSES:
+    # 65% (2008) → 95% (2022)).
+    try:
+        from src.minerals.knowledge_graph import CausalKnowledgeGraph
+        enriched_path = Path("data/canonical/enriched_kg.json")
+        if enriched_path.exists():
+            kg_obj = CausalKnowledgeGraph.load(str(enriched_path))
+        else:
+            kg_obj = None
+    except Exception:
+        kg_obj = None
+
+    def _control(commodity_name: str, origin: str, year: int):
+        if kg_obj is None:
+            return None
+        try:
+            ctrl = kg_obj.effective_control_at(origin, commodity_name, year)
+            if not ctrl or ctrl.get("effective_share") is None:
+                return None
+            return {
+                "effective_share": float(ctrl["effective_share"]),
+                "binding": ctrl.get("binding", "unknown"),
+            }
+        except Exception:
+            return None
+
+    series_filter = (commodity or "").strip().lower() or None
+    out: dict = {}
+    for cmd, entries in TEMPORAL_SERIES_DEFS.items():
+        if series_filter and cmd != series_filter:
+            continue
+        snapshots = []
+        for sid, year, origin, title in entries:
+            url, available = _png_url(sid)
+            entry_commodity = cmd
+            ctrl = _control(entry_commodity, origin, year)
+            snapshots.append({
+                "scenario_id": sid,
+                "year": year,
+                "shock_origin": origin,
+                "commodity": entry_commodity,
+                "title": title,
+                "image_url": url,
+                "available": available,
+                "effective_share": ctrl["effective_share"] if ctrl else None,
+                "binding": ctrl["binding"] if ctrl else None,
+            })
+        out[cmd] = snapshots
+    return out
+
+
 @app.get("/api/kg/scenario-presets")
 def kg_scenario_presets():
     """

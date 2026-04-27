@@ -123,3 +123,12 @@ export async function batchEnrichKG(params: {
 }): Promise<import('./types').KGEnrichResponse> {
   return post<import('./types').KGEnrichResponse>('/api/kg/batch-enrich', params);
 }
+
+export async function getTemporalComparison(
+  commodity?: string,
+): Promise<import('./types').TemporalComparisonResponse> {
+  const qs = commodity ? `?commodity=${encodeURIComponent(commodity)}` : '';
+  const res = await fetch(`/api/kg/temporal-comparison${qs}`);
+  if (!res.ok) throw new Error('Failed to fetch temporal comparison');
+  return res.json();
+}

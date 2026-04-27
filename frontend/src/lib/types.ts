@@ -184,3 +184,19 @@ export interface ScenarioPresetsResponse {
 export interface KGEnrichResponse {
   result: string;
 }
+
+// ─── Temporal Comparison ─────────────────────────────────────────────────────
+
+export interface TemporalSnapshot {
+  scenario_id: string;
+  year: number;
+  shock_origin: string;
+  commodity: string;
+  title: string;
+  image_url: string;
+  available: boolean;
+  effective_share: number | null;
+  binding: string | null;
+}
+
+export type TemporalComparisonResponse = Record<string, TemporalSnapshot[]>;

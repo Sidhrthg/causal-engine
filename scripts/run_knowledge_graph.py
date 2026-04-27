@@ -81,6 +81,50 @@ PREDICTIVE_SCENARIOS = {
 
 ALL_SCENARIOS = {**VALIDATION_SCENARIOS, **PREDICTIVE_SCENARIOS}
 
+# ── Temporal comparison series ────────────────────────────────────────────────
+# Year-by-year snapshots per commodity. Each series shows how the supply chain
+# shifts across structurally meaningful years (pre / during / post regime
+# break). Reuses existing validation entries where possible.
+#
+# Schema: TEMPORAL_SCENARIOS[commodity] = [(scenario_id, year), ...] in chronological
+# order. The PNG paths resolve to outputs/kg_scenarios/temporal/<scenario_id>.png
+# unless the same scenario_id already exists in validation/ or predictive/, in
+# which case we reuse that PNG.
+
+TEMPORAL_SERIES_DEFS = {
+    "graphite":    [("graphite_2008",       2008, "china",     "Graphite 2008 — Pre-EV Industrial Cycle"),
+                    ("graphite_2015",       2015, "china",     "Graphite 2015 — EV Transition Begins"),
+                    ("graphite_2022",       2022, "china",     "Graphite 2022 — China Anode Processing Dominance")],
+    "rare_earths": [("rare_earths_2008",    2008, "china",     "Rare Earths 2008 — Pre-Quota Baseline"),
+                    ("rare_earths_2010",    2010, "china",     "Rare Earths 2010 — China Export Quota Crisis"),
+                    ("rare_earths_2014",    2014, "china",     "Rare Earths 2014 — Post-WTO Supply Flood")],
+    "cobalt":      [("cobalt_2010",         2010, "drc",       "Cobalt 2010 — Pre-EV DRC Concentration"),
+                    ("cobalt_2016",         2016, "drc",       "Cobalt 2016 — DRC Artisanal Mining Concentration"),
+                    ("cobalt_2022",         2022, "drc",       "Cobalt 2022 — Post-COVID Supply Recovery")],
+    "lithium":     [("lithium_2014",        2014, "chile",     "Lithium 2014 — Pre-EV Brine Era"),
+                    ("lithium_2016",        2016, "chile",     "Lithium 2016 — Atacama Supply Surge"),
+                    ("lithium_2022",        2022, "china",     "Lithium 2022 — China Battery-Grade Processing Lock-in")],
+    "nickel":      [("nickel_2006",         2006, "russia",    "Nickel 2006 — Norilsk / LME Squeeze"),
+                    ("nickel_2014",         2014, "indonesia", "Nickel 2014 — Indonesia First Ore Ban"),
+                    ("nickel_2022",         2022, "indonesia", "Nickel 2022 — Indonesia Ore Ban + HPAL Processing")],
+    "uranium":     [("uranium_2003",        2003, "canada",    "Uranium 2003 — Pre-Renaissance Canadian Supply"),
+                    ("uranium_2007",        2007, "canada",    "Uranium 2007 — Cigar Lake Flood (τ_K ≈ 14–20yr)"),
+                    ("uranium_2022",        2022, "russia",    "Uranium 2022 — Russia Sanctions / PRIA")],
+}
+
+# Flatten into a {scenario_id: scenario_dict} mapping, taking the first
+# occurrence (validation entries win over freshly-defined ones).
+TEMPORAL_SCENARIOS = {}
+for _commodity, _entries in TEMPORAL_SERIES_DEFS.items():
+    for _sid, _year, _origin, _title in _entries:
+        if _sid not in TEMPORAL_SCENARIOS and _sid not in VALIDATION_SCENARIOS:
+            TEMPORAL_SCENARIOS[_sid] = {
+                "year": _year,
+                "shock_origin": _origin,
+                "commodity": _commodity if _commodity != "rare_earths" else "rare_earths",
+                "title": _title,
+            }
+
 # ── Colour palette ────────────────────────────────────────────────────────────
 
 _CATEGORY_COLORS = {
@@ -578,6 +622,8 @@ def main():
                         help="Generate all 6 predictive scenario PNGs.")
     parser.add_argument("--all-scenarios", action="store_true",
                         help="Generate all 16 scenario PNGs.")
+    parser.add_argument("--temporal", action="store_true",
+                        help="Generate the temporal comparison series (year-by-year per commodity).")
     parser.add_argument("--scenario-dir", type=str, default="outputs/kg_scenarios",
                         help="Output directory (default: outputs/kg_scenarios/).")
     parser.add_argument("--skip-existing", action="store_true",
@@ -615,7 +661,7 @@ def main():
 
     # ── Init HippoRAG + KGExtractor (once — expensive) ───────────────────────
     needs_hipporag = (args.scenario or args.validation or
-                      args.predictive or args.all_scenarios)
+                      args.predictive or args.all_scenarios or args.temporal)
     pipeline  = None
     extractor = None
     if needs_hipporag:
@@ -662,13 +708,20 @@ def main():
         to_run = VALIDATION_SCENARIOS
     elif args.predictive:
         to_run = PREDICTIVE_SCENARIOS
+    elif args.temporal:
+        to_run = TEMPORAL_SCENARIOS
 
     if to_run:
         print(f"Generating {len(to_run)} scenario PNGs → {args.scenario_dir}/")
         failures = []
         for sid, s in to_run.items():
-            subdir = "predictive" if sid.startswith("pred_") else "validation"
-            out    = Path(args.scenario_dir) / subdir / f"{sid}.png"
+            if sid.startswith("pred_"):
+                subdir = "predictive"
+            elif sid in TEMPORAL_SCENARIOS:
+                subdir = "temporal"
+            else:
+                subdir = "validation"
+            out = Path(args.scenario_dir) / subdir / f"{sid}.png"
             if args.skip_existing and out.exists():
                 print(f"\n[{sid}]  skipped (PNG already exists)")
                 continue

@@ -22,6 +22,8 @@ outputs
 !outputs/kg_scenarios/validation/*.png
 !outputs/kg_scenarios/predictive
 !outputs/kg_scenarios/predictive/*.png
+!outputs/kg_scenarios/temporal
+!outputs/kg_scenarios/temporal/*.png
 runs
 *.egg-info
 dist
