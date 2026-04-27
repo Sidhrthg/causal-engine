@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import HowToUse from '@/components/HowToUse';
 import { getKnowledgeGraph } from '@/lib/api';
 import type { KGEntity, KGRelationship } from '@/lib/types';
@@ -145,9 +145,33 @@ export default function KnowledgeGraphPage() {
   const [selected, setSelected] = useState<Node | null>(null);
   const [stats, setStats] = useState({ nodes: 0, edges: 0 });
   const [relFilter, setRelFilter] = useState<string>('');
+  const [search, setSearch] = useState('');
+  const [focusMode, setFocusMode] = useState(false);
+  const [hoveredEdge, setHoveredEdge] = useState<Edge | null>(null);
+  const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
   const graphRef = useRef<{ nodes: Node[]; edges: Edge[] } | null>(null);
   const transformRef = useRef({ scale: 1, x: 0, y: 0 });
   const dragRef = useRef<{ active: boolean; lastX: number; lastY: number }>({ active: false, lastX: 0, lastY: 0 });
+
+  // Pre-compute search matches and 1-hop neighbour set for the selected node
+  const searchMatches = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q || !graphRef.current) return new Set<string>();
+    return new Set(graphRef.current.nodes
+      .filter((n) => n.id.toLowerCase().includes(q) ||
+                    n.aliases?.some((a) => a.toLowerCase().includes(q)))
+      .map((n) => n.id));
+  }, [search]);
+
+  const neighborhood = useMemo(() => {
+    if (!selected || !focusMode || !graphRef.current) return null;
+    const neigh = new Set<string>([selected.id]);
+    for (const e of graphRef.current.edges) {
+      if (e.source.id === selected.id) neigh.add(e.target.id);
+      else if (e.target.id === selected.id) neigh.add(e.source.id);
+    }
+    return neigh;
+  }, [selected, focusMode]);
 
   const draw = useCallback(() => {
     const canvas = canvasRef.current;
@@ -162,14 +186,32 @@ export default function KnowledgeGraphPage() {
     ctx.translate(tx, ty);
     ctx.scale(scale, scale);
 
+    const isInFocus = (id: string) => !neighborhood || neighborhood.has(id);
+    const isSearchMatch = (id: string) => searchMatches.size === 0 || searchMatches.has(id);
+
     // Draw edges
     for (const e of graph.edges) {
       if (relFilter && e.relation_type !== relFilter) continue;
+      const inFocus = isInFocus(e.source.id) && isInFocus(e.target.id);
+      const isHovered = hoveredEdge === e;
+      const baseColor = REL_COLORS[e.relation_type] ?? '#94a3b8';
       ctx.beginPath();
       ctx.moveTo(e.source.x, e.source.y);
       ctx.lineTo(e.target.x, e.target.y);
-      ctx.strokeStyle = (REL_COLORS[e.relation_type] ?? '#94a3b8') + '66';
-      ctx.lineWidth = 0.8;
+      // Hovered or selected-touching edges: full opacity + thicker
+      if (isHovered) {
+        ctx.strokeStyle = baseColor;
+        ctx.lineWidth = 2.4;
+      } else if (selected && (e.source.id === selected.id || e.target.id === selected.id)) {
+        ctx.strokeStyle = baseColor + 'cc';
+        ctx.lineWidth = 1.6;
+      } else if (!inFocus) {
+        ctx.strokeStyle = baseColor + '14'; // very dim
+        ctx.lineWidth = 0.6;
+      } else {
+        ctx.strokeStyle = baseColor + '66';
+        ctx.lineWidth = 0.8;
+      }
       ctx.stroke();
     }
 
@@ -177,24 +219,31 @@ export default function KnowledgeGraphPage() {
     for (const n of graph.nodes) {
       const r = 4 + Math.sqrt(n.degree) * 2;
       const color = TYPE_COLORS[n.entity_type] ?? '#94a3b8';
+      const inFocus = isInFocus(n.id);
+      const matched = isSearchMatch(n.id);
+      const dimmed = !inFocus || (search && !matched);
+      const highlighted = search && matched;
+
+      ctx.globalAlpha = dimmed ? 0.18 : 1.0;
       ctx.beginPath();
-      ctx.arc(n.x, n.y, r, 0, 2 * Math.PI);
+      ctx.arc(n.x, n.y, highlighted ? r + 2 : r, 0, 2 * Math.PI);
       ctx.fillStyle = n === selected ? '#fff' : color;
       ctx.strokeStyle = color;
-      ctx.lineWidth = n === selected ? 2.5 : 1;
+      ctx.lineWidth = n === selected ? 2.5 : highlighted ? 2 : 1;
       ctx.fill();
       ctx.stroke();
+      ctx.globalAlpha = 1.0;
 
-      // Label for high-degree nodes or selected
-      if (n.degree > 6 || n === selected) {
-        ctx.fillStyle = '#1e293b';
-        ctx.font = `${n === selected ? 'bold ' : ''}${10 / scale + 2}px system-ui`;
+      // Label for high-degree, selected, or search-matched nodes
+      if (n.degree > 6 || n === selected || highlighted) {
+        ctx.fillStyle = highlighted ? '#dc2626' : '#1e293b';
+        ctx.font = `${(n === selected || highlighted) ? 'bold ' : ''}${10 / scale + 2}px system-ui`;
         ctx.fillText(n.id.replace(/_/g, ' '), n.x + r + 2, n.y + 4);
       }
     }
 
     ctx.restore();
-  }, [selected, relFilter]);
+  }, [selected, relFilter, neighborhood, searchMatches, search, hoveredEdge]);
 
   const loadGraph = useCallback(async () => {
     setLoading(true);
@@ -241,12 +290,59 @@ export default function KnowledgeGraphPage() {
     dragRef.current = { active: true, lastX: e.clientX, lastY: e.clientY };
   };
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!dragRef.current.active) return;
-    transformRef.current.x += e.clientX - dragRef.current.lastX;
-    transformRef.current.y += e.clientY - dragRef.current.lastY;
-    dragRef.current.lastX = e.clientX;
-    dragRef.current.lastY = e.clientY;
-    draw();
+    // Pan branch
+    if (dragRef.current.active) {
+      transformRef.current.x += e.clientX - dragRef.current.lastX;
+      transformRef.current.y += e.clientY - dragRef.current.lastY;
+      dragRef.current.lastX = e.clientX;
+      dragRef.current.lastY = e.clientY;
+      draw();
+      return;
+    }
+    // Hover branch — find nearest edge for tooltip
+    const graph = graphRef.current;
+    if (!graph) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const { scale, x: tx, y: ty } = transformRef.current;
+    const mx = (e.clientX - rect.left - tx) / scale;
+    const my = (e.clientY - rect.top - ty) / scale;
+
+    // Distance from point to line segment
+    const distToSeg = (px: number, py: number, x1: number, y1: number, x2: number, y2: number) => {
+      const dx = x2 - x1, dy = y2 - y1;
+      const len2 = dx * dx + dy * dy;
+      if (len2 === 0) return Math.hypot(px - x1, py - y1);
+      let t = ((px - x1) * dx + (py - y1) * dy) / len2;
+      t = Math.max(0, Math.min(1, t));
+      return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
+    };
+
+    let closestEdge: Edge | null = null;
+    let minD = 6 / scale;
+    for (const ed of graph.edges) {
+      if (relFilter && ed.relation_type !== relFilter) continue;
+      const d = distToSeg(mx, my, ed.source.x, ed.source.y, ed.target.x, ed.target.y);
+      if (d < minD) { minD = d; closestEdge = ed; }
+    }
+
+    if (closestEdge !== hoveredEdge) {
+      setHoveredEdge(closestEdge);
+      if (closestEdge) {
+        setTooltip({
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top,
+          text: `${closestEdge.source.id.replace(/_/g, ' ')} → ${closestEdge.target.id.replace(/_/g, ' ')}: ${closestEdge.relation_type.replace(/_/g, ' ')}`,
+        });
+      } else {
+        setTooltip(null);
+      }
+      draw();
+    } else if (closestEdge && tooltip) {
+      // Just move the tooltip with the cursor
+      setTooltip({ x: e.clientX - rect.left, y: e.clientY - rect.top, text: tooltip.text });
+    }
   };
   const handleMouseUp = () => { dragRef.current.active = false; };
 
@@ -276,7 +372,28 @@ export default function KnowledgeGraphPage() {
               </span>
             </h1>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            {/* Search box */}
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search nodes…"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg pl-8 pr-2 py-1.5 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 w-44"
+              />
+              <svg className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z" />
+              </svg>
+              {search && (
+                <button
+                  onClick={() => setSearch('')}
+                  className="absolute right-2 top-1.5 text-zinc-400 hover:text-zinc-600 text-sm"
+                >
+                  ×
+                </button>
+              )}
+            </div>
             <select
               value={commodity}
               onChange={(e) => setCommodity(e.target.value)}
@@ -293,8 +410,20 @@ export default function KnowledgeGraphPage() {
               {relTypes.map((r) => <option key={r} value={r}>{r}</option>)}
             </select>
             <button
+              onClick={() => setFocusMode(!focusMode)}
+              disabled={!selected}
+              title={selected ? `Toggle focus — show only ${selected.id.replace(/_/g, ' ')} + neighbours` : 'Click a node first to enable focus mode'}
+              className={`text-xs px-3 py-1.5 border rounded-lg transition-colors ${
+                focusMode && selected
+                  ? 'bg-indigo-600 border-indigo-600 text-white'
+                  : 'border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed'
+              }`}
+            >
+              Focus
+            </button>
+            <button
               onClick={loadGraph}
-              className="text-xs px-3 py-1.5 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:bg-zinc-50 dark:bg-zinc-950 text-zinc-600"
+              className="text-xs px-3 py-1.5 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400"
             >
               Reset
             </button>
@@ -324,11 +453,19 @@ export default function KnowledgeGraphPage() {
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
+            onMouseLeave={() => { handleMouseUp(); setHoveredEdge(null); setTooltip(null); }}
             onWheel={handleWheel}
           />
-          <p className="absolute bottom-3 left-4 text-[10px] text-zinc-300">
-            Scroll to zoom · drag to pan · click node to inspect
+          {tooltip && (
+            <div
+              className="absolute pointer-events-none px-2 py-1 text-[11px] bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded shadow-lg z-20 whitespace-nowrap"
+              style={{ left: tooltip.x + 12, top: tooltip.y + 12 }}
+            >
+              {tooltip.text}
+            </div>
+          )}
+          <p className="absolute bottom-3 left-4 text-[10px] text-zinc-300 dark:text-zinc-600">
+            Scroll to zoom · drag to pan · click node to inspect · hover edge for relation · search/focus in header
           </p>
         </div>
 
