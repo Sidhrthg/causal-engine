@@ -9,18 +9,16 @@ Run after adding new scenarios:
 Outputs to outputs/kg_scenarios/kg_snapshots_appendix.pdf — committed to git
 and served by FastAPI at /api/kg/snapshots-export.
 
-Generated locally (not at request time) because bundling 24 PNGs blows past
-the 2GB Fly memory limit.
+Uses PIL for assembly so the source PNGs (rendered at dpi=200) are embedded
+at native resolution. Earlier matplotlib-imshow version blurred them at
+savefig DPI.
 """
 
 from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
+from PIL import Image, ImageDraw, ImageFont
 
 KG_DIR = Path("outputs/kg_scenarios")
 OUT_PATH = KG_DIR / "kg_snapshots_appendix.pdf"
@@ -67,10 +65,16 @@ COMMODITIES = {
 }
 
 KIND_BADGE = {
-    "historical": ("Historical episode", "#1d4ed8"),
-    "temporal": ("Temporal snapshot", "#0e7490"),
-    "predictive": ("Predictive scenario", "#a16207"),
+    "historical": ("Historical episode", (29, 78, 216)),
+    "temporal": ("Temporal snapshot", (14, 116, 144)),
+    "predictive": ("Predictive scenario", (161, 98, 7)),
 }
+
+DPI = 200
+PAGE_W = int(11.0 * DPI)
+PAGE_H = int(8.5 * DPI)
+MARGIN = int(0.4 * DPI)
+HALF_H = (PAGE_H - 2 * MARGIN) // 2
 
 
 def _resolve(sid: str) -> Path | None:
@@ -81,58 +85,108 @@ def _resolve(sid: str) -> Path | None:
     return None
 
 
+def _font(size: int, bold: bool = False) -> ImageFont.ImageFont:
+    candidates = (
+        ("/System/Library/Fonts/Helvetica.ttc", 1 if bold else 0),
+        ("/Library/Fonts/Arial.ttf", 0) if not bold else ("/Library/Fonts/Arial Bold.ttf", 0),
+        ("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold
+         else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 0),
+    )
+    for path, idx in candidates:
+        if Path(path).exists():
+            try:
+                return ImageFont.truetype(path, size, index=idx)
+            except Exception:
+                try:
+                    return ImageFont.truetype(path, size)
+                except Exception:
+                    continue
+    return ImageFont.load_default()
+
+
+def _draw_kg_panel(canvas: Image.Image, draw: ImageDraw.ImageDraw,
+                   commodity: str, year: int, kind: str, subtitle: str,
+                   png_path: Path, top_y: int) -> None:
+    """Draw one KG panel onto an existing canvas, anchored at (MARGIN, top_y)."""
+    title_font = _font(24, bold=True)
+    badge_font = _font(16)
+
+    # Header line
+    draw.text((MARGIN, top_y), f"{commodity} · {year}",
+              fill=(15, 23, 42), font=title_font)
+    badge_text, badge_color = KIND_BADGE.get(kind, ("", (100, 116, 139)))
+    draw.text((MARGIN, top_y + 36), f"{badge_text} — {subtitle}",
+              fill=badge_color, font=badge_font)
+
+    # Image area below header
+    img_top = top_y + 70
+    img_max_h = HALF_H - 90
+    img_max_w = PAGE_W - 2 * MARGIN
+    if not png_path.exists():
+        draw.text((MARGIN, img_top + 100), f"[render missing: {png_path.name}]",
+                  fill=(220, 38, 38), font=badge_font)
+        return
+    with Image.open(png_path) as img:
+        img.load()
+        sw, sh = img.size
+        scale = min(img_max_w / sw, img_max_h / sh)
+        if scale < 1.0:
+            img = img.resize((int(sw * scale), int(sh * scale)), Image.LANCZOS)
+        if img.mode != "RGB":
+            img = img.convert("RGB")
+        x = MARGIN + (img_max_w - img.width) // 2
+        canvas.paste(img, (x, img_top))
+
+
+def _build_title_page() -> Image.Image:
+    page = Image.new("RGB", (PAGE_W, PAGE_H), "white")
+    draw = ImageDraw.Draw(page)
+    draw.text((PAGE_W // 2 - 380, 360), "Critical Minerals Causal Engine",
+              fill=(15, 23, 42), font=_font(56, bold=True))
+    draw.text((PAGE_W // 2 - 240, 440), "Appendix — Knowledge Graph Renders",
+              fill=(71, 85, 105), font=_font(28))
+    body_font = _font(18)
+    bold_font = _font(18, bold=True)
+    body = (
+        "Each render: enriched KG snapshot at the indicated year, with shock",
+        "origin (dark red node), focal commodity, and 1-hop subgraph.",
+        "Edges annotated with year-specific PRODUCES / PROCESSES shares.",
+        "Effective control box (bottom-right) shows binding stage and percentage.",
+    )
+    y = 520
+    for line in body:
+        draw.text((MARGIN + 100, y), line, fill=(100, 116, 139), font=body_font)
+        y += 26
+    y += 20
+    draw.text((MARGIN + 100, y), "Contents:", fill=(15, 23, 42), font=bold_font)
+    y += 30
+    for cmd, items in COMMODITIES.items():
+        line = f"   {cmd} ({len(items)} renders)"
+        draw.text((MARGIN + 100, y), line, fill=(71, 85, 105), font=body_font)
+        y += 24
+    return page
+
+
 def main() -> None:
-    KG_DIR.mkdir(parents=True, exist_ok=True)
+    pages: list[Image.Image] = [_build_title_page()]
 
-    with PdfPages(OUT_PATH) as pdf:
-        # Title page
-        fig = plt.figure(figsize=(11, 8.5))
-        fig.text(0.5, 0.62, "Critical Minerals Causal Engine",
-                 ha="center", fontsize=22, fontweight="bold")
-        fig.text(0.5, 0.55, "Appendix — Knowledge Graph Renders",
-                 ha="center", fontsize=14, color="#475569")
-        fig.text(0.5, 0.42,
-                 "Each render: enriched KG snapshot at the indicated year, with shock\n"
-                 "origin (dark red node), focal commodity, and 1-hop subgraph.\n"
-                 "Edges annotated with year-specific PRODUCES / PROCESSES shares.\n"
-                 "Effective control box (bottom-right) shows the binding stage and percentage.",
-                 ha="center", fontsize=10, color="#64748b")
-        toc_y = 0.30
-        fig.text(0.30, toc_y, "Contents", fontsize=11, fontweight="bold", color="#1e293b")
-        toc_y -= 0.025
-        for cmd, items in COMMODITIES.items():
-            fig.text(0.30, toc_y, f"{cmd} ({len(items)} renders)", fontsize=9, color="#475569")
-            toc_y -= 0.022
-        pdf.savefig(fig, bbox_inches="tight")
-        plt.close(fig)
+    for commodity_name, items in COMMODITIES.items():
+        entries = [(sid, year, kind, subtitle, _resolve(sid))
+                   for sid, year, kind, subtitle in items
+                   if _resolve(sid) is not None]
+        for i in range(0, len(entries), 2):
+            page = Image.new("RGB", (PAGE_W, PAGE_H), "white")
+            draw = ImageDraw.Draw(page)
+            pair = entries[i:i + 2]
+            for ax_idx, (_sid, year, kind, subtitle, p) in enumerate(pair):
+                top_y = MARGIN + ax_idx * HALF_H
+                _draw_kg_panel(page, draw, commodity_name, year, kind, subtitle, p, top_y)
+            pages.append(page)
 
-        # Per-commodity pages, 2 KGs/page
-        for commodity_name, items in COMMODITIES.items():
-            entries = [(sid, year, kind, subtitle, _resolve(sid))
-                       for sid, year, kind, subtitle in items
-                       if _resolve(sid) is not None]
-            for i in range(0, len(entries), 2):
-                fig, axes = plt.subplots(2, 1, figsize=(11, 8.5),
-                                         gridspec_kw={"hspace": 0.18})
-                pair = entries[i:i + 2]
-                for ax_idx, (sid, year, kind, subtitle, p) in enumerate(pair):
-                    ax = axes[ax_idx]
-                    img = plt.imread(str(p))
-                    ax.imshow(img)
-                    ax.set_axis_off()
-                    label, color = KIND_BADGE.get(kind, ("", "#64748b"))
-                    ax.set_title(f"{commodity_name} · {year}", fontsize=11, fontweight="bold",
-                                 loc="left", pad=4)
-                    ax.text(0.0, -0.02, f"{label} — {subtitle}",
-                            fontsize=8, color=color, transform=ax.transAxes,
-                            ha="left", va="top", style="italic")
-                if len(pair) == 1:
-                    axes[1].set_axis_off()
-                pdf.savefig(fig, bbox_inches="tight", dpi=150)
-                plt.close(fig)
-
+    first, *rest = pages
+    first.save(OUT_PATH, "PDF", resolution=DPI, save_all=True, append_images=rest)
     size_mb = OUT_PATH.stat().st_size / 1024 / 1024
-    print(f"Wrote {OUT_PATH} ({size_mb:.1f} MB)")
+    print(f"Wrote {OUT_PATH} ({size_mb:.1f} MB, {len(pages)} pages).")
 
 
 if __name__ == "__main__":
