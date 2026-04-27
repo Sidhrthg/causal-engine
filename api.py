@@ -1174,7 +1174,11 @@ def _get_scenario_renderer():
         state["kg_obj"] = CausalKnowledgeGraph.load(str(enriched_path))
     if state["pipeline"] is None:
         from src.minerals.rag_pipeline import RAGPipeline
-        state["pipeline"] = RAGPipeline(backend="hipporag")
+        # backend="auto" tries raganything → hipporag → industrial → simple,
+        # using whichever is available. Production image only has "simple"
+        # installed (hipporag pulls torch==2.5.1 which conflicts with other
+        # deps); locally, hipporag is preferred when available.
+        state["pipeline"] = RAGPipeline(backend="auto")
     if state["extractor"] is None:
         from src.minerals.kg_extractor import KGExtractor
         state["extractor"] = KGExtractor(pipeline=state["pipeline"])
