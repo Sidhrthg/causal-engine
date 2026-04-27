@@ -200,3 +200,32 @@ export interface TemporalSnapshot {
 }
 
 export type TemporalComparisonResponse = Record<string, TemporalSnapshot[]>;
+
+export interface YearlyShareSeries {
+  country: string;
+  kind: 'produces' | 'processes';
+  share: (number | null)[];
+}
+
+export interface YearlySharesResponse {
+  commodity: string;
+  years: number[];
+  series: YearlyShareSeries[];
+}
+
+export interface YearSnapshotResponse {
+  scenario_id: string;
+  image_url: string;
+  year: number;
+  commodity: string;
+  shock_origin: string;
+  cached: boolean;
+  control: {
+    effective_share: number | null;
+    produces_share: number | null;
+    processes_share: number | null;
+    binding: string | null;
+  } | null;
+  node_count?: number;
+  edge_count?: number;
+}

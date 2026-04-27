@@ -3942,6 +3942,27 @@
         "auto_extracted": true
       },
       "aliases": []
+    },
+    {
+      "id": "uranium",
+      "entity_type": "commodity",
+      "properties": {
+        "criticality": "high",
+        "uses": [
+          "nuclear_fuel",
+          "defense"
+        ]
+      },
+      "aliases": []
+    },
+    {
+      "id": "kazakhstan",
+      "entity_type": "country",
+      "properties": {
+        "region": "central_asia",
+        "role": "producer"
+      },
+      "aliases": []
     }
   ],
   "relationships": [
@@ -11896,11 +11917,122 @@
         "auto_extracted": true,
         "year": "2019"
       }
+    },
+    {
+      "source_id": "kazakhstan",
+      "target_id": "uranium",
+      "relation_type": "produces",
+      "properties": {
+        "share": 0.43,
+        "yearly_share": {
+          "2003": 0.06,
+          "2007": 0.1,
+          "2010": 0.33,
+          "2014": 0.41,
+          "2018": 0.41,
+          "2022": 0.43
+        },
+        "provenance": "World Nuclear Association U Production 2024",
+        "confidence": "HIGH"
+      }
+    },
+    {
+      "source_id": "canada",
+      "target_id": "uranium",
+      "relation_type": "produces",
+      "properties": {
+        "share": 0.12,
+        "yearly_share": {
+          "2003": 0.3,
+          "2007": 0.23,
+          "2010": 0.18,
+          "2014": 0.16,
+          "2018": 0.13,
+          "2022": 0.12
+        },
+        "provenance": "World Nuclear Association U Production 2024; Cigar Lake / McArthur River",
+        "confidence": "HIGH"
+      }
+    },
+    {
+      "source_id": "australia",
+      "target_id": "uranium",
+      "relation_type": "produces",
+      "properties": {
+        "share": 0.1,
+        "yearly_share": {
+          "2003": 0.2,
+          "2007": 0.19,
+          "2010": 0.11,
+          "2014": 0.09,
+          "2018": 0.1,
+          "2022": 0.1
+        },
+        "provenance": "World Nuclear Association U Production 2024; Olympic Dam / Ranger",
+        "confidence": "HIGH"
+      }
+    },
+    {
+      "source_id": "russia",
+      "target_id": "uranium",
+      "relation_type": "produces",
+      "properties": {
+        "share": 0.05,
+        "yearly_share": {
+          "2003": 0.08,
+          "2007": 0.08,
+          "2010": 0.07,
+          "2014": 0.05,
+          "2018": 0.05,
+          "2022": 0.05
+        },
+        "provenance": "World Nuclear Association U Production 2024",
+        "confidence": "HIGH"
+      }
+    },
+    {
+      "source_id": "russia",
+      "target_id": "uranium",
+      "relation_type": "processes",
+      "properties": {
+        "product": "enriched_swu",
+        "yearly_share": {
+          "2003": 0.45,
+          "2007": 0.42,
+          "2010": 0.4,
+          "2014": 0.4,
+          "2018": 0.4,
+          "2022": 0.36,
+          "2024": 0.2
+        },
+        "provenance": "World Nuclear Association SWU Capacity 2024; PRIA May 2024",
+        "confidence": "HIGH",
+        "share": 0.36
+      }
+    },
+    {
+      "source_id": "kazakhstan",
+      "target_id": "uranium",
+      "relation_type": "processes",
+      "properties": {
+        "product": "u3o8_concentrate",
+        "yearly_share": {
+          "2003": 0.1,
+          "2007": 0.15,
+          "2010": 0.3,
+          "2014": 0.4,
+          "2018": 0.45,
+          "2022": 0.43
+        },
+        "provenance": "Kazatomprom Annual Report 2024",
+        "confidence": "HIGH",
+        "share": 0.43
+      }
     }
   ],
   "metadata": {
-    "num_entities": 472,
-    "num_relationships": 588,
+    "num_entities": 474,
+    "num_relationships": 594,
     "entity_types": [
       "commodity",
       "company",

@@ -1229,10 +1229,12 @@ def kg_temporal_comparison(commodity: Optional[str] = None):
             return None
         try:
             ctrl = kg_obj.effective_control_at(origin, commodity_name, year)
-            if not ctrl or ctrl.get("effective_share") is None:
+            if not ctrl:
                 return None
             return {
-                "effective_share": float(ctrl["effective_share"]),
+                "effective_share": float(ctrl["effective_share"]) if ctrl.get("effective_share") is not None else None,
+                "produces_share": float(ctrl["produces_share"]) if ctrl.get("produces_share") is not None else None,
+                "processes_share": float(ctrl["processes_share"]) if ctrl.get("processes_share") is not None else None,
                 "binding": ctrl.get("binding", "unknown"),
             }
         except Exception:
@@ -1257,10 +1259,191 @@ def kg_temporal_comparison(commodity: Optional[str] = None):
                 "image_url": url,
                 "available": available,
                 "effective_share": ctrl["effective_share"] if ctrl else None,
+                "produces_share": ctrl["produces_share"] if ctrl else None,
+                "processes_share": ctrl["processes_share"] if ctrl else None,
                 "binding": ctrl["binding"] if ctrl else None,
             })
         out[cmd] = snapshots
     return out
+
+
+@app.get("/api/kg/yearly-shares")
+def kg_yearly_shares(commodity: str):
+    """
+    Return PRODUCES and PROCESSES share trajectories for every country that
+    holds a non-zero share for the given commodity, across every year covered
+    by the seed `yearly_share` data.
+
+    Used by the temporal-comparison frontend to render share-over-time line
+    charts. Cheap (no rendering, no LLM calls).
+
+    Response:
+      { commodity, years: [...], series: [{country, kind: produces|processes, share: [...]}, ...] }
+    """
+    from src.minerals.knowledge_graph import (
+        CausalKnowledgeGraph, RelationType,
+    )
+
+    enriched_path = Path("data/canonical/enriched_kg.json")
+    if not enriched_path.exists():
+        raise HTTPException(status_code=500, detail="Enriched KG not loaded.")
+    kg = CausalKnowledgeGraph.load(str(enriched_path))
+
+    commodity_id = kg.resolve_id(commodity.lower())
+    # Walk all PRODUCES + PROCESSES edges into this commodity, collect per-country yearly shares
+    series: dict = {}  # (country, kind) -> {year: share}
+    all_years: set[int] = set()
+
+    for u, v, data in kg._graph.edges(data=True):
+        if v != commodity_id:
+            continue
+        rel = data["relationship"]
+        if rel.relation_type not in (RelationType.PRODUCES, RelationType.PROCESSES):
+            continue
+        kind = "produces" if rel.relation_type == RelationType.PRODUCES else "processes"
+        yearly = (rel.properties or {}).get("yearly_share") or {}
+        # yearly may have str keys (JSON) or int keys (Python). Normalize to int.
+        if not yearly:
+            # Single-share entry: spread across the full range as a constant
+            s = (rel.properties or {}).get("share")
+            if s is None:
+                continue
+            yearly = {y: float(s) for y in range(2000, 2025)}
+        norm = {int(y): float(v_) for y, v_ in yearly.items()}
+        series.setdefault((u, kind), {}).update(norm)
+        all_years.update(norm.keys())
+
+    if not all_years:
+        return {"commodity": commodity, "years": [], "series": []}
+
+    year_min, year_max = min(all_years), max(all_years)
+    full_years = list(range(year_min, year_max + 1))
+
+    # Linear-interpolate the per-country sparse year keys onto the full range
+    def _interp(data_dict: dict, years: list[int]) -> list[Optional[float]]:
+        if not data_dict:
+            return [None] * len(years)
+        sorted_years = sorted(data_dict.keys())
+        out: list[Optional[float]] = []
+        for y in years:
+            if y in data_dict:
+                out.append(data_dict[y])
+            elif y < sorted_years[0]:
+                out.append(data_dict[sorted_years[0]])
+            elif y > sorted_years[-1]:
+                out.append(data_dict[sorted_years[-1]])
+            else:
+                # Linear interp between bracketing keys
+                lo = max(yy for yy in sorted_years if yy <= y)
+                hi = min(yy for yy in sorted_years if yy >= y)
+                if lo == hi:
+                    out.append(data_dict[lo])
+                else:
+                    t = (y - lo) / (hi - lo)
+                    out.append(data_dict[lo] * (1 - t) + data_dict[hi] * t)
+        return out
+
+    out_series = []
+    for (country, kind), values_by_year in series.items():
+        out_series.append({
+            "country": country,
+            "kind": kind,
+            "share": _interp(values_by_year, full_years),
+        })
+    # Sort: processes ahead of produces (visual layering); within kind, larger peak first
+    out_series.sort(key=lambda s: (s["kind"] != "processes", -max((x for x in s["share"] if x is not None), default=0.0)))
+
+    return {"commodity": commodity, "years": full_years, "series": out_series}
+
+
+@app.get("/api/kg/year-snapshot")
+def kg_year_snapshot(commodity: str, year: int, shock_origin: Optional[str] = None):
+    """
+    On-demand KG snapshot for any (commodity, year) pair. Renders fast (~2-5s)
+    by skipping HippoRAG retrieval and Claude triple extraction — focal nodes
+    are just {shock_origin, commodity}, and the year-specific shares come from
+    the KG's effective_control_at(year). Filesystem-cached at
+    outputs/kg_scenarios/yearly/<commodity>_<origin>_<year>.png so subsequent
+    requests for the same (commodity, year) are instant.
+
+    Used by the temporal-comparison year slider.
+    """
+    try:
+        commodity = commodity.strip().lower()
+        if not shock_origin:
+            shock_origin = _DEFAULT_ORIGIN_BY_COMMODITY.get(commodity, commodity)
+        shock_origin = shock_origin.strip().lower()
+        scenario_id = f"{commodity}_{shock_origin}_{year}"
+        scenario_id = _SCENARIO_ID_RE.sub("_", scenario_id).strip("_")
+
+        out_dir = _KG_SCENARIO_DIR / "yearly"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        out_path = out_dir / f"{scenario_id}.png"
+        image_url = f"/api/static/kg_scenarios/yearly/{scenario_id}.png"
+
+        # Always compute the share data so the frontend has something to show
+        # even before the PNG renders.
+        from src.minerals.knowledge_graph import CausalKnowledgeGraph
+        enriched_path = Path("data/canonical/enriched_kg.json")
+        kg_obj = CausalKnowledgeGraph.load(str(enriched_path)) if enriched_path.exists() else None
+        ctrl = None
+        if kg_obj is not None:
+            try:
+                c = kg_obj.effective_control_at(shock_origin, commodity, int(year))
+                ctrl = {
+                    "effective_share": float(c["effective_share"]) if c.get("effective_share") is not None else None,
+                    "produces_share": float(c["produces_share"]) if c.get("produces_share") is not None else None,
+                    "processes_share": float(c["processes_share"]) if c.get("processes_share") is not None else None,
+                    "binding": c.get("binding", "unknown"),
+                }
+            except Exception:
+                ctrl = None
+
+        if out_path.exists():
+            return {
+                "scenario_id": scenario_id, "image_url": image_url,
+                "year": int(year), "commodity": commodity, "shock_origin": shock_origin,
+                "cached": True, "control": ctrl,
+            }
+
+        if kg_obj is None:
+            raise HTTPException(status_code=500, detail="Enriched KG not loaded.")
+
+        # Fast render — skip HippoRAG/Claude. Focal nodes = {shock_origin, commodity}.
+        from scripts.run_knowledge_graph import _render_scenario as render_fn
+        scenario = {
+            "year": int(year), "shock_origin": shock_origin,
+            "commodity": commodity,
+            "title": f"{commodity.title()} {year} — {shock_origin.upper()} snapshot",
+        }
+        stats = render_fn(
+            kg_obj=kg_obj, scenario_id=scenario_id, scenario=scenario,
+            output_path=str(out_path),
+            pipeline=None, extractor=None, enriched=True,
+        )
+        return {
+            "scenario_id": scenario_id, "image_url": image_url,
+            "year": int(year), "commodity": commodity, "shock_origin": shock_origin,
+            "cached": False, "control": ctrl,
+            "node_count": stats.get("node_count", 0),
+            "edge_count": stats.get("edge_count", 0),
+        }
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"{type(exc).__name__}: {exc}")
+
+
+_DEFAULT_ORIGIN_BY_COMMODITY = {
+    "graphite": "china",
+    "rare_earths": "china",
+    "cobalt": "drc",
+    "lithium": "chile",
+    "nickel": "indonesia",
+    "uranium": "russia",
+    "copper": "chile",
+    "soybeans": "usa",
+}
 
 
 @app.get("/api/kg/scenario-presets")

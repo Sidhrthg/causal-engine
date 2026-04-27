@@ -132,3 +132,29 @@ export async function getTemporalComparison(
   if (!res.ok) throw new Error('Failed to fetch temporal comparison');
   return res.json();
 }
+
+export async function getYearlyShares(
+  commodity: string,
+): Promise<import('./types').YearlySharesResponse> {
+  const res = await fetch(`/api/kg/yearly-shares?commodity=${encodeURIComponent(commodity)}`);
+  if (!res.ok) throw new Error('Failed to fetch yearly shares');
+  return res.json();
+}
+
+export async function getYearSnapshot(params: {
+  commodity: string;
+  year: number;
+  shock_origin?: string;
+}): Promise<import('./types').YearSnapshotResponse> {
+  const qs = new URLSearchParams({
+    commodity: params.commodity,
+    year: String(params.year),
+  });
+  if (params.shock_origin) qs.set('shock_origin', params.shock_origin);
+  const res = await fetch(`/api/kg/year-snapshot?${qs.toString()}`);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error((err as { detail: string }).detail || 'Snapshot failed');
+  }
+  return res.json();
+}

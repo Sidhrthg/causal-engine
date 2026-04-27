@@ -1707,6 +1707,7 @@ def build_critical_minerals_kg(
         ("niobium", {"criticality": "high", "uses": ["steel", "superconductors", "aerospace"]}),
         ("beryllium", {"criticality": "high", "uses": ["aerospace", "defense", "electronics"]}),
         ("cesium", {"criticality": "high", "uses": ["drilling", "atomic_clocks", "research"]}),
+        ("uranium", {"criticality": "high", "uses": ["nuclear_fuel", "defense"]}),
     ]
     for cid, props in commodities:
         kg.add_entity(Entity(id=cid, entity_type=EntityType.COMMODITY, properties=props))
@@ -1731,6 +1732,7 @@ def build_critical_minerals_kg(
         ("mozambique", {"region": "africa", "role": "producer"}),
         ("mexico", {"region": "north_america", "role": "producer"}),
         ("madagascar", {"region": "africa", "role": "producer"}),
+        ("kazakhstan", {"region": "central_asia", "role": "producer"}),
     ]
     for cid, props in countries:
         aliases = props.pop("aliases", [])
@@ -1818,6 +1820,27 @@ def build_critical_minerals_kg(
         ("russia", "titanium", {"share": 0.20}),
         ("usa", "beryllium", {"share": 0.65}),
         ("canada", "cesium", {"share": 0.15}),
+        # Uranium: World Nuclear Association 2024 production data
+        ("kazakhstan", "uranium", {
+            "share": 0.43,
+            "yearly_share": {2003: 0.06, 2007: 0.10, 2010: 0.33, 2014: 0.41, 2018: 0.41, 2022: 0.43},
+            "provenance": "World Nuclear Association U Production 2024",
+        }),
+        ("canada", "uranium", {
+            "share": 0.12,
+            "yearly_share": {2003: 0.30, 2007: 0.23, 2010: 0.18, 2014: 0.16, 2018: 0.13, 2022: 0.12},
+            "provenance": "World Nuclear Association U Production 2024; Cigar Lake / McArthur River",
+        }),
+        ("australia", "uranium", {
+            "share": 0.10,
+            "yearly_share": {2003: 0.20, 2007: 0.19, 2010: 0.11, 2014: 0.09, 2018: 0.10, 2022: 0.10},
+            "provenance": "World Nuclear Association U Production 2024; Olympic Dam / Ranger",
+        }),
+        ("russia", "uranium", {
+            "share": 0.05,
+            "yearly_share": {2003: 0.08, 2007: 0.08, 2010: 0.07, 2014: 0.05, 2018: 0.05, 2022: 0.05},
+            "provenance": "World Nuclear Association U Production 2024",
+        }),
     ]
     for country, commodity, props in production:
         kg.add_relationship(Relationship(
@@ -1873,6 +1896,17 @@ def build_critical_minerals_kg(
             "product": "npi_hpal_intermediate",
             "yearly_share": {2016: 0.15, 2019: 0.30, 2021: 0.45, 2022: 0.50},
             "provenance": "USGS MCS 2024; Indonesia Ministry of Energy",
+        }),
+        # Uranium enrichment (SWU services). Russia/Rosatom dominated pre-PRIA.
+        ("russia", "uranium", {
+            "product": "enriched_swu",
+            "yearly_share": {2003: 0.45, 2007: 0.42, 2010: 0.40, 2014: 0.40, 2018: 0.40, 2022: 0.36, 2024: 0.20},
+            "provenance": "World Nuclear Association SWU Capacity 2024; PRIA May 2024",
+        }),
+        ("kazakhstan", "uranium", {
+            "product": "u3o8_concentrate",
+            "yearly_share": {2003: 0.10, 2007: 0.15, 2010: 0.30, 2014: 0.40, 2018: 0.45, 2022: 0.43},
+            "provenance": "Kazatomprom Annual Report 2024",
         }),
     ]
     for country, commodity, props in processing:
