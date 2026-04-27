@@ -285,9 +285,16 @@ export default function TemporalComparisonPage() {
             <a
               href="/api/kg/trajectory-export"
               className="text-xs px-3 py-1.5 border border-indigo-200 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100"
-              title="Download all 6 commodities as a multi-page PDF (2 charts/page) — for the thesis appendix."
+              title="Share-trajectory line charts for all 6 commodities, 2/page — thesis appendix."
             >
-              Download appendix PDF
+              Charts PDF
+            </a>
+            <a
+              href="/api/kg/snapshots-export"
+              className="text-xs px-3 py-1.5 border border-violet-200 bg-violet-50 text-violet-700 rounded-lg hover:bg-violet-100"
+              title="Every pre-rendered KG snapshot (historical + temporal + predictive), 2/page — thesis appendix."
+            >
+              KG Renders PDF
             </a>
             <label className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">
               Commodity

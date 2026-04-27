@@ -1356,6 +1356,141 @@ def kg_yearly_shares(commodity: str):
     return {"commodity": commodity, "years": full_years, "series": out_series}
 
 
+@app.get("/api/kg/snapshots-export")
+def kg_snapshots_export():
+    """
+    Bundle every pre-rendered KG snapshot PNG into a multi-page PDF organised
+    by commodity (2 KG renders per page). Used as a thesis-appendix figure
+    showing the full KG visualisation set.
+    """
+    import io
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.backends.backend_pdf import PdfPages
+
+    # Map commodity → ordered list of (scenario_id, year, kind, title)
+    # kind ∈ {"historical", "temporal", "predictive"} — for the badge.
+    commodities = {
+        "Graphite": [
+            ("graphite_2008", 2008, "historical", "China export quota — pre-EV cycle"),
+            ("graphite_2015", 2015, "temporal", "EV transition begins"),
+            ("graphite_2022", 2022, "historical", "China anode processing 95% lock-in"),
+            ("pred_graphite_ban_2027", 2027, "predictive", "PREDICTIVE: full ban scenario"),
+        ],
+        "Rare Earths": [
+            ("rare_earths_2008", 2008, "temporal", "Pre-quota baseline"),
+            ("rare_earths_2010", 2010, "historical", "China export quota crisis"),
+            ("rare_earths_2014", 2014, "temporal", "Post-WTO supply flood"),
+            ("pred_ree_sweep_2028", 2028, "predictive", "PREDICTIVE: export sweep"),
+        ],
+        "Cobalt": [
+            ("cobalt_2010", 2010, "temporal", "Pre-EV DRC concentration"),
+            ("cobalt_2016", 2016, "historical", "DRC artisanal concentration"),
+            ("cobalt_2022", 2022, "historical", "Post-COVID recovery"),
+            ("pred_cobalt_instability_2027", 2027, "predictive", "PREDICTIVE: DRC instability"),
+        ],
+        "Lithium": [
+            ("lithium_2014", 2014, "temporal", "Pre-EV brine era"),
+            ("lithium_2016", 2016, "historical", "Atacama supply surge"),
+            ("lithium_2022", 2022, "historical", "China processing lock-in"),
+        ],
+        "Nickel": [
+            ("nickel_2006", 2006, "historical", "Norilsk / LME squeeze"),
+            ("nickel_2014", 2014, "temporal", "Indonesia first ore ban"),
+            ("nickel_2022", 2022, "historical", "Indonesia ban + HPAL"),
+            ("pred_indonesia_nickel_2028", 2028, "predictive", "PREDICTIVE: escalation"),
+        ],
+        "Uranium": [
+            ("uranium_2003", 2003, "temporal", "Pre-renaissance Canadian supply"),
+            ("uranium_2007", 2007, "historical", "Cigar Lake flood"),
+            ("uranium_2022", 2022, "temporal", "Russia sanctions / PRIA"),
+        ],
+        "Cross-cutting predictive": [
+            ("pred_us_vulnerability_2030", 2030, "predictive", "PREDICTIVE: US import vulnerability"),
+            ("pred_china_sweep_2030", 2030, "predictive", "PREDICTIVE: China full-sweep"),
+        ],
+    }
+
+    def _resolve_png(sid: str) -> Optional[Path]:
+        for sub in ("validation", "temporal", "predictive"):
+            p = _KG_SCENARIO_DIR / sub / f"{sid}.png"
+            if p.exists():
+                return p
+        return None
+
+    KIND_BADGE = {
+        "historical": ("Historical episode", "#1d4ed8"),
+        "temporal": ("Temporal snapshot", "#0e7490"),
+        "predictive": ("Predictive scenario", "#a16207"),
+    }
+
+    buf = io.BytesIO()
+    with PdfPages(buf) as pdf:
+        # ── Title page ────────────────────────────────────────────────────
+        fig = plt.figure(figsize=(11, 8.5))
+        fig.text(0.5, 0.62, "Critical Minerals Causal Engine", ha="center", fontsize=22, fontweight="bold")
+        fig.text(0.5, 0.55, "Appendix — Knowledge Graph Renders", ha="center", fontsize=14, color="#475569")
+        fig.text(0.5, 0.42,
+                 "Each render: enriched KG snapshot at the indicated year, with shock\n"
+                 "origin (dark red node), focal commodity, and 1-hop subgraph.\n"
+                 "Edges annotated with year-specific PRODUCES / PROCESSES shares.\n"
+                 "Effective control box (bottom-right) shows the binding stage and percentage.",
+                 ha="center", fontsize=10, color="#64748b")
+
+        # Table of contents
+        toc_y = 0.30
+        fig.text(0.30, toc_y, "Contents", fontsize=11, fontweight="bold", color="#1e293b")
+        toc_y -= 0.025
+        for cmd, items in commodities.items():
+            fig.text(0.30, toc_y, f"{cmd} ({len(items)} renders)", fontsize=9, color="#475569")
+            toc_y -= 0.022
+
+        pdf.savefig(fig, bbox_inches="tight")
+        plt.close(fig)
+
+        # ── Per-commodity pages, 2 KGs/page ────────────────────────────────
+        for commodity_name, items in commodities.items():
+            entries: list = []
+            for sid, year, kind, subtitle in items:
+                p = _resolve_png(sid)
+                if p is None:
+                    continue
+                entries.append((sid, year, kind, subtitle, p))
+
+            if not entries:
+                continue
+
+            for i in range(0, len(entries), 2):
+                fig, axes = plt.subplots(2, 1, figsize=(11, 8.5),
+                                         gridspec_kw={"hspace": 0.18})
+                pair = entries[i:i + 2]
+                for ax_idx, (sid, year, kind, subtitle, p) in enumerate(pair):
+                    ax = axes[ax_idx]
+                    img = plt.imread(str(p))
+                    ax.imshow(img)
+                    ax.set_axis_off()
+                    label, color = KIND_BADGE.get(kind, ("", "#64748b"))
+                    section = f"{commodity_name} · {year}" if i == 0 and ax_idx == 0 else f"{commodity_name} · {year}"
+                    ax.set_title(section, fontsize=11, fontweight="bold", loc="left", pad=4)
+                    ax.text(0.0, -0.02, f"{label} — {subtitle}",
+                            fontsize=8, color=color, transform=ax.transAxes,
+                            ha="left", va="top", style="italic")
+                # Hide second axis if only one entry
+                if len(pair) == 1:
+                    axes[1].set_axis_off()
+                pdf.savefig(fig, bbox_inches="tight", dpi=160)
+                plt.close(fig)
+
+    buf.seek(0)
+    from fastapi.responses import StreamingResponse
+    return StreamingResponse(
+        buf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": 'attachment; filename="kg_snapshots_appendix.pdf"'},
+    )
+
+
 @app.get("/api/kg/trajectory-export")
 def kg_trajectory_export():
     """
