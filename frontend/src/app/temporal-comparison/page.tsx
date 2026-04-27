@@ -212,11 +212,18 @@ export default function TemporalComparisonPage() {
   const [loadingMeta, setLoadingMeta] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Year slider state
+  // Year slider state (panel A)
   const [year, setYear] = useState<number | null>(null);
   const [snapshot, setSnapshot] = useState<YearSnapshotResponse | null>(null);
   const [snapshotLoading, setSnapshotLoading] = useState(false);
   const [snapshotError, setSnapshotError] = useState<string | null>(null);
+
+  // Compare mode (panel B)
+  const [compareMode, setCompareMode] = useState(false);
+  const [yearB, setYearB] = useState<number | null>(null);
+  const [snapshotB, setSnapshotB] = useState<YearSnapshotResponse | null>(null);
+  const [snapshotBLoading, setSnapshotBLoading] = useState(false);
+  const [snapshotBError, setSnapshotBError] = useState<string | null>(null);
 
   const [lightbox, setLightbox] = useState<TemporalSnapshot | YearSnapshotResponse | null>(null);
 
@@ -236,8 +243,11 @@ export default function TemporalComparisonPage() {
         if (cancelled) return;
         setData(d);
         setShares(s);
-        // Default the slider to the latest year in the share trajectory
-        if (s.years.length > 0) setYear(s.years[s.years.length - 1]);
+        if (s.years.length > 0) {
+          setYear(s.years[s.years.length - 1]);
+          // Default panel B to a year that contrasts the latest (earliest available)
+          setYearB(s.years[0]);
+        }
       })
       .catch((e) => {
         if (cancelled) return;
@@ -247,7 +257,7 @@ export default function TemporalComparisonPage() {
     return () => { cancelled = true; };
   }, [commodity]);
 
-  // Debounced snapshot fetch when slider year changes
+  // Debounced snapshot fetch when slider year changes (panel A)
   const snapshotTimer = useRef<number | null>(null);
   useEffect(() => {
     if (year === null) return;
@@ -261,6 +271,21 @@ export default function TemporalComparisonPage() {
         .finally(() => setSnapshotLoading(false));
     }, 200);
   }, [commodity, year]);
+
+  // Debounced snapshot fetch (panel B — only when compareMode)
+  const snapshotBTimer = useRef<number | null>(null);
+  useEffect(() => {
+    if (!compareMode || yearB === null) return;
+    if (snapshotBTimer.current !== null) window.clearTimeout(snapshotBTimer.current);
+    snapshotBTimer.current = window.setTimeout(() => {
+      setSnapshotBLoading(true);
+      setSnapshotBError(null);
+      getYearSnapshot({ commodity, year: yearB })
+        .then((r) => setSnapshotB(r))
+        .catch((e) => setSnapshotBError(e instanceof Error ? e.message : 'Snapshot failed'))
+        .finally(() => setSnapshotBLoading(false));
+    }, 200);
+  }, [commodity, yearB, compareMode]);
 
   const yearMin = shares?.years[0] ?? 2000;
   const yearMax = shares?.years[shares.years.length - 1] ?? 2024;
@@ -319,6 +344,17 @@ export default function TemporalComparisonPage() {
                     <option key={c} value={c}>{COMMODITY_LABELS[c] ?? c}</option>
                   ))}
             </select>
+            <button
+              onClick={() => setCompareMode((v) => !v)}
+              title="Toggle side-by-side year comparison"
+              className={`text-xs px-3 py-1.5 border rounded-lg transition-colors ${
+                compareMode
+                  ? 'bg-indigo-600 border-indigo-600 text-white'
+                  : 'border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800'
+              }`}
+            >
+              {compareMode ? 'Compare ON' : 'Compare'}
+            </button>
           </div>
         </div>
       </div>
@@ -330,9 +366,10 @@ export default function TemporalComparisonPage() {
             <>Pick a <strong>commodity</strong> from the header dropdown.</>,
             <>The <strong>share trajectory chart</strong> shows every supplier&apos;s PRODUCES (dashed) and PROCESSES (solid) share across all years in the KG.</>,
             <>The <strong>year slider</strong> below the chart fetches an on-demand KG snapshot for any year (cached after first render — ~2-5s the first time, instant after).</>,
+            <>Click <strong>Compare</strong> to enable side-by-side mode: two year sliders and a structural-shift summary showing the PRODUCES / PROCESSES / effective control deltas between them.</>,
             <>The <strong>3-card year strip</strong> at the bottom shows pre-rendered structurally significant snapshots with inline image and stats.</>,
           ]}
-          tip="Click any year on the chart to jump the slider. Shifts in the binding stage (mining→processing) show up as crossover points where the dashed PRODUCES line falls below the solid PROCESSES line."
+          tip="In compare mode, set Year A to the latest year and Year B to a baseline year — the delta panel makes structural shifts obvious (e.g. graphite 2008 → 2022: processing share +30pp, binding stage stable)."
         />
 
         {loadingMeta && (
@@ -348,11 +385,12 @@ export default function TemporalComparisonPage() {
           </div>
         )}
 
-        {!loadingMeta && shares && shares.series.length > 0 && (
+        {!loadingMeta && shares && shares.series.length > 0 && !compareMode && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
             <ShareChart data={shares} highlightYear={year} onYearClick={setYear} />
 
             <YearSliderPanel
+              label="Year A"
               year={year ?? yearMax}
               yearMin={yearMin}
               yearMax={yearMax}
@@ -362,6 +400,65 @@ export default function TemporalComparisonPage() {
               error={snapshotError}
               onExpand={(s) => setLightbox(s)}
             />
+          </div>
+        )}
+
+        {!loadingMeta && shares && shares.series.length > 0 && compareMode && (
+          <div className="mb-6">
+            <p className="text-[10px] font-semibold text-indigo-600 uppercase tracking-wider mb-2">
+              Side-by-side comparison · {COMMODITY_LABELS[commodity] ?? commodity}
+            </p>
+            {/* Two slider panels side by side */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-3">
+              <YearSliderPanel
+                label="Year A"
+                year={year ?? yearMax}
+                yearMin={yearMin}
+                yearMax={yearMax}
+                onYearChange={setYear}
+                snapshot={snapshot}
+                loading={snapshotLoading}
+                error={snapshotError}
+                onExpand={(s) => setLightbox(s)}
+              />
+              <YearSliderPanel
+                label="Year B"
+                year={yearB ?? yearMin}
+                yearMin={yearMin}
+                yearMax={yearMax}
+                onYearChange={setYearB}
+                snapshot={snapshotB}
+                loading={snapshotBLoading}
+                error={snapshotBError}
+                onExpand={(s) => setLightbox(s)}
+              />
+            </div>
+
+            {/* Delta summary */}
+            {snapshot?.control && snapshotB?.control && year !== null && yearB !== null && (
+              <div className="bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 rounded-xl px-5 py-4">
+                <p className="text-[10px] font-semibold text-indigo-700 dark:text-indigo-300 uppercase tracking-wider mb-2">
+                  Structural shift, {Math.min(year, yearB)} → {Math.max(year, yearB)}
+                </p>
+                <DeltaRow label="Mining (PRODUCES)"
+                  a={snapshot.control.produces_share} b={snapshotB.control.produces_share}
+                  yearA={year} yearB={yearB} />
+                <DeltaRow label="Processing (PROCESSES)"
+                  a={snapshot.control.processes_share} b={snapshotB.control.processes_share}
+                  yearA={year} yearB={yearB} />
+                <DeltaRow label="Effective control"
+                  a={snapshot.control.effective_share} b={snapshotB.control.effective_share}
+                  yearA={year} yearB={yearB}
+                  extra={snapshot.control.binding !== snapshotB.control.binding
+                    ? `binding: ${snapshotB.control.binding} → ${snapshot.control.binding}`
+                    : `binding: ${snapshot.control.binding ?? '—'}`} />
+              </div>
+            )}
+
+            {/* Mini share chart underneath for context */}
+            <div className="mt-3">
+              <ShareChart data={shares} highlightYear={year} onYearClick={setYear} />
+            </div>
           </div>
         )}
 
@@ -452,10 +549,45 @@ export default function TemporalComparisonPage() {
 
 // ─── Year slider panel ───────────────────────────────────────────────────────
 
+function DeltaRow({
+  label, a, b, yearA, yearB, extra,
+}: {
+  label: string;
+  a: number | null;
+  b: number | null;
+  yearA: number;
+  yearB: number;
+  extra?: string;
+}) {
+  const fmt = (s: number | null) => s == null ? '—' : `${(s * 100).toFixed(0)}%`;
+  const delta = a == null || b == null ? null : (a - b) * 100;
+  const dStr = delta == null ? '' :
+    Math.abs(delta) < 0.5 ? '· no change' :
+    `· ${delta > 0 ? '+' : ''}${delta.toFixed(0)}pp`;
+  const color = delta == null ? 'text-zinc-400' :
+    Math.abs(delta) < 0.5 ? 'text-zinc-500' :
+    delta > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400';
+  // a corresponds to yearA, b corresponds to yearB. Display in chronological order.
+  const [oldYear, oldVal, newYear, newVal] = yearA < yearB
+    ? [yearA, a, yearB, b]
+    : [yearB, b, yearA, a];
+  return (
+    <div className="flex items-baseline gap-3 text-xs text-zinc-700 dark:text-zinc-300 py-1">
+      <span className="w-44 font-medium">{label}</span>
+      <span className="font-mono text-zinc-500">{oldYear} {fmt(oldVal)}</span>
+      <span className="text-zinc-400">→</span>
+      <span className="font-mono text-zinc-700 dark:text-zinc-300 font-semibold">{newYear} {fmt(newVal)}</span>
+      <span className={`font-semibold ${color}`}>{dStr}</span>
+      {extra && <span className="text-[10px] text-zinc-400 ml-auto italic">{extra}</span>}
+    </div>
+  );
+}
+
 function YearSliderPanel({
-  year, yearMin, yearMax, onYearChange,
+  label, year, yearMin, yearMax, onYearChange,
   snapshot, loading, error, onExpand,
 }: {
+  label?: string;
   year: number;
   yearMin: number;
   yearMax: number;
@@ -470,7 +602,7 @@ function YearSliderPanel({
     <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 flex flex-col">
       <div className="flex items-center justify-between mb-3">
         <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">
-          On-demand KG snapshot
+          {label ?? 'On-demand KG snapshot'}
         </p>
         <p className="text-[10px] text-zinc-400 font-mono">
           {snapshot?.cached === false ? 'just rendered' : snapshot?.cached ? 'cached' : ''}
