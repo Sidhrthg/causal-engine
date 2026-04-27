@@ -196,6 +196,8 @@ export interface TemporalSnapshot {
   image_url: string;
   available: boolean;
   effective_share: number | null;
+  produces_share: number | null;
+  processes_share: number | null;
   binding: string | null;
 }
 
