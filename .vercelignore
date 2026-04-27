@@ -10,6 +10,10 @@ requirements*.txt
 /hipporag_index/
 /runs/
 /configs/
+/outputs/
+/Knowledge Graphs/
 Dockerfile
 fly.toml
 README.md
+entrypoint.sh
+.dockerignore
