@@ -24,6 +24,7 @@ outputs
 !outputs/kg_scenarios/predictive/*.png
 !outputs/kg_scenarios/temporal
 !outputs/kg_scenarios/temporal/*.png
+!outputs/kg_scenarios/kg_snapshots_appendix.pdf
 runs
 *.egg-info
 dist
