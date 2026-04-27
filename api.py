@@ -1379,6 +1379,22 @@ def kg_snapshots_export():
     )
 
 
+@app.get("/api/kg/yearly-grid-export")
+def kg_yearly_grid_export():
+    """
+    Pre-built yearly grid appendix PDF: every-2-year KG snapshots from earliest
+    to latest yearly_share data, per commodity, 1 KG per page.
+    Regenerate via `python scripts/build_kg_yearly_grid_pdf.py`.
+    """
+    pdf_path = _KG_SCENARIO_DIR / "kg_yearly_grid_appendix.pdf"
+    if not pdf_path.exists():
+        raise HTTPException(status_code=404, detail="Yearly grid PDF not built.")
+    return FileResponse(
+        path=str(pdf_path),
+        media_type="application/pdf",
+        filename="kg_yearly_grid_appendix.pdf",
+    )
+
 
 @app.get("/api/kg/trajectory-export")
 def kg_trajectory_export():

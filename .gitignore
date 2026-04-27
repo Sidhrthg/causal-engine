@@ -20,6 +20,7 @@ outputs/kg_scenarios/temporal/*
 # Track the pre-built KG snapshots PDF so /api/kg/snapshots-export can serve
 # it as a static file (server-side generation OOMs the 2GB Fly machine).
 !outputs/kg_scenarios/kg_snapshots_appendix.pdf
+!outputs/kg_scenarios/kg_yearly_grid_appendix.pdf
 
 # HippoRAG index (large parquets; not in repo)
 data/documents/hipporag_index/
