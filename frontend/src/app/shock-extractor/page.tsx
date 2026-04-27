@@ -88,7 +88,7 @@ function TrajectoryChart({ trajectory }: { trajectory: PredictFromTextResponse['
           <span>{minP.toFixed(2)}</span>
         </div>
         {/* Bars */}
-        <div className="flex items-end gap-1 h-24 flex-1 border-l border-zinc-100 pl-1">
+        <div className="flex items-end gap-1 h-24 flex-1 border-l border-zinc-100 dark:border-zinc-800 pl-1">
           {trajectory.map((row) => {
             const height = ((row.P - minP) / range) * 80 + 8;
             return (
@@ -123,7 +123,7 @@ function TrajectoryChart({ trajectory }: { trajectory: PredictFromTextResponse['
 
 function MagnitudeLegend() {
   return (
-    <div className="flex items-center gap-4 text-[10px] text-zinc-500 border-t border-zinc-100 pt-2 mt-2">
+    <div className="flex items-center gap-4 text-[10px] text-zinc-500 border-t border-zinc-100 dark:border-zinc-800 pt-2 mt-2">
       <span className="flex items-center gap-1.5">
         <span className="inline-block h-1.5 w-3 bg-red-400 rounded-full" />
         positive magnitude — supply tightens / price ↑
@@ -192,7 +192,7 @@ export default function ShockExtractorPage() {
   const otherShocks = shocks?.filter((s) => s.commodity !== commodity) ?? [];
 
   return (
-    <div className="min-h-screen bg-zinc-50 px-6 py-8">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 px-6 py-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-6">
@@ -222,7 +222,7 @@ export default function ShockExtractorPage() {
             <button
               key={ex.label}
               onClick={() => loadExample(ex)}
-              className="text-xs px-3 py-1.5 bg-white border border-zinc-200 rounded-lg hover:border-indigo-300 text-zinc-600 hover:text-indigo-600 transition-all"
+              className="text-xs px-3 py-1.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:border-indigo-300 text-zinc-600 dark:text-zinc-400 hover:text-indigo-600 transition-all"
             >
               {ex.label}
             </button>
@@ -241,7 +241,7 @@ export default function ShockExtractorPage() {
                 onChange={(e) => { setText(e.target.value); setShocks(null); setResult(null); }}
                 rows={10}
                 placeholder="Paste a news article, policy announcement, or any text describing a commodity market event…"
-                className="w-full text-sm border border-zinc-200 rounded-xl px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white leading-relaxed"
+                className="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-zinc-900 leading-relaxed"
               />
             </div>
 
@@ -254,7 +254,7 @@ export default function ShockExtractorPage() {
                 <select
                   value={commodity}
                   onChange={(e) => setCommodity(e.target.value)}
-                  className="w-full text-sm border border-zinc-200 rounded-lg px-2.5 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-2.5 py-1.5 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                   {COMMODITIES.map((c) => <option key={c} value={c}>{c}</option>)}
                 </select>
@@ -267,7 +267,7 @@ export default function ShockExtractorPage() {
                   type="number"
                   value={startYear}
                   onChange={(e) => setStartYear(Number(e.target.value))}
-                  className="w-full text-sm border border-zinc-200 rounded-lg px-2.5 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-2.5 py-1.5 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
               <div>
@@ -278,7 +278,7 @@ export default function ShockExtractorPage() {
                   type="number"
                   value={endYear}
                   onChange={(e) => setEndYear(Number(e.target.value))}
-                  className="w-full text-sm border border-zinc-200 rounded-lg px-2.5 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-2.5 py-1.5 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
             </div>
@@ -317,9 +317,9 @@ export default function ShockExtractorPage() {
           <div className="flex flex-col gap-4">
             {/* Trajectory */}
             {result && (
-              <div className="bg-white border border-zinc-200 rounded-xl p-4">
+              <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-3">
-                  <p className="text-xs font-semibold text-zinc-700 uppercase tracking-wider">
+                  <p className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">
                     {result.commodity} · {result.trajectory[0]?.year}–{result.trajectory.at(-1)?.year}
                   </p>
                   <span className="text-[10px] text-zinc-400">
@@ -331,7 +331,7 @@ export default function ShockExtractorPage() {
 
                 <div className="grid grid-cols-3 gap-2 mt-4">
                   {Object.entries(result.metrics).slice(0, 3).map(([k, v]) => (
-                    <div key={k} className="bg-zinc-50 rounded-lg p-2 text-center">
+                    <div key={k} className="bg-zinc-50 dark:bg-zinc-950 rounded-lg p-2 text-center">
                       <p className="text-[9px] text-zinc-400 uppercase tracking-wider mb-0.5">
                         {k.replace(/_/g, ' ')}
                       </p>
@@ -344,7 +344,7 @@ export default function ShockExtractorPage() {
 
             {/* Extracted shocks */}
             {shocks !== null && (
-              <div className="bg-white border border-zinc-200 rounded-xl p-4">
+              <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4">
                 <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
                   Extracted Shocks ({shocks.length} total)
                 </p>
@@ -356,7 +356,7 @@ export default function ShockExtractorPage() {
                     </p>
                     <div className="flex flex-col gap-2">
                       {commodityShocks.map((s, i) => (
-                        <div key={i} className="border border-zinc-100 rounded-lg p-3 bg-zinc-50/50">
+                        <div key={i} className="border border-zinc-100 dark:border-zinc-800 rounded-lg p-3 bg-zinc-50 dark:bg-zinc-950/50">
                           <div className="flex items-center gap-2 mb-1.5">
                             <ShockBadge type={s.shock.type} />
                             <span className="text-[10px] text-zinc-400">
@@ -413,7 +413,7 @@ export default function ShockExtractorPage() {
             )}
 
             {!shocks && !result && (
-              <div className="bg-white border border-dashed border-zinc-200 rounded-xl p-8 text-center">
+              <div className="bg-white dark:bg-zinc-900 border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl p-8 text-center">
                 <div className="h-10 w-10 bg-indigo-50 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <svg className="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />

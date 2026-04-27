@@ -28,7 +28,7 @@ function SourcesPanel({ sources }: { sources: SourceChunk[] }) {
     <div className="mt-3 pt-3 border-t border-zinc-100">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 text-[11px] text-zinc-400 hover:text-zinc-600 transition-colors"
+        className="flex items-center gap-1.5 text-[11px] text-zinc-400 hover:text-zinc-600 dark:text-zinc-400 transition-colors"
       >
         <svg
           className={`w-3 h-3 transition-transform ${open ? 'rotate-90' : ''}`}
@@ -44,7 +44,7 @@ function SourcesPanel({ sources }: { sources: SourceChunk[] }) {
       {open && (
         <div className="mt-2.5 flex flex-col gap-2">
           {sources.map((s, i) => (
-            <div key={i} className="rounded-lg border border-zinc-100 bg-zinc-50/80 p-3">
+            <div key={i} className="rounded-lg border border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/80 p-3">
               <div className="flex items-center justify-between mb-1.5">
                 <span className="text-[10px] font-mono text-zinc-400 truncate max-w-[220px]">
                   {s.source || 'unknown source'}
@@ -59,7 +59,7 @@ function SourcesPanel({ sources }: { sources: SourceChunk[] }) {
                   </span>
                 </div>
               </div>
-              <p className="text-xs text-zinc-600 leading-relaxed line-clamp-3">{s.text}</p>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-3">{s.text}</p>
             </div>
           ))}
         </div>
@@ -179,7 +179,7 @@ export default function QueryPage() {
   return (
     <div className="flex flex-col h-screen bg-zinc-50">
       {/* Header */}
-      <div className="border-b border-zinc-200 bg-white px-6 py-4 shrink-0">
+      <div className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-4 shrink-0">
         <div className="max-w-3xl flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2 mb-0.5">
@@ -195,7 +195,7 @@ export default function QueryPage() {
               <select
                 value={commodity}
                 onChange={(e) => setCommodity(e.target.value)}
-                className="text-sm border border-zinc-200 rounded-lg px-2.5 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-2.5 py-1.5 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 <option value="">All</option>
                 {['graphite', 'lithium', 'cobalt', 'nickel', 'copper'].map((c) => (
@@ -206,7 +206,7 @@ export default function QueryPage() {
             {messages.length > 0 && (
               <button
                 onClick={() => setMessages([])}
-                className="text-xs text-zinc-400 hover:text-zinc-600 transition-colors"
+                className="text-xs text-zinc-400 hover:text-zinc-600 dark:text-zinc-400 transition-colors"
               >
                 Clear chat
               </button>
@@ -238,7 +238,7 @@ export default function QueryPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                   </svg>
                 </div>
-                <p className="text-sm font-medium text-zinc-700 mb-1">Ask anything about critical minerals</p>
+                <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Ask anything about critical minerals</p>
                 <p className="text-xs text-zinc-400">
                   1,661 chunks · 4,368 triples · 3,132 entities · text-embedding-3-large
                 </p>
@@ -267,12 +267,12 @@ export default function QueryPage() {
                   <button
                     key={q}
                     onClick={() => sendMessage(q)}
-                    className="text-left p-3 bg-white rounded-lg border border-zinc-200 hover:border-indigo-300 hover:shadow-sm transition-all group"
+                    className="text-left p-3 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-indigo-300 hover:shadow-sm transition-all group"
                   >
                     <span className="text-[10px] font-semibold text-indigo-400 uppercase tracking-wider block mb-1">
                       {cat}
                     </span>
-                    <span className="text-xs text-zinc-700 group-hover:text-zinc-900 leading-relaxed">
+                    <span className="text-xs text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:text-zinc-100 leading-relaxed">
                       {q}
                     </span>
                   </button>
@@ -299,7 +299,7 @@ export default function QueryPage() {
                   </div>
                 ) : (
                   <div className="max-w-[85%]">
-                    <div className="bg-white border border-zinc-200 rounded-2xl rounded-tl-sm px-4 py-4 shadow-sm">
+                    <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl rounded-tl-sm px-4 py-4 shadow-sm">
                       <div className="flex items-start justify-between gap-2">
                         <MessageText text={msg.content} />
                         <CopyButton text={msg.content} />
@@ -317,7 +317,7 @@ export default function QueryPage() {
             {/* Loading */}
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-white border border-zinc-200 rounded-2xl rounded-tl-sm px-4 py-3.5 shadow-sm">
+                <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl rounded-tl-sm px-4 py-3.5 shadow-sm">
                   <div className="flex gap-1.5 items-center">
                     {[0, 1, 2].map((i) => (
                       <div
@@ -337,7 +337,7 @@ export default function QueryPage() {
       </div>
 
       {/* Input bar */}
-      <div className="border-t border-zinc-200 bg-white px-6 py-4 shrink-0">
+      <div className="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-4 shrink-0">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -362,7 +362,7 @@ export default function QueryPage() {
             }}
             placeholder="Ask a question… (Enter to send)"
             disabled={loading}
-            className="flex-1 text-sm border border-zinc-200 rounded-xl px-4 py-2.5 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 leading-relaxed"
+            className="flex-1 text-sm border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 leading-relaxed"
             style={{ minHeight: '42px', maxHeight: '120px' }}
           />
           <button

@@ -65,7 +65,7 @@ export default function KGEnrichPage() {
   return (
     <div className="flex flex-col h-screen bg-zinc-50">
       {/* Header */}
-      <div className="border-b border-zinc-200 bg-white px-6 py-3 shrink-0">
+      <div className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-3 shrink-0">
         <div>
           <p className="text-[10px] font-semibold text-indigo-600 uppercase tracking-widest mb-0.5">
             HippoRAG → Claude → Knowledge Graph
@@ -81,7 +81,7 @@ export default function KGEnrichPage() {
 
       <div className="flex flex-1 overflow-hidden">
         {/* Form */}
-        <div className="w-96 border-r border-zinc-200 bg-white p-5 overflow-y-auto shrink-0">
+        <div className="w-96 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 overflow-y-auto shrink-0">
           <HowToUse
             id="kg-enrich"
             steps={[
@@ -98,11 +98,11 @@ export default function KGEnrichPage() {
               <p className="text-[10px] font-semibold text-indigo-700 uppercase tracking-wider mb-2">
                 Pipeline
               </p>
-              <ol className="text-[11px] text-zinc-700 space-y-1 leading-relaxed">
+              <ol className="text-[11px] text-zinc-700 dark:text-zinc-300 space-y-1 leading-relaxed">
                 <li>1. HippoRAG retrieves top-K chunks for your query</li>
                 <li>2. Claude extracts (subject, relation, object) triples</li>
                 <li>3. Triples merged into the live enriched KG</li>
-                <li>4. Saved to <code className="font-mono text-[10px] bg-white px-1 rounded">data/canonical/enriched_kg.json</code> (persisted on Fly volume)</li>
+                <li>4. Saved to <code className="font-mono text-[10px] bg-white dark:bg-zinc-900 px-1 rounded">data/canonical/enriched_kg.json</code> (persisted on Fly volume)</li>
               </ol>
             </div>
 
@@ -116,14 +116,14 @@ export default function KGEnrichPage() {
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="e.g. graphite anode processing China export controls"
                 rows={3}
-                className="w-full text-sm border border-zinc-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
+                className="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
               />
             </div>
 
             <div>
               <label className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-1.5 flex items-center justify-between">
                 <span>Top-K Chunks</span>
-                <span className="text-zinc-700 font-mono">{topK}</span>
+                <span className="text-zinc-700 dark:text-zinc-300 font-mono">{topK}</span>
               </label>
               <input
                 type="range" min={1} max={20} step={1}
@@ -155,7 +155,7 @@ export default function KGEnrichPage() {
                     key={q}
                     onClick={() => setQuery(q)}
                     disabled={loading !== null}
-                    className="text-left text-[11px] text-zinc-600 hover:text-indigo-700 hover:bg-indigo-50 px-2 py-1.5 rounded transition-colors disabled:opacity-50"
+                    className="text-left text-[11px] text-zinc-600 dark:text-zinc-400 hover:text-indigo-700 hover:bg-indigo-50 px-2 py-1.5 rounded transition-colors disabled:opacity-50"
                   >
                     {q}
                   </button>
@@ -163,7 +163,7 @@ export default function KGEnrichPage() {
               </div>
             </div>
 
-            <div className="border-t border-zinc-100 pt-4">
+            <div className="border-t border-zinc-100 dark:border-zinc-800 pt-4">
               <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-2">
                 Batch Mode
               </p>
@@ -175,7 +175,7 @@ export default function KGEnrichPage() {
               <button
                 onClick={runBatch}
                 disabled={loading !== null}
-                className="w-full text-xs px-3 py-2 border border-zinc-200 bg-white text-zinc-700 rounded-lg hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="w-full text-xs px-3 py-2 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 rounded-lg hover:bg-zinc-50 dark:bg-zinc-950 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
                 {loading === 'batch' ? 'Running batch enrichment…' : 'Enrich for all 6 minerals'}
               </button>
@@ -186,7 +186,7 @@ export default function KGEnrichPage() {
         {/* Results panel */}
         <div className="flex-1 overflow-y-auto p-6">
           {loading && (
-            <div className="bg-white border border-indigo-200 rounded-lg p-4 mb-4 flex items-center gap-3">
+            <div className="bg-white dark:bg-zinc-900 border border-indigo-200 rounded-lg p-4 mb-4 flex items-center gap-3">
               <div className="h-4 w-4 border-2 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
               <p className="text-sm text-zinc-700">
                 {loading === 'batch'
@@ -254,7 +254,7 @@ function RunCard({ record }: { record: RunRecord }) {
 function Markdown({ text }: { text: string }) {
   const lines = text.split('\n');
   return (
-    <div className="text-sm text-zinc-700 space-y-1 leading-relaxed">
+    <div className="text-sm text-zinc-700 dark:text-zinc-300 space-y-1 leading-relaxed">
       {lines.map((line, i) => {
         if (!line.trim()) return <div key={i} className="h-2" />;
         const isBullet = line.startsWith('- ');
@@ -288,7 +288,7 @@ function InlineMarkdown({ text }: { text: string }) {
       );
     } else {
       parts.push(
-        <code key={key++} className="font-mono text-[12px] bg-zinc-100 text-zinc-800 px-1.5 py-0.5 rounded">
+        <code key={key++} className="font-mono text-[12px] bg-zinc-100 text-zinc-800 dark:text-zinc-200 px-1.5 py-0.5 rounded">
           {tok.slice(1, -1)}
         </code>,
       );

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import ThemeToggle from './ThemeToggle';
 
 const links = [
   {
@@ -125,18 +126,19 @@ export default function Nav() {
     status === 'online' ? 'Backend online' : status === 'offline' ? 'Backend offline' : 'Checking…';
 
   return (
-    <nav className="w-58 min-h-screen bg-white border-r border-zinc-100 flex flex-col py-5 shrink-0 shadow-[1px_0_0_0_#f4f4f5]">
-      {/* Logo */}
-      <div className="px-4 mb-7">
+    <nav className="w-58 min-h-screen bg-white dark:bg-zinc-900 border-r border-zinc-100 dark:border-zinc-800 flex flex-col py-5 shrink-0 shadow-[1px_0_0_0_#f4f4f5] dark:shadow-none">
+      {/* Logo + theme toggle */}
+      <div className="px-4 mb-7 flex items-center justify-between">
         <div className="flex items-center gap-2.5 mb-1">
           <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-sm">
             <span className="text-white text-[11px] font-bold tracking-tight">CE</span>
           </div>
           <div>
-            <span className="text-sm font-bold text-zinc-900 leading-none block">Causal Engine</span>
-            <span className="text-[10px] text-zinc-400 leading-none">Critical Minerals</span>
+            <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100 leading-none block">Causal Engine</span>
+            <span className="text-[10px] text-zinc-400 dark:text-zinc-500 leading-none">Critical Minerals</span>
           </div>
         </div>
+        <ThemeToggle />
       </div>
 
       {/* Nav links */}
@@ -149,22 +151,22 @@ export default function Nav() {
               href={href}
               className={`group relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
                 active
-                  ? 'bg-indigo-50 text-indigo-700'
-                  : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50'
+                  ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300'
+                  : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-50 dark:hover:bg-zinc-800'
               }`}
             >
               {/* Active left-border accent */}
               {active && (
                 <span className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full bg-indigo-500" />
               )}
-              <span className={`${active ? 'text-indigo-600' : 'text-zinc-400 group-hover:text-zinc-600'} transition-colors`}>
+              <span className={`${active ? 'text-indigo-600 dark:text-indigo-400' : 'text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-600 dark:group-hover:text-zinc-300'} transition-colors`}>
                 {icon}
               </span>
               <div>
-                <p className={`text-sm font-medium leading-none ${active ? 'text-indigo-700' : ''}`}>
+                <p className={`text-sm font-medium leading-none ${active ? 'text-indigo-700 dark:text-indigo-300' : ''}`}>
                   {label}
                 </p>
-                <p className="text-[10px] text-zinc-400 mt-0.5">{desc}</p>
+                <p className="text-[10px] text-zinc-400 dark:text-zinc-500 mt-0.5">{desc}</p>
               </div>
             </Link>
           );
@@ -172,12 +174,12 @@ export default function Nav() {
       </div>
 
       {/* Backend status */}
-      <div className="px-4 pt-4 mt-2 border-t border-zinc-100">
+      <div className="px-4 pt-4 mt-2 border-t border-zinc-100 dark:border-zinc-800">
         <div className="flex items-center gap-2">
           <div className={`h-2 w-2 rounded-full ${statusColor}`} />
-          <span className="text-[11px] text-zinc-400">{statusLabel}</span>
+          <span className="text-[11px] text-zinc-400 dark:text-zinc-500">{statusLabel}</span>
         </div>
-        <p className="text-[10px] text-zinc-300 mt-2 leading-relaxed">
+        <p className="text-[10px] text-zinc-300 dark:text-zinc-600 mt-2 leading-relaxed">
           Pearl L1·L2·L3<br />
           CEPII BACI · USGS · IEA
         </p>

@@ -145,7 +145,7 @@ export default function DashboardPage() {
             <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 inline-block" />
             PhD Research · Critical Minerals Supply Chain Intelligence
           </div>
-          <h1 className="text-4xl font-bold text-zinc-900 leading-tight mb-3">
+          <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-100 leading-tight mb-3">
             Critical Minerals<br />
             <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
               Causal Engine
@@ -168,7 +168,7 @@ export default function DashboardPage() {
             </Link>
             <Link
               href="/counterfactual"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-zinc-700 text-sm font-semibold rounded-xl border border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50 transition-colors"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 text-sm font-semibold rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 hover:bg-zinc-50 dark:bg-zinc-950 transition-colors"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -185,9 +185,9 @@ export default function DashboardPage() {
           </h2>
           <div className="grid grid-cols-4 gap-3">
             {VALIDATION.map(({ label, value, sub, color }) => (
-              <div key={label} className="bg-white rounded-xl border border-zinc-200 p-4 shadow-sm">
+              <div key={label} className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4 shadow-sm">
                 <p className={`text-2xl font-bold tabular-nums ${color}`}>{value}</p>
-                <p className="text-xs font-semibold text-zinc-700 mt-1">{label}</p>
+                <p className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 mt-1">{label}</p>
                 <p className="text-[10px] text-zinc-400 mt-0.5">{sub}</p>
               </div>
             ))}
@@ -208,13 +208,13 @@ export default function DashboardPage() {
               <Link
                 key={href}
                 href={href}
-                className="group flex items-start gap-4 bg-white rounded-xl border border-zinc-200 p-4 hover:border-indigo-200 hover:shadow-sm transition-all"
+                className="group flex items-start gap-4 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4 hover:border-indigo-200 hover:shadow-sm transition-all"
               >
                 <div className={`h-9 w-9 rounded-lg border flex items-center justify-center shrink-0 mt-0.5 ${accent}`}>
                   {icon}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-zinc-800 mb-0.5">{label}</p>
+                  <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-200 mb-0.5">{label}</p>
                   <p className="text-xs text-zinc-500 leading-relaxed">{desc}</p>
                 </div>
                 <span className="text-xs font-medium text-indigo-500 group-hover:text-indigo-700 transition-colors shrink-0 mt-1 pr-1 whitespace-nowrap">
@@ -260,7 +260,7 @@ export default function DashboardPage() {
                 <Link
                   key={name}
                   href={`/transshipment?commodity=${slug}`}
-                  className="flex items-center gap-3 bg-white rounded-xl border border-zinc-200 p-3 hover:border-indigo-300 hover:shadow-sm transition-all group"
+                  className="flex items-center gap-3 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-3 hover:border-indigo-300 hover:shadow-sm transition-all group"
                 >
                   <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded border ${accent} shrink-0`}>
                     {hs}
@@ -291,9 +291,9 @@ export default function DashboardPage() {
                 { label: 'KG entities', value: '3,132', sub: 'unique after norm.' },
                 { label: 'KG edges', value: '31,916', sub: 'igraph directed' },
               ].map(({ label, value, sub }) => (
-                <div key={label} className="bg-white rounded-xl border border-zinc-200 p-3">
+                <div key={label} className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-3">
                   <p className="text-xl font-bold tabular-nums text-zinc-900">{value}</p>
-                  <p className="text-xs font-medium text-zinc-600 mt-0.5">{label}</p>
+                  <p className="text-xs font-medium text-zinc-600 dark:text-zinc-400 mt-0.5">{label}</p>
                   <p className="text-[10px] text-zinc-400">{sub}</p>
                 </div>
               ))}
@@ -309,7 +309,7 @@ export default function DashboardPage() {
           <h2 className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-3">
             Data sources
           </h2>
-          <div className="bg-white rounded-xl border border-zinc-200 p-4">
+          <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
             <div className="grid grid-cols-4 gap-4 text-xs">
               {[
                 { name: 'CEPII BACI', detail: '1995–2024 · pre-reconciled bilateral flows · ISO 3166-1 normalized' },
@@ -318,7 +318,7 @@ export default function DashboardPage() {
                 { name: 'DRC Reports', detail: '2 artisanal cobalt reports · 79 chunks' },
               ].map(({ name, detail }) => (
                 <div key={name}>
-                  <p className="font-semibold text-zinc-700 mb-0.5">{name}</p>
+                  <p className="font-semibold text-zinc-700 dark:text-zinc-300 mb-0.5">{name}</p>
                   <p className="text-zinc-400 leading-relaxed">{detail}</p>
                 </div>
               ))}

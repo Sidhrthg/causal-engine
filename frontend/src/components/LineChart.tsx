@@ -77,7 +77,7 @@ export default function LineChart({ years, series, title, unit = '', height = 18
 
   return (
     <div className="relative">
-      <p className="text-xs font-semibold text-zinc-600 mb-2">{title}</p>
+      <p className="text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-2">{title}</p>
       <svg
         viewBox={`0 0 ${W} ${H}`}
         className="w-full"

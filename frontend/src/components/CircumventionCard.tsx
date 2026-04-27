@@ -23,7 +23,7 @@ export default function CircumventionCard({
     rate >= 0.2 ? 'text-red-600' : rate >= 0.05 ? 'text-amber-600' : 'text-emerald-600';
 
   return (
-    <div className="rounded-lg border border-zinc-200 p-5 bg-white">
+    <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 p-5 bg-white">
       <h3 className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-4">
         Circumvention Estimate
       </h3>
@@ -63,13 +63,13 @@ export default function CircumventionCard({
       <dl className="grid grid-cols-2 gap-3 text-sm pt-3 border-t border-zinc-100">
         <div>
           <dt className="text-[10px] text-zinc-400 uppercase tracking-wide">Nominal restricted</dt>
-          <dd className="font-mono font-semibold text-zinc-800 mt-0.5">
+          <dd className="font-mono font-semibold text-zinc-800 dark:text-zinc-200 mt-0.5">
             {nominal_t.toLocaleString('en-US', { maximumFractionDigits: 0 })}t
           </dd>
         </div>
         <div>
           <dt className="text-[10px] text-zinc-400 uppercase tracking-wide">Detected rerouted</dt>
-          <dd className="font-mono font-semibold text-zinc-800 mt-0.5">
+          <dd className="font-mono font-semibold text-zinc-800 dark:text-zinc-200 mt-0.5">
             {rerouted_t.toLocaleString('en-US', { maximumFractionDigits: 0 })}t
           </dd>
         </div>

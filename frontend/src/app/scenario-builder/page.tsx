@@ -67,16 +67,16 @@ function Autocomplete({
         onChange={(e) => { onChange(e.target.value); setOpen(true); }}
         onFocus={() => setOpen(true)}
         placeholder={placeholder}
-        className="w-full text-sm border border-zinc-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+        className="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
       />
       {open && filtered.length > 0 && (
-        <div className="absolute z-50 mt-1 w-full bg-white border border-zinc-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+        <div className="absolute z-50 mt-1 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-lg max-h-48 overflow-y-auto">
           {filtered.map((s) => (
             <button
               key={s}
               type="button"
               onClick={() => { onChange(s); setOpen(false); }}
-              className="w-full text-left px-3 py-1.5 text-sm text-zinc-700 hover:bg-indigo-50 hover:text-indigo-700"
+              className="w-full text-left px-3 py-1.5 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-indigo-50 hover:text-indigo-700"
             >
               {s.replace(/_/g, ' ')}
             </button>
@@ -194,7 +194,7 @@ export default function ScenarioBuilderPage() {
   return (
     <div className="flex flex-col h-screen bg-zinc-50">
       {/* Header */}
-      <div className="border-b border-zinc-200 bg-white px-6 py-3 shrink-0">
+      <div className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-3 shrink-0">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-[10px] font-semibold text-indigo-600 uppercase tracking-widest mb-0.5">
@@ -232,7 +232,7 @@ export default function ScenarioBuilderPage() {
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <div className="w-80 border-r border-zinc-200 bg-white p-5 overflow-y-auto shrink-0">
+        <div className="w-80 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 overflow-y-auto shrink-0">
           <HowToUse
             id="scenario-builder"
             steps={[
@@ -296,7 +296,7 @@ export default function ScenarioBuilderPage() {
           {mode === 'custom' && loading && (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <div className="h-10 w-10 border-2 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mb-4" />
-              <p className="text-sm font-medium text-zinc-700 mb-1">{PROGRESS_HINTS[hintIndex]}</p>
+              <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">{PROGRESS_HINTS[hintIndex]}</p>
               <p className="text-[11px] text-zinc-400">This typically takes 30–90 seconds.</p>
             </div>
           )}
@@ -431,7 +431,7 @@ function PresetView({ preset }: { preset: ScenarioPreset }) {
           as a template to generate it (takes 30–90s).
         </div>
       ) : (
-        <div className="border border-zinc-200 rounded-lg overflow-hidden bg-white">
+        <div className="border border-zinc-200 dark:border-zinc-800 rounded-lg overflow-hidden bg-white">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={preset.image_url}
@@ -477,7 +477,7 @@ function CustomForm({
               if (p) onApplyPreset(p);
               e.target.value = '';
             }}
-            className="w-full text-sm border border-zinc-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="">Choose a known scenario…</option>
             <optgroup label="Validation">
@@ -500,7 +500,7 @@ function CustomForm({
           type="number" min={1990} max={2030}
           value={year}
           onChange={(e) => setYear(Number(e.target.value))}
-          className="w-full text-sm border border-zinc-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
       </div>
 
@@ -529,7 +529,7 @@ function CustomForm({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="e.g. Copper 2024 — Chile Production Strike"
-          className="w-full text-sm border border-zinc-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
       </div>
 
@@ -586,7 +586,7 @@ function CustomResultView({ result, year }: { result: ScenarioResult; year: numb
           commodity, or check that the enriched KG has data for this combination.
         </div>
       ) : (
-        <div className="border border-zinc-200 rounded-lg overflow-hidden bg-white">
+        <div className="border border-zinc-200 dark:border-zinc-800 rounded-lg overflow-hidden bg-white">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={result.image_url}
@@ -601,7 +601,7 @@ function CustomResultView({ result, year }: { result: ScenarioResult; year: numb
 
 function Stat({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="bg-white border border-zinc-200 rounded-lg px-3 py-2">
+    <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2">
       <p className="text-[9px] font-semibold text-zinc-400 uppercase tracking-wider">{label}</p>
       <p className="text-sm font-bold text-zinc-800">{value}</p>
     </div>

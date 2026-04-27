@@ -10,10 +10,25 @@ export const metadata: Metadata = {
   description: 'Causal supply chain intelligence for critical minerals',
 };
 
+// Inline script to apply theme before React hydrates — prevents flash of
+// wrong theme. Runs synchronously in the document head.
+const themeInitScript = `
+  (function () {
+    try {
+      var stored = localStorage.getItem('theme');
+      var dark = stored === 'dark' || (stored !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      if (dark) document.documentElement.classList.add('dark');
+    } catch (e) {}
+  })();
+`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" className="bg-white dark:bg-zinc-950">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+      <body className={`${inter.className} bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100`}>
         <div className="flex min-h-screen">
           <Nav />
           <main className="flex-1 overflow-auto">{children}</main>

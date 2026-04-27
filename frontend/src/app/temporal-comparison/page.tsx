@@ -115,7 +115,7 @@ function ShareChart({
   };
 
   return (
-    <div className="bg-white border border-zinc-200 rounded-xl p-4">
+    <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4">
       <div className="flex items-center justify-between mb-3">
         <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">
           Share trajectory · {COMMODITY_LABELS[data.commodity] ?? data.commodity}
@@ -268,7 +268,7 @@ export default function TemporalComparisonPage() {
   return (
     <div className="flex flex-col h-screen bg-zinc-50">
       {/* Header */}
-      <div className="border-b border-zinc-200 bg-white px-6 py-3 shrink-0">
+      <div className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-3 shrink-0">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-[10px] font-semibold text-indigo-600 uppercase tracking-widest mb-0.5">
@@ -309,7 +309,7 @@ export default function TemporalComparisonPage() {
             <select
               value={commodity}
               onChange={(e) => setCommodity(e.target.value)}
-              className="text-sm border border-zinc-200 rounded-lg px-2.5 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-2.5 py-1.5 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               {orderedCommodities.length > 0
                 ? orderedCommodities.map((c) => (
@@ -374,19 +374,19 @@ export default function TemporalComparisonPage() {
               {series.map((snap, i) => {
                 const prev = i > 0 ? series[i - 1] : null;
                 return (
-                  <div key={snap.scenario_id} className="bg-white border border-zinc-200 rounded-xl overflow-hidden">
-                    <div className="px-4 py-3 border-b border-zinc-100 bg-zinc-50">
+                  <div key={snap.scenario_id} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden">
+                    <div className="px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50">
                       <div className="flex items-baseline justify-between mb-1">
-                        <p className="text-2xl font-bold text-zinc-900 font-mono">{snap.year}</p>
+                        <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 font-mono">{snap.year}</p>
                         {prev && shareDelta(prev.effective_share, snap.effective_share) && (
                           <span className={`text-xs font-semibold ${deltaColor(prev.effective_share, snap.effective_share)}`}>
                             {shareDelta(prev.effective_share, snap.effective_share)} vs. {prev.year}
                           </span>
                         )}
                       </div>
-                      <p className="text-[11px] text-zinc-600 leading-snug">{snap.title}</p>
+                      <p className="text-[11px] text-zinc-600 dark:text-zinc-400 leading-snug">{snap.title}</p>
                     </div>
-                    <div className="px-4 py-2 border-b border-zinc-100 grid grid-cols-3 gap-2 text-center">
+                    <div className="px-4 py-2 border-b border-zinc-100 dark:border-zinc-800 grid grid-cols-3 gap-2 text-center">
                       <div>
                         <p className="text-[8px] font-semibold text-zinc-400 uppercase tracking-wider mb-0.5">Mining</p>
                         <p className="text-xs font-bold text-zinc-800">{fmtShare(snap.produces_share)}</p>
@@ -397,7 +397,7 @@ export default function TemporalComparisonPage() {
                       </div>
                       <div>
                         <p className="text-[8px] font-semibold text-zinc-400 uppercase tracking-wider mb-0.5">Binding</p>
-                        <p className="text-xs font-bold text-zinc-800 capitalize">{snap.binding ?? '—'}</p>
+                        <p className="text-xs font-bold text-zinc-800 dark:text-zinc-200 capitalize">{snap.binding ?? '—'}</p>
                       </div>
                     </div>
                     {snap.available ? (
@@ -427,8 +427,8 @@ export default function TemporalComparisonPage() {
           onClick={() => setLightbox(null)}
           className="fixed inset-0 bg-zinc-900/80 flex items-center justify-center z-50 cursor-zoom-out p-6"
         >
-          <div className="max-w-6xl max-h-full overflow-auto bg-white rounded-xl">
-            <div className="px-5 py-3 border-b border-zinc-100 flex items-center justify-between">
+          <div className="max-w-6xl max-h-full overflow-auto bg-white dark:bg-zinc-900 rounded-xl">
+            <div className="px-5 py-3 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
               <p className="text-sm font-semibold text-zinc-800">
                 {'title' in lightbox ? lightbox.title : `${lightbox.commodity} ${lightbox.year}`}
               </p>
@@ -467,7 +467,7 @@ function YearSliderPanel({
 }) {
   const ctrl = snapshot?.control;
   return (
-    <div className="bg-white border border-zinc-200 rounded-xl p-4 flex flex-col">
+    <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 flex flex-col">
       <div className="flex items-center justify-between mb-3">
         <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">
           On-demand KG snapshot
@@ -480,7 +480,7 @@ function YearSliderPanel({
       {/* Year slider */}
       <div className="mb-3">
         <div className="flex items-baseline justify-between mb-1">
-          <span className="text-3xl font-bold text-zinc-900 font-mono">{year}</span>
+          <span className="text-3xl font-bold text-zinc-900 dark:text-zinc-100 font-mono">{year}</span>
           <span className="text-[10px] text-zinc-400 font-mono">{yearMin}–{yearMax}</span>
         </div>
         <input
@@ -495,23 +495,23 @@ function YearSliderPanel({
       {/* Stats row */}
       {ctrl && (
         <div className="grid grid-cols-3 gap-2 mb-3 text-center">
-          <div className="bg-zinc-50 rounded-lg p-2">
+          <div className="bg-zinc-50 dark:bg-zinc-950 rounded-lg p-2">
             <p className="text-[8px] font-semibold text-zinc-400 uppercase tracking-wider mb-0.5">Mining</p>
             <p className="text-sm font-bold text-zinc-800">{fmtShare(ctrl.produces_share)}</p>
           </div>
-          <div className="bg-zinc-50 rounded-lg p-2">
+          <div className="bg-zinc-50 dark:bg-zinc-950 rounded-lg p-2">
             <p className="text-[8px] font-semibold text-zinc-400 uppercase tracking-wider mb-0.5">Processing</p>
             <p className="text-sm font-bold text-zinc-800">{fmtShare(ctrl.processes_share)}</p>
           </div>
-          <div className="bg-zinc-50 rounded-lg p-2">
+          <div className="bg-zinc-50 dark:bg-zinc-950 rounded-lg p-2">
             <p className="text-[8px] font-semibold text-zinc-400 uppercase tracking-wider mb-0.5">Binding</p>
-            <p className="text-sm font-bold text-zinc-800 capitalize">{ctrl.binding ?? '—'}</p>
+            <p className="text-sm font-bold text-zinc-800 dark:text-zinc-200 capitalize">{ctrl.binding ?? '—'}</p>
           </div>
         </div>
       )}
 
       {/* Image */}
-      <div className="flex-1 min-h-[200px] bg-zinc-50 rounded-lg flex items-center justify-center overflow-hidden">
+      <div className="flex-1 min-h-[200px] bg-zinc-50 dark:bg-zinc-950 rounded-lg flex items-center justify-center overflow-hidden">
         {loading && (
           <div className="flex flex-col items-center text-zinc-500 text-xs">
             <div className="h-6 w-6 border-2 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mb-2" />

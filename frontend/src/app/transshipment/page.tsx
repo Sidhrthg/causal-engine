@@ -159,7 +159,7 @@ function TransshipmentForm() {
         </div>
 
         {/* Config card */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-zinc-200 p-6 mb-6 shadow-sm">
+        <form onSubmit={handleSubmit} className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-6 mb-6 shadow-sm">
           <div className="grid grid-cols-3 gap-4 mb-4">
             <div>
               <label className="block text-xs font-semibold text-zinc-500 mb-1.5">
@@ -168,7 +168,7 @@ function TransshipmentForm() {
               <select
                 value={commodity}
                 onChange={(e) => setCommodity(e.target.value)}
-                className="w-full text-sm border border-zinc-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 {COMMODITIES.map((c) => (
                   <option key={c} value={c}>
@@ -186,7 +186,7 @@ function TransshipmentForm() {
                 type="text"
                 value={source}
                 onChange={(e) => setSource(e.target.value)}
-                className="w-full text-sm border border-zinc-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
             <div>
@@ -197,7 +197,7 @@ function TransshipmentForm() {
                 type="text"
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
-                className="w-full text-sm border border-zinc-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           </div>
@@ -208,7 +208,7 @@ function TransshipmentForm() {
               <select
                 value={year}
                 onChange={(e) => setYear(Number(e.target.value))}
-                className="w-full text-sm border border-zinc-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 {YEARS.map((y) => <option key={y} value={y}>{y}</option>)}
               </select>
@@ -216,7 +216,7 @@ function TransshipmentForm() {
             <button
               type="button"
               onClick={() => setShowAdvanced(!showAdvanced)}
-              className="text-xs text-zinc-400 hover:text-zinc-600 transition-colors pb-2"
+              className="text-xs text-zinc-400 hover:text-zinc-600 dark:text-zinc-400 transition-colors pb-2"
             >
               {showAdvanced ? '▲ Hide advanced' : '▼ Show advanced options'}
             </button>
@@ -224,7 +224,7 @@ function TransshipmentForm() {
 
           {/* Advanced options */}
           {showAdvanced && (
-            <div className="grid grid-cols-3 gap-4 mb-4 p-4 bg-zinc-50 rounded-lg border border-zinc-100">
+            <div className="grid grid-cols-3 gap-4 mb-4 p-4 bg-zinc-50 dark:bg-zinc-950 rounded-lg border border-zinc-100">
               <div>
                 <label className="block text-xs font-semibold text-zinc-500 mb-1.5">
                   Max hops
@@ -235,7 +235,7 @@ function TransshipmentForm() {
                   min={2} max={6}
                   value={maxHops}
                   onChange={(e) => setMaxHops(Number(e.target.value))}
-                  className="w-full text-sm border border-zinc-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
               <div>
@@ -248,7 +248,7 @@ function TransshipmentForm() {
                   min={0} max={1} step={0.05}
                   value={nominalRestriction}
                   onChange={(e) => setNominalRestriction(Number(e.target.value))}
-                  className="w-full text-sm border border-zinc-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
               <div>
@@ -260,7 +260,7 @@ function TransshipmentForm() {
                   type="text"
                   value={dataPath}
                   onChange={(e) => setDataPath(e.target.value)}
-                  className="w-full text-sm border border-zinc-200 rounded-lg px-3 py-2 font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
             </div>
@@ -290,7 +290,7 @@ function TransshipmentForm() {
               <button
                 type="button"
                 onClick={showDemo}
-                className="text-sm text-zinc-400 hover:text-zinc-600 transition-colors"
+                className="text-sm text-zinc-400 hover:text-zinc-600 dark:text-zinc-400 transition-colors"
               >
                 View sample results →
               </button>
@@ -321,11 +321,11 @@ function TransshipmentForm() {
 
         {/* Empty state */}
         {!result && !loading && !error && (
-          <div className="rounded-xl border border-dashed border-zinc-200 bg-white px-6 py-10 text-center mb-6">
+          <div className="rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-10 text-center mb-6">
             <svg className="w-10 h-10 mx-auto text-zinc-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
             </svg>
-            <p className="text-sm font-medium text-zinc-700 mb-1">No analysis run yet</p>
+            <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">No analysis run yet</p>
             <p className="text-xs text-zinc-400 max-w-md mx-auto">
               Pick a Quick scenario above or set commodity/source/destination and click{' '}
               <span className="font-semibold text-zinc-600">Run Analysis</span> to trace
@@ -378,18 +378,18 @@ function TransshipmentForm() {
                     <RouteCard key={r.rank} route={r} maxBottleneck={maxBottleneck} />
                   ))
                 ) : (
-                  <div className="rounded-xl border border-dashed border-zinc-200 p-8 text-center">
+                  <div className="rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 p-8 text-center">
                     <p className="text-sm text-zinc-400">No routes found above the flow threshold.</p>
                   </div>
                 )}
 
                 {/* Summary text */}
                 {result.summary && !isDemo && (
-                  <div className="rounded-xl border border-zinc-200 bg-white p-4 mt-4">
+                  <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 mt-4">
                     <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-2">
                       Full report
                     </p>
-                    <pre className="text-xs text-zinc-600 font-mono whitespace-pre-wrap leading-relaxed">
+                    <pre className="text-xs text-zinc-600 dark:text-zinc-400 font-mono whitespace-pre-wrap leading-relaxed">
                       {result.summary}
                     </pre>
                   </div>
@@ -408,7 +408,7 @@ function TransshipmentForm() {
                 />
 
                 {/* Legend */}
-                <div className="rounded-xl border border-zinc-200 bg-white p-4">
+                <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
                   <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-3">
                     Legend
                   </p>

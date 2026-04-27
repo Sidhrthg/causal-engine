@@ -263,7 +263,7 @@ export default function KnowledgeGraphPage() {
   return (
     <div className="flex flex-col h-screen bg-zinc-50">
       {/* Header */}
-      <div className="border-b border-zinc-200 bg-white px-6 py-3 shrink-0">
+      <div className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-3 shrink-0">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-[10px] font-semibold text-indigo-600 uppercase tracking-widest mb-0.5">
@@ -280,21 +280,21 @@ export default function KnowledgeGraphPage() {
             <select
               value={commodity}
               onChange={(e) => setCommodity(e.target.value)}
-              className="text-sm border border-zinc-200 rounded-lg px-2.5 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-2.5 py-1.5 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               {COMMODITIES.map((c) => <option key={c} value={c}>{c || 'All commodities'}</option>)}
             </select>
             <select
               value={relFilter}
               onChange={(e) => { setRelFilter(e.target.value); draw(); }}
-              className="text-sm border border-zinc-200 rounded-lg px-2.5 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-2.5 py-1.5 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               <option value="">All relations</option>
               {relTypes.map((r) => <option key={r} value={r}>{r}</option>)}
             </select>
             <button
               onClick={loadGraph}
-              className="text-xs px-3 py-1.5 border border-zinc-200 rounded-lg hover:bg-zinc-50 text-zinc-600"
+              className="text-xs px-3 py-1.5 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:bg-zinc-50 dark:bg-zinc-950 text-zinc-600"
             >
               Reset
             </button>
@@ -306,12 +306,12 @@ export default function KnowledgeGraphPage() {
         {/* Canvas */}
         <div className="flex-1 relative">
           {loading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-zinc-50/80 z-10">
+            <div className="absolute inset-0 flex items-center justify-center bg-zinc-50 dark:bg-zinc-950/80 z-10">
               <div className="text-sm text-zinc-500">Building graph…</div>
             </div>
           )}
           {error && (
-            <div className="absolute inset-0 flex items-center justify-center bg-zinc-50/80 z-10">
+            <div className="absolute inset-0 flex items-center justify-center bg-zinc-50 dark:bg-zinc-950/80 z-10">
               <div className="text-sm text-red-500">{error}</div>
             </div>
           )}
@@ -333,7 +333,7 @@ export default function KnowledgeGraphPage() {
         </div>
 
         {/* Sidebar */}
-        <div className="w-60 border-l border-zinc-200 bg-white p-4 flex flex-col gap-4 overflow-y-auto shrink-0">
+        <div className="w-60 border-l border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 flex flex-col gap-4 overflow-y-auto shrink-0">
           <HowToUse
             id="knowledge-graph"
             steps={[
@@ -371,10 +371,10 @@ export default function KnowledgeGraphPage() {
 
           {/* Selected node details */}
           {selected && (
-            <div className="border-t border-zinc-100 pt-4">
+            <div className="border-t border-zinc-100 dark:border-zinc-800 pt-4">
               <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-2">Selected</p>
-              <div className="bg-zinc-50 rounded-lg p-3">
-                <p className="text-sm font-bold text-zinc-800 mb-1">{selected.id.replace(/_/g, ' ')}</p>
+              <div className="bg-zinc-50 dark:bg-zinc-950 rounded-lg p-3">
+                <p className="text-sm font-bold text-zinc-800 dark:text-zinc-200 mb-1">{selected.id.replace(/_/g, ' ')}</p>
                 <div
                   className="text-[10px] font-semibold px-2 py-0.5 rounded-full inline-block mb-2 text-white"
                   style={{ backgroundColor: TYPE_COLORS[selected.entity_type] ?? '#94a3b8' }}

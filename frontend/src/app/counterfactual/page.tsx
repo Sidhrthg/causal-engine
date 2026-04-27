@@ -83,7 +83,7 @@ function SubstitutionForm({
           type="number" step="0.05" min={0} max={5}
           value={elasticity}
           onChange={(e) => setElasticity(Number(e.target.value))}
-          className="w-full text-sm border border-zinc-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
         <p className="text-[10px] text-zinc-400 mt-1">
           0.0 = no substitution · 0.8 = strong substitution · controls how fast non-dominant
@@ -99,7 +99,7 @@ function SubstitutionForm({
           type="number" step="0.05" min={0} max={1}
           value={cap}
           onChange={(e) => setCap(Number(e.target.value))}
-          className="w-full text-sm border border-zinc-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
         <p className="text-[10px] text-zinc-400 mt-1">
           Maximum fraction of restricted volume that can ever be substituted
@@ -126,7 +126,7 @@ function FringeForm({
           type="number" step="0.05" min={0} max={2}
           value={share}
           onChange={(e) => setShare(Number(e.target.value))}
-          className="w-full text-sm border border-zinc-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
         <p className="text-[10px] text-zinc-400 mt-1">
           0.0 = no fringe · 0.3 = fringe can supply up to 30% of dominant capacity
@@ -141,7 +141,7 @@ function FringeForm({
           type="number" step="0.1" min={0.5} max={5}
           value={entry}
           onChange={(e) => setEntry(Number(e.target.value))}
-          className="w-full text-sm border border-zinc-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
         <p className="text-[10px] text-zinc-400 mt-1">
           Price at which fringe producers start entering (e.g. 1.5 = 50% above P_ref)
@@ -165,7 +165,7 @@ function TrajectoryForm({
         rows={5}
         value={overrides}
         onChange={(e) => setOverrides(e.target.value)}
-        className="w-full text-xs font-mono border border-zinc-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        className="w-full text-xs font-mono border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         spellCheck={false}
       />
       <p className="text-[10px] text-zinc-400 mt-1">
@@ -268,7 +268,7 @@ export default function CounterfactualPage() {
           <span className="text-[11px] font-semibold text-indigo-600 uppercase tracking-widest">
             Pearl Layer 3 — Imagining
           </span>
-          <h1 className="text-2xl font-bold text-zinc-900 mt-1">Counterfactual Analysis</h1>
+          <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mt-1">Counterfactual Analysis</h1>
           <p className="text-sm text-zinc-500 mt-1 max-w-2xl">
             Abduction-Action-Prediction: fix the exogenous noise sequence from the factual run,
             change one structural mechanism, replay to see what <em>would have been</em>.
@@ -287,7 +287,7 @@ export default function CounterfactualPage() {
         />
 
         {/* Config card */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-zinc-200 p-6 mb-6 shadow-sm space-y-5">
+        <form onSubmit={handleSubmit} className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-6 mb-6 shadow-sm space-y-5">
 
           {/* Scenario selector */}
           <div>
@@ -298,7 +298,7 @@ export default function CounterfactualPage() {
               <select
                 value={scenario}
                 onChange={(e) => { setScenario(e.target.value); setResult(null); }}
-                className="w-full text-sm border border-zinc-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-2 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 {scenarios.map((s) => (
                   <option key={s.name} value={s.name}>
@@ -357,7 +357,7 @@ export default function CounterfactualPage() {
           </div>
 
           {/* CF parameters (conditional) */}
-          <div className="p-4 bg-zinc-50 rounded-lg border border-zinc-100">
+          <div className="p-4 bg-zinc-50 dark:bg-zinc-950 rounded-lg border border-zinc-100">
             <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-3">
               Counterfactual parameters
             </p>
@@ -422,7 +422,7 @@ export default function CounterfactualPage() {
                   const val = result.ate[key] ?? 0;
                   const col = ateColor(val, key);
                   return (
-                    <div key={key} className="bg-white rounded-xl border border-zinc-200 p-4">
+                    <div key={key} className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
                       <p className="text-[10px] text-zinc-400 uppercase tracking-wide mb-1">
                         {OUTCOME_LABELS[key]}
                       </p>
@@ -437,7 +437,7 @@ export default function CounterfactualPage() {
             </div>
 
             {/* Parameters comparison */}
-            <div className="bg-white rounded-xl border border-zinc-200 p-4">
+            <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
               <h3 className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-3">
                 Structural change
               </h3>
@@ -451,7 +451,7 @@ export default function CounterfactualPage() {
                     </div>
                   ))}
                 </div>
-                <div className="border-l border-zinc-100 pl-8">
+                <div className="border-l border-zinc-100 dark:border-zinc-800 pl-8">
                   <p className="text-[10px] text-zinc-400 mb-2">Counterfactual (do-operator)</p>
                   {Object.entries(result.cf_params).map(([k, v]) => (
                     <div key={k} className="flex gap-3 font-mono text-xs text-indigo-700 font-semibold">
@@ -470,7 +470,7 @@ export default function CounterfactualPage() {
               </h2>
               <div className="grid grid-cols-2 gap-6">
                 {OUTCOMES_TO_SHOW.map((key) => (
-                  <div key={key} className="bg-white rounded-xl border border-zinc-200 p-4">
+                  <div key={key} className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
                     <LineChart
                       years={years}
                       title={OUTCOME_LABELS[key as string] ?? String(key)}
@@ -493,7 +493,7 @@ export default function CounterfactualPage() {
             </div>
 
             {/* Methodology note */}
-            <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-5 py-4">
+            <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-5 py-4">
               <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-2">
                 Methodology
               </p>
