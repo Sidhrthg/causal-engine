@@ -27,6 +27,7 @@ outputs/kg_scenarios/temporal/*
 # scripts/build_knowledge_graphs_folder.py).
 Knowledge Graphs/*/*.png
 !Knowledge Graphs/*/*.pdf
+!Knowledge Graphs/*.pdf
 !Knowledge Graphs/README.md
 
 # HippoRAG index (large parquets; not in repo)

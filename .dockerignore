@@ -32,6 +32,7 @@ outputs
 !Knowledge Graphs/*
 !Knowledge Graphs/*/
 !Knowledge Graphs/*/*.pdf
+!Knowledge Graphs/*.pdf
 !Knowledge Graphs/README.md
 Knowledge Graphs/*/*.png
 runs
