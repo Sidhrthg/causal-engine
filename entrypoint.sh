@@ -16,13 +16,19 @@ mkdir -p /app/data/canonical
 cp -rn /app/data_init/canonical/. /app/data/canonical/ 2>/dev/null || true
 echo "[entrypoint] canonical — $(find /app/data/canonical -type f | wc -l) files present."
 
-# One-time forward migration: if the volume's enriched_kg.json predates the
-# uranium PRODUCES/PROCESSES seed edges, replace it with the image copy. This
-# overwrites is bounded — once "uranium" is in the file, the check skips and
-# any subsequent /api/kg/enrich writes are preserved.
-if [ -f /app/data/canonical/enriched_kg.json ] && ! grep -q '"id": "uranium"' /app/data/canonical/enriched_kg.json 2>/dev/null; then
-    echo "[entrypoint] Migrating enriched_kg.json to include uranium seeds..."
-    cp /app/data_init/canonical/enriched_kg.json /app/data/canonical/enriched_kg.json
+# Versioned forward migration. The image's enriched_kg.json embeds a
+# _data_version marker in its metadata. If the volume's copy lacks the same
+# marker, replace it with the image copy. This is bounded: once the volume
+# has the current version, the check skips and subsequent /api/kg/enrich
+# writes are preserved (they don't change _data_version, so the next image
+# bump triggers a re-migration).
+if [ -f /app/data/canonical/enriched_kg.json ] && [ -f /app/data_init/canonical/enriched_kg.json ]; then
+    IMG_VER=$(grep -o '"_data_version"[^,]*' /app/data_init/canonical/enriched_kg.json | head -1)
+    VOL_VER=$(grep -o '"_data_version"[^,]*' /app/data/canonical/enriched_kg.json | head -1)
+    if [ "$IMG_VER" != "$VOL_VER" ]; then
+        echo "[entrypoint] enriched_kg.json migration: $VOL_VER -> $IMG_VER"
+        cp /app/data_init/canonical/enriched_kg.json /app/data/canonical/enriched_kg.json
+    fi
 fi
 
 exec "$@"

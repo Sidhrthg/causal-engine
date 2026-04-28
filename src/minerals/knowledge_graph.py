@@ -1799,7 +1799,15 @@ def build_critical_minerals_kg(
     # ------- PRODUCES relationships -------
     production = [
         ("china", "graphite", {"share": 0.65, "type": "natural_and_synthetic"}),
-        ("china", "rare_earths", {"share": 0.60}),
+        ("china", "rare_earths", {
+            "share": 0.70,
+            "yearly_share": {2007: 0.95, 2008: 0.96, 2009: 0.97, 2010: 0.97,
+                             2011: 0.95, 2012: 0.92, 2013: 0.90, 2014: 0.90,
+                             2015: 0.85, 2016: 0.83, 2017: 0.80, 2018: 0.70,
+                             2019: 0.62, 2020: 0.58, 2021: 0.62, 2022: 0.70,
+                             2023: 0.68, 2024: 0.70},
+            "provenance": "USGS MCS 2010–2024 (China REE mine production share). Drop 2018–2020 from Mountain Pass restart + Lynas scaling; partial recovery 2022+.",
+        }),
         ("china", "gallium", {
             "share": 0.85,
             "yearly_share": {2005: 0.55, 2010: 0.70, 2015: 0.80, 2020: 0.85, 2023: 0.85, 2024: 0.85},
@@ -1814,14 +1822,38 @@ def build_critical_minerals_kg(
         ("china", "antimony", {"share": 0.55}),
         ("china", "indium", {"share": 0.55}),
         ("china", "vanadium", {"share": 0.55}),
-        ("australia", "lithium", {"share": 0.50}),
-        ("chile", "lithium", {"share": 0.25}),
+        ("australia", "lithium", {
+            "share": 0.49,
+            "yearly_share": {1995: 0.05, 2000: 0.10, 2005: 0.20, 2008: 0.25, 2010: 0.26,
+                             2012: 0.35, 2014: 0.39, 2015: 0.41, 2017: 0.45, 2018: 0.51,
+                             2020: 0.47, 2022: 0.47, 2023: 0.51, 2024: 0.49},
+            "provenance": "USGS MCS 2010–2024 (LCE-equivalent mine production)",
+        }),
+        ("chile", "lithium", {
+            "share": 0.24,
+            "yearly_share": {1995: 0.40, 2000: 0.42, 2005: 0.45, 2008: 0.42, 2010: 0.41,
+                             2012: 0.30, 2014: 0.35, 2015: 0.29, 2017: 0.25, 2018: 0.22,
+                             2020: 0.22, 2022: 0.30, 2023: 0.25, 2024: 0.24},
+            "provenance": "USGS MCS 2010–2024",
+        }),
+        ("china", "lithium", {
+            "share": 0.18,
+            "yearly_share": {2005: 0.10, 2010: 0.13, 2014: 0.10, 2015: 0.13, 2018: 0.14,
+                             2020: 0.17, 2022: 0.14, 2023: 0.16, 2024: 0.18},
+            "provenance": "USGS MCS — China spodumene + brine mine share",
+        }),
         ("chile", "copper", {
             "share": 0.27,
             "yearly_share": {2000: 0.35, 2005: 0.36, 2010: 0.34, 2015: 0.30, 2020: 0.28, 2024: 0.27},
             "provenance": "International Copper Study Group (ICSG) 2024; Codelco / BHP Escondida",
         }),
-        ("drc", "cobalt", {"share": 0.70}),
+        ("drc", "cobalt", {
+            "share": 0.74,
+            "yearly_share": {2005: 0.36, 2008: 0.45, 2010: 0.51, 2012: 0.55, 2014: 0.50,
+                             2015: 0.50, 2017: 0.58, 2018: 0.64, 2020: 0.67, 2022: 0.73,
+                             2023: 0.76, 2024: 0.74},
+            "provenance": "USGS MCS 2010–2024 (DRC mine production share)",
+        }),
         ("south_africa", "platinum", {"share": 0.70}),
         ("south_africa", "manganese", {"share": 0.30}),
         ("brazil", "niobium", {"share": 0.90}),
@@ -1880,7 +1912,8 @@ def build_critical_minerals_kg(
         # Source: USGS MCS 2024; EC Critical Raw Materials Assessment 2023
         ("china", "rare_earths", {
             "product": "primary_separation",
-            "yearly_share": {2005: 0.90, 2010: 0.97, 2014: 0.90, 2018: 0.85, 2022: 0.85},
+            "yearly_share": {2005: 0.90, 2007: 0.93, 2010: 0.97, 2014: 0.90,
+                             2018: 0.85, 2020: 0.85, 2022: 0.85, 2023: 0.87, 2024: 0.87},
             "provenance": "USGS MCS 2024; EC Critical Raw Materials 2023",
         }),
         # Cobalt: refined cobalt metal and chemicals
