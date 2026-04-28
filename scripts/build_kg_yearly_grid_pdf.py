@@ -32,6 +32,9 @@ COMMODITY_ORIGIN = {
     "lithium": "china",
     "nickel": "indonesia",
     "uranium": "russia",
+    "copper": "china",
+    "gallium": "china",
+    "germanium": "china",
 }
 
 INTERVAL = 2  # years between snapshots

@@ -1800,15 +1800,27 @@ def build_critical_minerals_kg(
     production = [
         ("china", "graphite", {"share": 0.65, "type": "natural_and_synthetic"}),
         ("china", "rare_earths", {"share": 0.60}),
-        ("china", "gallium", {"share": 0.80}),
-        ("china", "germanium", {"share": 0.60}),
+        ("china", "gallium", {
+            "share": 0.85,
+            "yearly_share": {2005: 0.55, 2010: 0.70, 2015: 0.80, 2020: 0.85, 2023: 0.85, 2024: 0.85},
+            "provenance": "USGS MCS 2024 (gallium recovered from bauxite refining)",
+        }),
+        ("china", "germanium", {
+            "share": 0.62,
+            "yearly_share": {2005: 0.45, 2010: 0.50, 2015: 0.58, 2020: 0.62, 2023: 0.62, 2024: 0.62},
+            "provenance": "USGS MCS 2024 (germanium recovered from zinc smelting)",
+        }),
         ("china", "tungsten", {"share": 0.80}),
         ("china", "antimony", {"share": 0.55}),
         ("china", "indium", {"share": 0.55}),
         ("china", "vanadium", {"share": 0.55}),
         ("australia", "lithium", {"share": 0.50}),
         ("chile", "lithium", {"share": 0.25}),
-        ("chile", "copper", {"share": 0.27}),
+        ("chile", "copper", {
+            "share": 0.27,
+            "yearly_share": {2000: 0.35, 2005: 0.36, 2010: 0.34, 2015: 0.30, 2020: 0.28, 2024: 0.27},
+            "provenance": "International Copper Study Group (ICSG) 2024; Codelco / BHP Escondida",
+        }),
         ("drc", "cobalt", {"share": 0.70}),
         ("south_africa", "platinum", {"share": 0.70}),
         ("south_africa", "manganese", {"share": 0.30}),
@@ -1907,6 +1919,24 @@ def build_critical_minerals_kg(
             "product": "u3o8_concentrate",
             "yearly_share": {2003: 0.10, 2007: 0.15, 2010: 0.30, 2014: 0.40, 2018: 0.45, 2022: 0.43},
             "provenance": "Kazatomprom Annual Report 2024",
+        }),
+        # Copper smelting/refining (cathode). China dominates refined copper.
+        ("china", "copper", {
+            "product": "refined_cathode",
+            "yearly_share": {2000: 0.15, 2005: 0.25, 2010: 0.35, 2015: 0.43, 2020: 0.46, 2024: 0.48},
+            "provenance": "International Copper Study Group (ICSG) 2024",
+        }),
+        # Gallium primary metal (China dominates ~80% production from aluminum byproduct).
+        ("china", "gallium", {
+            "product": "primary_gallium",
+            "yearly_share": {2005: 0.55, 2010: 0.70, 2015: 0.80, 2020: 0.85, 2023: 0.85, 2024: 0.80},
+            "provenance": "USGS MCS 2024; China August 2023 export controls",
+        }),
+        # Germanium (China dominates from zinc-mining byproduct).
+        ("china", "germanium", {
+            "product": "primary_germanium",
+            "yearly_share": {2005: 0.50, 2010: 0.55, 2015: 0.60, 2020: 0.62, 2023: 0.60, 2024: 0.58},
+            "provenance": "USGS MCS 2024; China August 2023 export controls",
         }),
     ]
     for country, commodity, props in processing:

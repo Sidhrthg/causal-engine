@@ -40,6 +40,9 @@ COMMODITY_ORIGIN = {
     "lithium": "china",
     "nickel": "indonesia",
     "uranium": "russia",
+    "copper": "china",     # processing-bound (chile dominates mining, china refining)
+    "gallium": "china",    # ~85% PRODUCES + ~80% PROCESSES
+    "germanium": "china",  # ~62% PRODUCES from zinc smelting byproduct
 }
 
 # Page geometry for per-commodity PDFs (landscape A4 at 200 DPI)

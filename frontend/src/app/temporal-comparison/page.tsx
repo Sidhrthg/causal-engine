@@ -21,9 +21,12 @@ const COMMODITY_LABELS: Record<string, string> = {
   lithium: 'Lithium',
   nickel: 'Nickel',
   uranium: 'Uranium',
+  copper: 'Copper',
+  gallium: 'Gallium',
+  germanium: 'Germanium',
 };
 
-const COMMODITY_ORDER = ['graphite', 'rare_earths', 'cobalt', 'lithium', 'nickel', 'uranium'];
+const COMMODITY_ORDER = ['graphite', 'rare_earths', 'cobalt', 'lithium', 'nickel', 'uranium', 'copper', 'gallium', 'germanium'];
 
 const COUNTRY_COLOR: Record<string, string> = {
   china: '#dc2626',

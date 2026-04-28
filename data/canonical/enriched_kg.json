@@ -4639,8 +4639,17 @@
       "target_id": "gallium",
       "relation_type": "produces",
       "properties": {
-        "share": 0.8,
-        "confidence": "HIGH"
+        "share": 0.85,
+        "confidence": "HIGH",
+        "yearly_share": {
+          "2005": 0.55,
+          "2010": 0.7,
+          "2015": 0.8,
+          "2020": 0.85,
+          "2023": 0.85,
+          "2024": 0.85
+        },
+        "provenance": "USGS MCS 2024"
       }
     },
     {
@@ -4648,8 +4657,17 @@
       "target_id": "germanium",
       "relation_type": "produces",
       "properties": {
-        "share": 0.6,
-        "confidence": "HIGH"
+        "share": 0.62,
+        "confidence": "HIGH",
+        "yearly_share": {
+          "2005": 0.45,
+          "2010": 0.5,
+          "2015": 0.58,
+          "2020": 0.62,
+          "2023": 0.62,
+          "2024": 0.62
+        },
+        "provenance": "USGS MCS 2024"
       }
     },
     {
@@ -5003,7 +5021,16 @@
       "relation_type": "produces",
       "properties": {
         "share": 0.27,
-        "confidence": "HIGH"
+        "confidence": "HIGH",
+        "yearly_share": {
+          "2000": 0.35,
+          "2005": 0.36,
+          "2010": 0.34,
+          "2015": 0.3,
+          "2020": 0.28,
+          "2024": 0.27
+        },
+        "provenance": "International Copper Study Group (ICSG) 2024"
       }
     },
     {
@@ -12028,11 +12055,68 @@
         "confidence": "HIGH",
         "share": 0.43
       }
+    },
+    {
+      "source_id": "china",
+      "target_id": "copper",
+      "relation_type": "processes",
+      "properties": {
+        "product": "refined_cathode",
+        "share": 0.48,
+        "yearly_share": {
+          "2000": 0.15,
+          "2005": 0.25,
+          "2010": 0.35,
+          "2015": 0.43,
+          "2020": 0.46,
+          "2024": 0.48
+        },
+        "provenance": "ICSG 2024",
+        "confidence": "HIGH"
+      }
+    },
+    {
+      "source_id": "china",
+      "target_id": "gallium",
+      "relation_type": "processes",
+      "properties": {
+        "product": "primary_gallium",
+        "share": 0.85,
+        "yearly_share": {
+          "2005": 0.55,
+          "2010": 0.7,
+          "2015": 0.8,
+          "2020": 0.85,
+          "2023": 0.85,
+          "2024": 0.8
+        },
+        "provenance": "USGS MCS 2024; China Aug 2023 export controls",
+        "confidence": "HIGH"
+      }
+    },
+    {
+      "source_id": "china",
+      "target_id": "germanium",
+      "relation_type": "processes",
+      "properties": {
+        "product": "primary_germanium",
+        "share": 0.58,
+        "yearly_share": {
+          "2005": 0.5,
+          "2010": 0.55,
+          "2015": 0.6,
+          "2020": 0.62,
+          "2023": 0.6,
+          "2024": 0.58
+        },
+        "provenance": "USGS MCS 2024",
+        "confidence": "HIGH"
+      }
     }
   ],
   "metadata": {
     "num_entities": 474,
-    "num_relationships": 594,
+    "num_relationships": 597,
     "entity_types": [
       "commodity",
       "company",

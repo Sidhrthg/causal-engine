@@ -110,6 +110,15 @@ TEMPORAL_SERIES_DEFS = {
     "uranium":     [("uranium_2003",        2003, "canada",    "Uranium 2003 — Pre-Renaissance Canadian Supply"),
                     ("uranium_2007",        2007, "canada",    "Uranium 2007 — Cigar Lake Flood (τ_K ≈ 14–20yr)"),
                     ("uranium_2022",        2022, "russia",    "Uranium 2022 — Russia Sanctions / PRIA")],
+    "copper":      [("copper_2005",         2005, "chile",     "Copper 2005 — Chile Mining Dominance"),
+                    ("copper_2015",         2015, "china",     "Copper 2015 — China Refining Catches Up"),
+                    ("copper_2024",         2024, "china",     "Copper 2024 — China Refined Cathode 48%")],
+    "gallium":     [("gallium_2010",        2010, "china",     "Gallium 2010 — China 70% Pre-Quota"),
+                    ("gallium_2020",        2020, "china",     "Gallium 2020 — China Peak Dominance 85%"),
+                    ("gallium_2024",        2024, "china",     "Gallium 2024 — Post Aug 2023 Export Controls")],
+    "germanium":   [("germanium_2010",      2010, "china",     "Germanium 2010 — Pre-Surge"),
+                    ("germanium_2020",      2020, "china",     "Germanium 2020 — China 62% Production"),
+                    ("germanium_2024",      2024, "china",     "Germanium 2024 — Post Export Controls")],
 }
 
 # Flatten into a {scenario_id: scenario_dict} mapping, taking the first
