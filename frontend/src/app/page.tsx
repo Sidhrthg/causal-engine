@@ -129,9 +129,13 @@ const METHODS = [
 
 const COMMODITIES = [
   { name: 'Graphite', icon: '◆', hs: 'HS 250490', producers: 'China · Madagascar · Mozambique', slug: 'graphite', accent: 'text-slate-600 bg-slate-50 border-slate-200' },
+  { name: 'Rare earths', icon: '✦', hs: 'HS 280530', producers: 'China · USA · Australia', slug: 'rare_earths', accent: 'text-amber-600 bg-amber-50 border-amber-200' },
   { name: 'Lithium', icon: '⬡', hs: 'HS 283691', producers: 'Australia · Chile · China', slug: 'lithium', accent: 'text-blue-600 bg-blue-50 border-blue-200' },
   { name: 'Cobalt', icon: '◉', hs: 'HS 810520', producers: 'DRC · Russia · Australia', slug: 'cobalt', accent: 'text-violet-600 bg-violet-50 border-violet-200' },
   { name: 'Nickel', icon: '○', hs: 'HS 750110', producers: 'Indonesia · Philippines · Russia', slug: 'nickel', accent: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
+  { name: 'Uranium', icon: '◎', hs: 'EIA UMAR', producers: 'Kazakhstan · Canada · Australia', slug: 'uranium', accent: 'text-yellow-600 bg-yellow-50 border-yellow-200' },
+  { name: 'Germanium', icon: '◈', hs: 'HS 280470', producers: 'China · Russia · USA', slug: 'germanium', accent: 'text-rose-600 bg-rose-50 border-rose-200' },
+  { name: 'Gallium', icon: '⬢', hs: 'HS 281830', producers: 'China · Japan · Korea', slug: 'gallium', accent: 'text-cyan-600 bg-cyan-50 border-cyan-200' },
 ];
 
 export default function DashboardPage() {
@@ -157,7 +161,7 @@ export default function DashboardPage() {
           <p className="text-base text-zinc-500 dark:text-zinc-400 max-w-2xl leading-relaxed mb-6 animate-fade-in-up delay-2">
             Pearl&apos;s Ladder of Causation (L1/L2/L3) over an ODE commodity model, validated against CEPII BACI
             bilateral trade data. Identify supply shocks, trace trade circumvention, and answer
-            counterfactual policy questions for graphite, lithium, cobalt, nickel, and uranium.
+            counterfactual policy questions across eight critical minerals — graphite, rare earths, lithium, cobalt, nickel, uranium, germanium, and gallium.
           </p>
           <div className="flex gap-3 animate-fade-in-up delay-3">
             <Link

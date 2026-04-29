@@ -52,7 +52,28 @@ export async function getCommodities(): Promise<{
 export async function getScenarios(): Promise<{ scenarios: import('./types').ScenarioMeta[] }> {
   const res = await fetch('/api/scenarios');
   if (!res.ok) throw new Error('Failed to fetch scenarios');
-  return res.json();
+  const data = await res.json();
+  // Backend currently returns list[str] of YAML filenames; convert to ScenarioMeta-like.
+  // When backend is upgraded to return objects, this passthrough handles both shapes.
+  const scenarios = (data.scenarios || []).map((s: unknown) => {
+    if (typeof s === 'string') {
+      const name = s.replace(/\.ya?ml$/, '');
+      const lower = name.toLowerCase();
+      const commodity = ['graphite','rare_earths','rare-earths','cobalt','lithium','nickel','uranium','germanium','gallium','copper','soybeans']
+        .find((c) => lower.includes(c.replace('-','_'))) || 'unknown';
+      return {
+        name,
+        commodity,
+        description: '',
+        start_year: 2024,
+        end_year: 2032,
+        has_shocks: lower.includes('ban') || lower.includes('restrict') || lower.includes('shock'),
+        calibrated: lower.includes('calibrated'),
+      } as import('./types').ScenarioMeta;
+    }
+    return s as import('./types').ScenarioMeta;
+  });
+  return { scenarios };
 }
 
 export async function getKnowledgeGraph(commodity?: string): Promise<KGResponse> {

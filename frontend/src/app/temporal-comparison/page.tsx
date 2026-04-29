@@ -313,7 +313,7 @@ export default function TemporalComparisonPage() {
             <a
               href="/api/kg/trajectory-export"
               className="text-xs px-3 py-1.5 border border-indigo-200 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100"
-              title="Share-trajectory line charts for all 6 commodities, 2/page — thesis appendix."
+              title="Share-trajectory line charts for all commodities, 2/page — thesis appendix."
             >
               Charts PDF
             </a>

@@ -198,8 +198,8 @@ export default function QueryPage() {
                 className="text-sm border border-zinc-200 dark:border-zinc-800 rounded-lg px-2.5 py-1.5 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 <option value="">All</option>
-                {['graphite', 'lithium', 'cobalt', 'nickel', 'copper'].map((c) => (
-                  <option key={c} value={c}>{c}</option>
+                {['graphite', 'rare_earths', 'lithium', 'cobalt', 'nickel', 'uranium', 'germanium', 'gallium', 'copper'].map((c) => (
+                  <option key={c} value={c}>{c.replace('_', ' ')}</option>
                 ))}
               </select>
             </div>

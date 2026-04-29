@@ -51,10 +51,10 @@ export default function KGEnrichPage() {
     const ts = new Date().toLocaleTimeString();
     try {
       const { result } = await batchEnrichKG({ top_k: 3 });
-      setHistory((h) => [{ ts, mode: 'batch', query: 'all 6 minerals', result }, ...h]);
+      setHistory((h) => [{ ts, mode: 'batch', query: 'all 20 critical minerals', result }, ...h]);
     } catch (e) {
       setHistory((h) => [{
-        ts, mode: 'batch', query: 'all 6 minerals', result: '',
+        ts, mode: 'batch', query: 'all 20 critical minerals', result: '',
         error: e instanceof Error ? e.message : 'Batch enrich failed',
       }, ...h]);
     } finally {
@@ -88,7 +88,7 @@ export default function KGEnrichPage() {
               <>Type a query about a supply-chain topic, or click one of the <strong>Suggested Queries</strong> below the form.</>,
               <>Adjust <strong>Top-K</strong> to control how many document chunks are retrieved (more = more candidate triples but slower).</>,
               <>Click <strong>Enrich KG</strong>. HippoRAG retrieves chunks, Claude extracts (subject, relation, object) triples, and they&apos;re merged into the live KG.</>,
-              <>Or use <strong>Enrich for all 6 minerals</strong> to run a canonical query for each commodity in one shot (~1–3 min).</>,
+              <>Or use <strong>Enrich for all 20 critical minerals</strong> to run a canonical query for each commodity in one shot (~1–3 min).</>,
             ]}
             tip="Each successful run permanently grows enriched_kg.json. The Knowledge Graph and Scenario Builder pages will pick up the new entities automatically."
           />
@@ -168,16 +168,18 @@ export default function KGEnrichPage() {
                 Batch Mode
               </p>
               <p className="text-[11px] text-zinc-500 mb-2 leading-relaxed">
-                Run a canonical enrichment query for each of the 6 critical
-                minerals (graphite, lithium, cobalt, nickel, copper, soybeans).
-                Takes ~1–3 min depending on retrieval depth.
+                Run a canonical enrichment query for each of the 20 critical
+                minerals (graphite, rare earths, lithium, cobalt, nickel, copper,
+                gallium, germanium, antimony, beryllium, indium, niobium,
+                platinum, tantalum, tellurium, titanium, tungsten, vanadium,
+                yttrium, cesium). Takes ~3–5 min depending on retrieval depth.
               </p>
               <button
                 onClick={runBatch}
                 disabled={loading !== null}
                 className="w-full text-xs px-3 py-2 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 rounded-lg hover:bg-zinc-50 dark:bg-zinc-950 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
-                {loading === 'batch' ? 'Running batch enrichment…' : 'Enrich for all 6 minerals'}
+                {loading === 'batch' ? 'Running batch enrichment…' : 'Enrich for all 20 critical minerals'}
               </button>
             </div>
           </div>
@@ -190,7 +192,7 @@ export default function KGEnrichPage() {
               <div className="h-4 w-4 border-2 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
               <p className="text-sm text-zinc-700">
                 {loading === 'batch'
-                  ? 'Running batch enrichment for all 6 minerals — this typically takes 1–3 minutes…'
+                  ? 'Running batch enrichment for all 20 critical minerals — this typically takes 1–3 minutes…'
                   : 'Retrieving chunks and extracting triples — this takes 10–30 seconds…'}
               </p>
             </div>
