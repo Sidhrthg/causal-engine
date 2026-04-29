@@ -164,6 +164,8 @@ class ScenarioConfig(BaseModel):
     SUPPORTED_COMMODITIES: ClassVar[set] = {
         "graphite", "lithium", "cobalt", "nickel", "copper", "soybeans",
         "rare_earths", "uranium",
+        # Byproduct minerals — China Aug 2023 export controls (HS 2804.70, 2805.30)
+        "germanium", "gallium",
     }
 
     @field_validator("commodity")

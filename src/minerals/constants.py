@@ -15,6 +15,9 @@ US_IMPORT_RELIANCE: dict[str, float] = {
     "lithium":     0.50,
     "nickel":      0.40,
     "uranium":     0.95,
+    # Byproduct minerals — added 2026 (China Aug 2023 export controls)
+    "germanium":   0.50,   # USGS MCS 2024 (estimated)
+    "gallium":     0.87,   # USGS MCS 2024
 }
 
 # ── Circumvention rate ────────────────────────────────────────────────────────
@@ -28,6 +31,9 @@ CIRCUMVENTION_RATE: dict[str, float] = {
     "lithium":     0.30,
     "nickel":      0.25,
     "uranium":     0.15,
+    # Byproduct minerals: very limited circumvention (no fringe at scale)
+    "germanium":   0.05,   # Recycling provides ~15-20% globally; routing minimal
+    "gallium":     0.05,   # Japan recovery from Al refining is the only credible offset
 }
 
 # ── L3 normalisation lag (years at factual restriction end) ───────────────────
@@ -40,6 +46,10 @@ NORM_LAG_YRS: dict[str, int] = {
     "lithium":     1,
     "nickel":      3,
     "uranium":     4,
+    # Byproduct minerals: tau_K/2 proxy until L3 calibration available.
+    # Germanium tau_K ~12 yr (Zn smelter cycle); gallium tau_K ~6 yr (Al refining).
+    "germanium":   6,
+    "gallium":     3,
 }
 
 # ── ODE structural defaults ───────────────────────────────────────────────────
@@ -73,4 +83,12 @@ SCENARIO_EXTRAS: dict[str, dict] = {
     "nickel":      dict(substitution_elasticity=0.5, substitution_cap=0.4,
                         fringe_capacity_share=0.45,  fringe_entry_price=1.15),
     "uranium":     {},
+    # Byproduct minerals (Ge, Ga): no credible fringe at near-current prices.
+    # Substitution comes from recycling (Ge: ~15-20%; Ga: Japan Al-refining recovery).
+    # Set fringe_capacity_share very low and fringe_entry_price > 5 to effectively
+    # disable the fringe mechanism while preserving the substitution channel.
+    "germanium":   dict(substitution_elasticity=0.3, substitution_cap=0.2,
+                        fringe_capacity_share=0.05,  fringe_entry_price=5.0),
+    "gallium":     dict(substitution_elasticity=0.3, substitution_cap=0.2,
+                        fringe_capacity_share=0.05,  fringe_entry_price=5.0),
 }

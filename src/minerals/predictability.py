@@ -88,6 +88,25 @@ _NICKEL_2022_PARAMS = dict(alpha_P=1.621, eta_D=-0.495, tau_K=7.514, g=1.1679)
 _URANIUM_2007_PARAMS = dict(alpha_P=2.476, eta_D=-0.436, tau_K=20.000, g=1.0866)
 _URANIUM_2022_PARAMS = dict(alpha_P=0.890, eta_D=-0.001, tau_K=14.886, g=1.0368)
 
+# ── Byproduct minerals: PROVISIONAL priors (NOT calibrated against CEPII) ─────
+# Source for priors:
+#   alpha_P: rare_earths_2010 analog (China export restriction with inelastic
+#            downstream demand from defense/semiconductor manufacturers)
+#   eta_D:   high inelasticity — no short-run substitute for IR optics (Ge),
+#            GaN/GaAs semiconductors (Ga). Reduced from REE because more
+#            substitution options exist over 5-10 yr horizon.
+#   tau_K:   primary metal investment cycle. Germanium is byproduct of zinc
+#            (smelter expansion ~10-15 yr); gallium is byproduct of aluminum
+#            refining (~5-8 yr).
+#   g:       semiconductor + clean-tech demand growth ~6-8%/yr (IEA Critical
+#            Minerals 2024 forward).
+#
+# These params will be replaced with differential evolution calibrations once
+# CEPII BACI HS 2804.70 (Ge) and 2805.30 (Ga) data are downloaded for
+# 2002-2024 and the China Aug 2023 export control episode is observable.
+_GERMANIUM_2023_PRIOR = dict(alpha_P=1.700, eta_D=-0.500, tau_K=12.000, g=1.060)
+_GALLIUM_2023_PRIOR   = dict(alpha_P=1.700, eta_D=-0.500, tau_K=6.000,  g=1.080)
+
 
 # ── Data helpers ──────────────────────────────────────────────────────────────
 
