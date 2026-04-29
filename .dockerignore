@@ -5,18 +5,39 @@ __pycache__
 .git
 .github
 .env*
-frontend/node_modules
-frontend/.next
+frontend
 hipporag_index
+runs
+*.egg-info
+dist
+build
+.cache
+.mypy_cache
+.pytest_cache
+.idea
+.vscode
+.DS_Store
+
+# data/: ignore by default, then re-include only what the runtime needs.
 data
 !data/documents
 !data/documents/**
 !data/canonical
 !data/canonical/*.csv
 !data/canonical/*.json
+
+# Exclude large RAG indices that are rebuilt on first boot.
+data/documents/hipporag_index
+data/documents/hipporag_index/**
+
+# Comtrade / cepii / raw dumps stay out of the image.
+data/comtrade
+data/comtrade/**
+data/canonical/_raw
+data/canonical/_raw/**
+
+# outputs/: only bake pre-rendered scenario figures into the image.
 outputs
-# Bake pre-rendered validation/predictive scenarios into the image so they're
-# instantly available at /api/static/kg_scenarios/{validation,predictive}/*.png
 !outputs/kg_scenarios
 !outputs/kg_scenarios/validation
 !outputs/kg_scenarios/validation/*.png
@@ -26,25 +47,37 @@ outputs
 !outputs/kg_scenarios/temporal/*.png
 !outputs/kg_scenarios/kg_snapshots_appendix.pdf
 !outputs/kg_scenarios/kg_yearly_grid_appendix.pdf
+# Big per-year grids and caches are dev-only.
+outputs/kg_scenarios/yearly_grid
+outputs/kg_scenarios/yearly_grid/**
+outputs/kg_scenarios/_query_cache.json
+outputs/cache
+outputs/cache/**
 
-# Per-commodity PDFs from Knowledge Graphs/ folder (PNGs excluded for size)
-!Knowledge Graphs
-!Knowledge Graphs/*
+# Knowledge Graphs/: keep only PDFs at top level and in commodity subdirs.
+Knowledge Graphs/**
+!Knowledge Graphs/
+!Knowledge Graphs/README.md
+!Knowledge Graphs/*.pdf
 !Knowledge Graphs/*/
 !Knowledge Graphs/*/*.pdf
-!Knowledge Graphs/*.pdf
-!Knowledge Graphs/README.md
+# Explicitly exclude archives and raw images.
+Knowledge Graphs/Archive.zip
+Knowledge Graphs/*.zip
 Knowledge Graphs/*/*.png
-runs
-*.egg-info
-dist
-build
+Knowledge Graphs/*/*.zip
 
-# Raw data dirs not needed in the image
+# src/minerals raw data dumps not needed at runtime.
 "src/minerals/cobalt data"
+src/minerals/*.xlsx
+src/minerals/*.xls
+src/minerals/*.csv
+
+# Thesis writing artefacts
 thesis writing
-data/comtrade
-# Exclude scripts/ but keep run_knowledge_graph.py (imported by /api/kg/render-scenario)
+thesis_combined.md
+
+# scripts/: only one is imported by the API.
 scripts
 !scripts/run_knowledge_graph.py
 !scripts/__init__.py
