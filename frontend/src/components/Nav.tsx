@@ -67,6 +67,16 @@ const links = [
     desc: 'Year-by-year KG snapshots',
   },
   {
+    href: '/forecast',
+    label: 'Forecast',
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 17l6-6 4 4 8-8M21 7h-5m5 0v5" />
+      </svg>
+    ),
+    desc: '10-year price projection',
+  },
+  {
     href: '/scenario-builder',
     label: 'Scenario Builder',
     icon: (

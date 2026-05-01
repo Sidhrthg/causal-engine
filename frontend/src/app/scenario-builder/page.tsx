@@ -5,7 +5,7 @@ import HowToUse from '@/components/HowToUse';
 import {
   getKnowledgeGraph,
   getScenarioPresets,
-  renderScenario,
+  renderScenarioAsync,
 } from '@/lib/api';
 import type { ScenarioPreset, ScenarioResult } from '@/lib/types';
 
@@ -177,7 +177,7 @@ export default function ScenarioBuilderPage() {
     setResult(null);
     setLoading(true);
     try {
-      const r = await renderScenario({
+      const r = await renderScenarioAsync({
         year,
         shock_origin: shockOrigin.trim(),
         commodity: commodity.trim(),

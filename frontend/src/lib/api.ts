@@ -126,6 +126,47 @@ export async function renderScenario(
   );
 }
 
+export async function startRenderScenario(
+  payload: import('./types').ScenarioPayload,
+): Promise<{ job_id: string; status: string }> {
+  return post('/api/kg/render-scenario/start', payload);
+}
+
+export async function getRenderScenarioStatus(
+  jobId: string,
+): Promise<{
+  job_id: string;
+  status: 'running' | 'done' | 'failed';
+  result?: import('./types').ScenarioResult;
+  error?: string;
+}> {
+  const res = await fetch(
+    `/api/kg/render-scenario/status?job_id=${encodeURIComponent(jobId)}`,
+  );
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error((err as { detail: string }).detail || 'Status check failed');
+  }
+  return res.json();
+}
+
+export async function renderScenarioAsync(
+  payload: import('./types').ScenarioPayload,
+  opts: { intervalMs?: number; timeoutMs?: number } = {},
+): Promise<import('./types').ScenarioResult> {
+  const intervalMs = opts.intervalMs ?? 4000;
+  const timeoutMs = opts.timeoutMs ?? 5 * 60 * 1000;
+  const { job_id } = await startRenderScenario(payload);
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    await new Promise((r) => setTimeout(r, intervalMs));
+    const s = await getRenderScenarioStatus(job_id);
+    if (s.status === 'done' && s.result) return s.result;
+    if (s.status === 'failed') throw new Error(s.error || 'Render failed');
+  }
+  throw new Error('Render timed out after 5 minutes');
+}
+
 export async function getScenarioPresets(): Promise<import('./types').ScenarioPresetsResponse> {
   const res = await fetch('/api/kg/scenario-presets');
   if (!res.ok) throw new Error('Failed to fetch scenario presets');
@@ -159,6 +200,60 @@ export async function getYearlyShares(
 ): Promise<import('./types').YearlySharesResponse> {
   const res = await fetch(`/api/kg/yearly-shares?commodity=${encodeURIComponent(commodity)}`);
   if (!res.ok) throw new Error('Failed to fetch yearly shares');
+  return res.json();
+}
+
+export interface ForecastRequest {
+  commodity: string;
+  shock_year: number;
+  severity: 'baseline' | 'mild_ban' | 'full_ban' | 'severe_ban' | 'custom';
+  restriction_magnitude?: number;
+  restriction_duration?: number;
+  horizon_years?: number;
+  demand_surge?: number;
+  n_bootstrap?: number;
+}
+
+export interface ForecastPoint {
+  year: number;
+  price_index: number;
+}
+
+export interface ForecastResponse {
+  commodity: string;
+  shock_year: number;
+  horizon_years: number;
+  severity: string;
+  restriction_magnitude: number;
+  restriction_start: number;
+  restriction_end: number;
+  params_used: { alpha_P: number; eta_D: number; tau_K: number; g: number };
+  baseline_path: ForecastPoint[];
+  scenario_path: ForecastPoint[];
+  ci_band: { year: number; low: number; high: number }[] | null;
+  direction: 'up' | 'down' | 'flat';
+  peak_year: number | null;
+  peak_index: number | null;
+  peak_vs_baseline: number | null;
+  normalization_year: number | null;
+  normalization_lag_years: number | null;
+  accuracy: {
+    in_sample_DA: number | null;
+    oos_DA: number | null;
+    in_sample_episodes: string[];
+    oos_pairs: string[];
+  };
+}
+
+export async function runForecast(params: ForecastRequest): Promise<ForecastResponse> {
+  return post<ForecastResponse>('/api/forecast/forward', params);
+}
+
+export async function getForecastCommodities(): Promise<{
+  commodities: { commodity: string; in_sample_DA: number | null; oos_DA: number | null }[];
+}> {
+  const res = await fetch('/api/forecast/commodities');
+  if (!res.ok) throw new Error('Failed to fetch forecast commodities');
   return res.json();
 }
 

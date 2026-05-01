@@ -1747,6 +1747,132 @@ def render_scenario(req: KGRenderScenarioRequest):
         raise HTTPException(status_code=500, detail=f"{type(exc).__name__}: {exc}")
 
 
+# ── Async render-scenario (avoids 60s edge proxy timeouts) ───────────────────
+#
+# Cold-path renders take ~60-120s (HippoRAG warmup + Claude triple extraction),
+# which exceeds the Vercel rewrite's 60s timeout. Frontend uses these two
+# endpoints to start a background job and poll for completion instead.
+
+import threading
+import uuid as _uuid
+
+_RENDER_JOBS: dict[str, dict] = {}
+_RENDER_JOBS_LOCK = threading.Lock()
+
+
+def _run_render_job(job_id: str, req: "KGRenderScenarioRequest") -> None:
+    # Hoist heavy imports to the top of the function so any ImportError shows up
+    # as a clear failed-job error rather than a silent thread crash.
+    import sys
+    from pathlib import Path as _Path
+    project_root = str(_Path(__file__).resolve().parent)
+    if project_root not in sys.path:
+        sys.path.insert(0, project_root)
+    try:
+        from scripts.run_knowledge_graph import _render_scenario as render_fn
+    except Exception as exc:
+        with _RENDER_JOBS_LOCK:
+            _RENDER_JOBS[job_id] = {
+                "status": "failed",
+                "error": f"Import failed: {type(exc).__name__}: {exc}",
+                "finished_at": time.time(),
+            }
+        return
+
+    try:
+        commodity = req.commodity.strip().lower()
+        shock_origin = req.shock_origin.strip().lower()
+        if not commodity or not shock_origin or not req.title.strip():
+            raise ValueError("commodity, shock_origin, and title are all required")
+
+        scenario_id = req.scenario_id or f"{commodity}_{req.year}_custom_{int(time.time())}"
+        scenario_id = _SCENARIO_ID_RE.sub("_", scenario_id).strip("_") or f"custom_{int(time.time())}"
+
+        out_path = _KG_SCENARIO_DIR / "custom" / f"{scenario_id}.png"
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+
+        kg_obj, pipeline, extractor = _get_scenario_renderer()
+
+        scenario_dict = {
+            "year": int(req.year),
+            "shock_origin": shock_origin,
+            "commodity": commodity,
+            "title": req.title.strip(),
+        }
+        stats = render_fn(
+            kg_obj=kg_obj,
+            scenario_id=scenario_id,
+            scenario=scenario_dict,
+            output_path=str(out_path),
+            pipeline=pipeline,
+            extractor=extractor,
+            enriched=True,
+        )
+        result = {
+            "scenario_id": scenario_id,
+            "image_url": f"/api/static/kg_scenarios/custom/{scenario_id}.png",
+            "node_count": stats.get("node_count", 0),
+            "focal_count": stats.get("focal_count", 0),
+            "edge_count": stats.get("edge_count", 0),
+            "impact_count": stats.get("impact_count", 0),
+            "effective_share": stats.get("effective_share"),
+            "binding": stats.get("binding"),
+            "query": stats.get("query", ""),
+            "skipped": stats.get("skipped", False),
+        }
+        with _RENDER_JOBS_LOCK:
+            _RENDER_JOBS[job_id] = {
+                "status": "done",
+                "result": result,
+                "finished_at": time.time(),
+            }
+    except Exception as exc:
+        with _RENDER_JOBS_LOCK:
+            _RENDER_JOBS[job_id] = {
+                "status": "failed",
+                "error": f"{type(exc).__name__}: {exc}",
+                "finished_at": time.time(),
+            }
+
+
+def _gc_render_jobs(max_age_sec: int = 1800) -> None:
+    """Drop finished jobs older than max_age_sec to keep the dict bounded."""
+    cutoff = time.time() - max_age_sec
+    with _RENDER_JOBS_LOCK:
+        stale = [
+            jid for jid, j in _RENDER_JOBS.items()
+            if j.get("status") in ("done", "failed") and j.get("finished_at", 0) < cutoff
+        ]
+        for jid in stale:
+            _RENDER_JOBS.pop(jid, None)
+
+
+@app.post("/api/kg/render-scenario/start")
+def render_scenario_start(req: KGRenderScenarioRequest):
+    """Kick off an async render. Returns immediately with a job_id."""
+    if not req.commodity.strip() or not req.shock_origin.strip() or not req.title.strip():
+        raise HTTPException(
+            status_code=400,
+            detail="commodity, shock_origin, and title are all required",
+        )
+    _gc_render_jobs()
+    job_id = _uuid.uuid4().hex
+    with _RENDER_JOBS_LOCK:
+        _RENDER_JOBS[job_id] = {"status": "running", "started_at": time.time()}
+    t = threading.Thread(target=_run_render_job, args=(job_id, req), daemon=True)
+    t.start()
+    return {"job_id": job_id, "status": "running"}
+
+
+@app.get("/api/kg/render-scenario/status")
+def render_scenario_status(job_id: str):
+    with _RENDER_JOBS_LOCK:
+        job = _RENDER_JOBS.get(job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Unknown job_id")
+    return {"job_id": job_id, **job}
+
+
 # ── Three Layers ──────────────────────────────────────────────────────────────
 
 @app.post("/api/three-layers")
@@ -2148,6 +2274,334 @@ def predict_from_text(req: PredictFromTextRequest):
 
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
+
+
+# ── Forward forecast (10-year price projection with accuracy attribution) ────
+
+class ForecastRequest(BaseModel):
+    commodity: str
+    shock_year: int
+    severity: str = "full_ban"           # baseline | mild_ban | full_ban | severe_ban | custom
+    restriction_magnitude: Optional[float] = None  # used when severity == custom
+    restriction_duration: Optional[int] = None     # years; used when severity == custom
+    horizon_years: int = 10
+    demand_surge: Optional[float] = None  # optional extra shock; fraction of baseline demand
+    n_bootstrap: int = 0                  # if >0, run perturbation bootstrap for CI band
+
+
+# Per-commodity DA scores observed in calibration / OOS.
+# Source: src/minerals/predictability.py (in-sample run) and OOS pair runs.
+_FORECAST_DA_TABLE = {
+    "graphite":    {"in_sample": 1.000, "oos": 0.467,
+                    "in_sample_episodes": ["graphite_2008", "graphite_2022"],
+                    "oos_pairs": ["graphite_2022 (2008 params)", "graphite_2008 (2022 params)"]},
+    "rare_earths": {"in_sample": 1.000, "oos": None,
+                    "in_sample_episodes": ["rare_earths_2010"],
+                    "oos_pairs": []},
+    "cobalt":      {"in_sample": 1.000, "oos": 1.000,
+                    "in_sample_episodes": ["cobalt_2016"],
+                    "oos_pairs": ["cobalt 2016↔2022 (LME)"]},
+    "lithium":     {"in_sample": 1.000, "oos": 0.800,
+                    "in_sample_episodes": ["lithium_2016", "lithium_2022"],
+                    "oos_pairs": ["lithium_2016 (2022 params)", "lithium_2022 (2016 params)"]},
+    "nickel":      {"in_sample": None, "oos": 0.750,
+                    "in_sample_episodes": [],
+                    "oos_pairs": ["nickel 2006↔2022 (LME)"]},
+    "uranium":     {"in_sample": None, "oos": None,
+                    "in_sample_episodes": [],
+                    "oos_pairs": []},
+}
+
+
+def _forecast_params(commodity: str) -> dict:
+    """Return calibrated ODE params for the given commodity."""
+    from src.minerals.predictability import (
+        _GRAPHITE_2022_PARAMS, _RARE_EARTHS_2010_PARAMS,
+        _COBALT_2016_PARAMS, _LITHIUM_2022_PARAMS,
+        _NICKEL_2022_PARAMS, _URANIUM_2022_PARAMS,
+    )
+    table = {
+        "graphite":    _GRAPHITE_2022_PARAMS,
+        "rare_earths": _RARE_EARTHS_2010_PARAMS,
+        "cobalt":      _COBALT_2016_PARAMS,
+        "lithium":     _LITHIUM_2022_PARAMS,
+        "nickel":      _NICKEL_2022_PARAMS,
+        "uranium":     _URANIUM_2022_PARAMS,
+    }
+    return table[commodity]
+
+
+def _resolve_severity(severity: str, year: int, custom_mag: Optional[float],
+                      custom_duration: Optional[int]) -> tuple[float, int, int]:
+    """Map severity preset to (magnitude, start_year, end_year)."""
+    s = severity.lower()
+    if s == "baseline":
+        return 0.0, year, year
+    if s == "mild_ban":
+        return 0.30, year, year + 1
+    if s == "full_ban":
+        return 0.30, year, year + 2
+    if s == "severe_ban":
+        return 0.50, year, year + 3
+    if s == "custom":
+        mag = float(custom_mag) if custom_mag is not None else 0.30
+        dur = int(custom_duration) if custom_duration is not None else 3
+        return max(0.0, min(1.0, mag)), year, year + max(0, dur - 1)
+    raise ValueError(f"Unknown severity: {severity}")
+
+
+def _build_forecast_cfg(commodity: str, params: dict, extra: dict,
+                        start_year: int, end_year: int,
+                        restriction_mag: float, restriction_start: int,
+                        restriction_end: int, demand_surge: Optional[float],
+                        scenario_name: str):
+    from src.minerals.schema import (
+        BaselineConfig, DemandGrowthConfig, OutputsConfig,
+        ParametersConfig, PolicyConfig, ScenarioConfig,
+        ShockConfig, TimeConfig,
+    )
+    from src.minerals.constants import ODE_DEFAULTS
+
+    BASELINE_CFG = BaselineConfig(P_ref=1.0, P0=1.0, K0=108.695652, I0=20.0, D0=100.0)
+    EULER_SAFETY = 0.9
+
+    eta_D = params["eta_D"]
+    alpha_P = min(params["alpha_P"], EULER_SAFETY / max(abs(eta_D), 1e-6))
+    kw = {
+        **ODE_DEFAULTS,
+        "tau_K": params["tau_K"],
+        "eta_D": eta_D,
+        "demand_growth": DemandGrowthConfig(type="constant", g=params["g"]),
+        "alpha_P": alpha_P,
+    }
+    kw.update(extra)
+
+    shocks = []
+    if restriction_mag > 0:
+        shocks.append(ShockConfig(
+            type="export_restriction",
+            start_year=restriction_start,
+            end_year=restriction_end,
+            magnitude=restriction_mag,
+        ))
+    if demand_surge and demand_surge > 0:
+        shocks.append(ShockConfig(
+            type="demand_surge",
+            start_year=restriction_start,
+            end_year=end_year,
+            magnitude=float(demand_surge),
+        ))
+
+    return ScenarioConfig(
+        name=scenario_name,
+        commodity=commodity,
+        seed=42,
+        time=TimeConfig(dt=1.0, start_year=start_year, end_year=end_year),
+        baseline=BASELINE_CFG,
+        parameters=ParametersConfig(**kw),
+        policy=PolicyConfig(),
+        shocks=shocks,
+        outputs=OutputsConfig(metrics=["avg_price"]),
+    )
+
+
+@app.post("/api/forecast/forward")
+def forecast_forward(req: ForecastRequest):
+    """
+    10-year forward price projection for a commodity under an export-restriction shock.
+
+    Uses calibrated ODE params from the most recent episode, runs a baseline
+    (no shock) and the requested scenario, returns both price trajectories,
+    plus the year prices return within ±10% of baseline (or 'never').
+    Optionally bootstraps a CI band by perturbing parameters.
+    """
+    from src.minerals.simulate import run_scenario
+    from src.minerals.constants import SCENARIO_EXTRAS
+
+    commodity = req.commodity.strip().lower()
+    if commodity not in _FORECAST_DA_TABLE:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unsupported commodity '{commodity}'. "
+                   f"Supported: {sorted(_FORECAST_DA_TABLE.keys())}",
+        )
+    if req.horizon_years < 1 or req.horizon_years > 30:
+        raise HTTPException(status_code=400, detail="horizon_years must be 1..30")
+
+    try:
+        params = _forecast_params(commodity)
+    except KeyError:
+        raise HTTPException(status_code=500, detail=f"No calibration for {commodity}")
+
+    extra = SCENARIO_EXTRAS.get(commodity, {})
+
+    start_year = int(req.shock_year) - 1   # one year of pre-shock context
+    end_year = int(req.shock_year) + int(req.horizon_years)
+
+    try:
+        mag, r_start, r_end = _resolve_severity(
+            req.severity, int(req.shock_year),
+            req.restriction_magnitude, req.restriction_duration,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+
+    # ── Run baseline (no restriction) and scenario ───────────────────────────
+    try:
+        bl_cfg = _build_forecast_cfg(
+            commodity, params, extra, start_year, end_year,
+            0.0, r_start, r_end, None, f"{commodity}_{req.shock_year}_baseline",
+        )
+        sc_cfg = _build_forecast_cfg(
+            commodity, params, extra, start_year, end_year,
+            mag, r_start, r_end, req.demand_surge,
+            f"{commodity}_{req.shock_year}_{req.severity}",
+        )
+        bl_df, _ = run_scenario(bl_cfg)
+        sc_df, _ = run_scenario(sc_cfg)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Simulation failed: {type(exc).__name__}: {exc}")
+
+    bl_idx = bl_df.set_index("year")["P"]
+    sc_idx = sc_df.set_index("year")["P"]
+    base_price = float(sc_idx.loc[req.shock_year - 1]) if (req.shock_year - 1) in sc_idx.index \
+        else float(sc_idx.iloc[0])
+    bl_base = float(bl_idx.loc[req.shock_year - 1]) if (req.shock_year - 1) in bl_idx.index \
+        else float(bl_idx.iloc[0])
+
+    years = sorted(set(sc_idx.index) & set(bl_idx.index))
+    baseline_path = [{"year": int(y), "price_index": float(bl_idx.loc[y] / bl_base)}
+                     for y in years]
+    scenario_path = [{"year": int(y), "price_index": float(sc_idx.loc[y] / base_price)}
+                     for y in years]
+
+    # Direction is taken from the peak deviation, computed below. Initialised
+    # here, finalised after peak_spread is known.
+    direction = "flat"
+
+    # Peak: maximum multiplicative spread of scenario over baseline within the
+    # post-shock horizon. This is the *shock impact* — orthogonal to the
+    # commodity's underlying growth trend.
+    peak_yr, peak_idx, peak_spread = None, None, None
+    for y in years:
+        if y < r_start:
+            continue
+        s_v = float(sc_idx.loc[y] / base_price)
+        b_v = float(bl_idx.loc[y] / bl_base)
+        spread = s_v / b_v if b_v > 0 else float("nan")
+        if peak_spread is None or spread > peak_spread:
+            peak_spread = spread
+            peak_idx = s_v
+            peak_yr = int(y)
+
+    if mag > 0 and peak_spread is not None:
+        if peak_spread > 1.05:
+            direction = "up"
+        elif peak_spread < 0.95:
+            direction = "down"
+        else:
+            direction = "flat"
+
+    # Normalisation: first year >= r_end+1 from which the path stays within
+    # ±10% of baseline for the remainder of the horizon. We require persistence
+    # so a transient crossing (with a later peak) doesn't read as 'normalised'.
+    norm_year = None
+    if mag > 0:
+        post_years = [y for y in years if y > r_end]
+        for i, y in enumerate(post_years):
+            ok = True
+            for yj in post_years[i:]:
+                s_v = float(sc_idx.loc[yj] / base_price)
+                b_v = float(bl_idx.loc[yj] / bl_base)
+                if abs(s_v - b_v) >= 0.10:
+                    ok = False
+                    break
+            if ok:
+                norm_year = int(y)
+                break
+    norm_lag = (norm_year - r_end) if (norm_year is not None and mag > 0) else None
+
+    # ── Optional bootstrap CI band ───────────────────────────────────────────
+    ci_band = None
+    if req.n_bootstrap and req.n_bootstrap > 0:
+        n = min(int(req.n_bootstrap), 60)
+        rng = np.random.default_rng(42)
+        sample_paths = []
+        for _ in range(n):
+            jittered = {
+                "alpha_P": params["alpha_P"] * float(rng.normal(1.0, 0.10)),
+                "eta_D":   params["eta_D"]   * float(rng.normal(1.0, 0.10)),
+                "tau_K":   max(0.5, params["tau_K"] * float(rng.normal(1.0, 0.10))),
+                "g":       params["g"]       * float(rng.normal(1.0, 0.02)),
+            }
+            try:
+                cfg_j = _build_forecast_cfg(
+                    commodity, jittered, extra, start_year, end_year,
+                    mag, r_start, r_end, req.demand_surge,
+                    f"{commodity}_{req.shock_year}_boot",
+                )
+                df_j, _ = run_scenario(cfg_j)
+                ix = df_j.set_index("year")["P"]
+                base_j = float(ix.loc[req.shock_year - 1]) if (req.shock_year - 1) in ix.index \
+                    else float(ix.iloc[0])
+                sample_paths.append([float(ix.loc[y] / base_j) for y in years if y in ix.index])
+            except Exception:
+                continue
+        if sample_paths:
+            arr = np.array([p for p in sample_paths if len(p) == len(years)])
+            if arr.size:
+                lo = np.percentile(arr, 16, axis=0)
+                hi = np.percentile(arr, 84, axis=0)
+                ci_band = [
+                    {"year": int(years[i]), "low": float(lo[i]), "high": float(hi[i])}
+                    for i in range(len(years))
+                ]
+
+    accuracy = _FORECAST_DA_TABLE[commodity]
+
+    return {
+        "commodity": commodity,
+        "shock_year": int(req.shock_year),
+        "horizon_years": int(req.horizon_years),
+        "severity": req.severity,
+        "restriction_magnitude": mag,
+        "restriction_start": r_start,
+        "restriction_end": r_end,
+        "params_used": {
+            "alpha_P": float(params["alpha_P"]),
+            "eta_D":   float(params["eta_D"]),
+            "tau_K":   float(params["tau_K"]),
+            "g":       float(params["g"]),
+        },
+        "baseline_path": baseline_path,
+        "scenario_path": scenario_path,
+        "ci_band": ci_band,
+        "direction": direction,
+        "peak_year": peak_yr,
+        "peak_index": peak_idx,
+        "peak_vs_baseline": peak_spread,
+        "normalization_year": norm_year,
+        "normalization_lag_years": norm_lag,
+        "accuracy": {
+            "in_sample_DA": accuracy["in_sample"],
+            "oos_DA":       accuracy["oos"],
+            "in_sample_episodes": accuracy["in_sample_episodes"],
+            "oos_pairs":    accuracy["oos_pairs"],
+        },
+    }
+
+
+@app.get("/api/forecast/commodities")
+def forecast_commodities():
+    """Return the list of commodities supported by /api/forecast/forward."""
+    out = []
+    for cmd, da in _FORECAST_DA_TABLE.items():
+        out.append({
+            "commodity": cmd,
+            "in_sample_DA": da["in_sample"],
+            "oos_DA": da["oos"],
+        })
+    return {"commodities": out}
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────
