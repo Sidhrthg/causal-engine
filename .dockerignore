@@ -26,9 +26,10 @@ data
 !data/canonical/*.csv
 !data/canonical/*.json
 
-# Exclude large RAG indices that are rebuilt on first boot.
-data/documents/hipporag_index
-data/documents/hipporag_index/**
+# Ship only the hipporag index variant the production retriever uses
+# (gpt-4o-mini + text-embedding-3-large). Drop the empty gpt-4o variant.
+data/documents/hipporag_index/gpt-4o_text-embedding-3-large
+data/documents/hipporag_index/gpt-4o_text-embedding-3-large/**
 
 # Comtrade / cepii / raw dumps stay out of the image.
 data/comtrade

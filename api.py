@@ -1175,9 +1175,9 @@ def _get_scenario_renderer():
     if state["pipeline"] is None:
         from src.minerals.rag_pipeline import RAGPipeline
         # backend="auto" tries raganything → hipporag → industrial → simple,
-        # using whichever is available. Production image only has "simple"
-        # installed (hipporag pulls torch==2.5.1 which conflicts with other
-        # deps); locally, hipporag is preferred when available.
+        # using whichever is available. The production image installs hipporag
+        # with --no-deps + a vllm stub (see deploy/vllm_stub/) and ships the
+        # gpt-4o-mini × text-embedding-3-large index, so hipporag wins.
         state["pipeline"] = RAGPipeline(backend="auto")
     if state["extractor"] is None:
         from src.minerals.kg_extractor import KGExtractor

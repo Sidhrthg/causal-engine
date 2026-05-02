@@ -27,6 +27,23 @@ RUN pip install --no-cache-dir uv && \
     uv pip install --system --no-cache gunicorn && \
     uv pip install --system --no-cache -e ".[rag,ui]"
 
+# HippoRAG: install the package without its transitive deps (notably vllm,
+# which needs CUDA and adds ~4 GB), then add only the runtime deps it actually
+# uses with the OpenAI/Claude backend. A vllm stub is wired in below so the
+# `from vllm import ...` line in hipporag/llm/vllm_offline.py resolves.
+RUN uv pip install --system --no-cache --no-deps "hipporag>=2.0.0a2" && \
+    uv pip install --system --no-cache --no-deps "gritlm>=1.0.2" && \
+    uv pip install --system --no-cache \
+        "python_igraph>=0.11.8" \
+        "tiktoken>=0.7.0" \
+        "tenacity>=8.5.0" \
+        "einops>=0.7.0"
+
+# Vendor the vllm stub. Placed at /app/vllm_stub and prepended to PYTHONPATH so
+# it shadows any real vllm package — production never runs local inference.
+COPY deploy/vllm_stub/ /app/vllm_stub/
+ENV PYTHONPATH=/app/vllm_stub
+
 # Copy source code (after deps so code changes don't bust the dep cache)
 COPY src/ ./src/
 COPY scenarios/ ./scenarios/
