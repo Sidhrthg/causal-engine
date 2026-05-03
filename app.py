@@ -32,7 +32,7 @@ def _get_pipeline():
     if _pipeline is None:
         from src.minerals.rag_pipeline import RAGPipeline
         _MEMORY_DIR.mkdir(parents=True, exist_ok=True)
-        _pipeline = RAGPipeline(backend="simple", memory_dir=str(_MEMORY_DIR))
+        _pipeline = RAGPipeline(backend="auto", memory_dir=str(_MEMORY_DIR))
     return _pipeline
 
 
