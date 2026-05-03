@@ -248,13 +248,25 @@ def diagnostic_rag():
     except Exception as exc:
         out["vllm"] = {"error": f"{type(exc).__name__}: {exc}"}
 
-    # hipporag importable?
+    # hipporag importable? Surface the real import error. The wrapper in
+    # src/minerals/hipporag_retrieval.py catches (ImportError, RuntimeError)
+    # silently and just sets HIPPORAG_AVAILABLE=False, which hides the actual
+    # failure. Try the bare `from hipporag import HippoRAG` here so we see it.
     try:
         from src.minerals.hipporag_retrieval import hipporag_available
-        out["hipporag_package"]["available"] = hipporag_available()
+        out["hipporag_package"]["wrapper_available"] = hipporag_available()
     except Exception as exc:
-        out["hipporag_package"]["available"] = False
-        out["hipporag_package"]["import_error"] = f"{type(exc).__name__}: {exc}"
+        out["hipporag_package"]["wrapper_available"] = False
+        out["hipporag_package"]["wrapper_error"] = f"{type(exc).__name__}: {exc}"
+
+    try:
+        from hipporag import HippoRAG  # type: ignore
+        out["hipporag_package"]["bare_import"] = "ok"
+    except Exception as exc:
+        import traceback as _tb
+        out["hipporag_package"]["bare_import"] = "FAILED"
+        out["hipporag_package"]["bare_import_error"] = f"{type(exc).__name__}: {exc}"
+        out["hipporag_package"]["bare_import_trace_tail"] = _tb.format_exc().splitlines()[-12:]
 
     # Index file at the path RAGPipeline checks.
     idx_path = _Path("data/documents/hipporag_index/doc_meta.json")
