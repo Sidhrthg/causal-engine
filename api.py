@@ -229,8 +229,14 @@ def diagnostic_rag():
     import sys as _sys
     from pathlib import Path as _Path
 
+    import os as _os
     out: dict = {
         "python": _sys.version.split()[0],
+        "env": {
+            "OPENAI_API_KEY_set": bool(_os.getenv("OPENAI_API_KEY")),
+            "OPENAI_API_KEY_len": len(_os.getenv("OPENAI_API_KEY") or ""),
+            "ANTHROPIC_API_KEY_set": bool(_os.getenv("ANTHROPIC_API_KEY")),
+        },
         "vllm": {},
         "hipporag_package": {},
         "hipporag_index": {},
