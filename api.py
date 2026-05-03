@@ -352,7 +352,7 @@ def knowledge_query(req: QueryRequest):
         for s in raw_sources[:10]:
             meta = s.get("metadata", {}) if isinstance(s.get("metadata"), dict) else {}
             sources.append({
-                "text": (s.get("text") or "")[:600],
+                "text": (s.get("text") or s.get("text_preview") or "")[:600],
                 "source": meta.get("source_file", s.get("source", "unknown")),
                 "similarity": round(float(s.get("similarity", 0.0)), 4),
             })
