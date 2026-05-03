@@ -218,6 +218,75 @@ def health():
     return {"status": "healthy"}
 
 
+@app.get("/api/_diagnostic/rag")
+def diagnostic_rag():
+    """
+    Ground-truth report on what RAG backend the running container actually
+    chose, what's importable, and why each candidate was accepted or rejected.
+    Used to verify the prod hipporag rollout, since `/api/query` returns
+    `backend: simple` whenever the hipporag init silently fails.
+    """
+    import sys as _sys
+    from pathlib import Path as _Path
+
+    out: dict = {
+        "python": _sys.version.split()[0],
+        "vllm": {},
+        "hipporag_package": {},
+        "hipporag_index": {},
+        "pipeline": {},
+    }
+
+    # vllm location: stub vs real.
+    try:
+        import vllm
+        out["vllm"] = {
+            "version": getattr(vllm, "__version__", "?"),
+            "file": getattr(vllm, "__file__", "?"),
+            "is_stub": "stub" in getattr(vllm, "__version__", "").lower(),
+        }
+    except Exception as exc:
+        out["vllm"] = {"error": f"{type(exc).__name__}: {exc}"}
+
+    # hipporag importable?
+    try:
+        from src.minerals.hipporag_retrieval import hipporag_available
+        out["hipporag_package"]["available"] = hipporag_available()
+    except Exception as exc:
+        out["hipporag_package"]["available"] = False
+        out["hipporag_package"]["import_error"] = f"{type(exc).__name__}: {exc}"
+
+    # Index file at the path RAGPipeline checks.
+    idx_path = _Path("data/documents/hipporag_index/doc_meta.json")
+    out["hipporag_index"] = {
+        "path": str(idx_path),
+        "exists": idx_path.exists(),
+        "size_bytes": idx_path.stat().st_size if idx_path.exists() else 0,
+    }
+    sub = _Path("data/documents/hipporag_index/gpt-4o-mini_text-embedding-3-large")
+    out["hipporag_index"]["embedding_subdir_exists"] = sub.exists()
+    if sub.exists():
+        try:
+            out["hipporag_index"]["embedding_subdir_files"] = [
+                p.name for p in sub.iterdir()
+            ][:20]
+        except Exception:
+            pass
+
+    # Actual selection by RAGPipeline. Force a fresh init to capture errors.
+    try:
+        from src.minerals.rag_pipeline import RAGPipeline
+        p = RAGPipeline(backend="auto")
+        out["pipeline"] = {
+            "selected_backend": p.backend_name,
+            "init_log": getattr(p, "backend_init_log", []),
+        }
+    except Exception as exc:
+        out["pipeline"] = {"error": f"{type(exc).__name__}: {exc}"}
+
+    return out
+
+
 # ── Commodities ───────────────────────────────────────────────────────────────
 
 @app.get("/api/commodities")

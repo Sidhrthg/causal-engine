@@ -132,6 +132,8 @@ class RAGPipeline:
         order = (
             ["raganything", "hipporag", "industrial", "simple"] if backend == "auto" else [backend]
         )
+        # Record why each backend was rejected so /api/_diagnostic/rag can surface it.
+        self.backend_init_log: list[dict] = []
         for name in order:
             try:
                 retriever = self._load_backend(
@@ -139,10 +141,13 @@ class RAGPipeline:
                 )
                 self._retriever = retriever
                 self.backend_name = name
+                self.backend_init_log.append({"backend": name, "result": "selected"})
                 logger.info(f"RAGPipeline: using backend '{name}'")
                 return
             except Exception as exc:
-                logger.debug(f"RAGPipeline: backend '{name}' not available: {exc}")
+                err = f"{type(exc).__name__}: {exc}"
+                self.backend_init_log.append({"backend": name, "result": "skipped", "error": err})
+                logger.warning(f"RAGPipeline: backend '{name}' not available: {err}")
         tried = ", ".join(order)
         raise RuntimeError(
             f"No RAG backend available (tried: {tried}). "
