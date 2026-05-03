@@ -31,7 +31,11 @@ RUN pip install --no-cache-dir uv && \
 # which needs CUDA and adds ~4 GB), then add only the runtime deps it actually
 # uses with the OpenAI/Claude backend. A vllm stub is wired in below so the
 # `from vllm import ...` line in hipporag/llm/vllm_offline.py resolves.
-RUN uv pip install --system --no-cache --no-deps "hipporag>=2.0.0a2" && \
+# Pin hipporag to 2.0.0a3 — 2.0.0a4 added bedrock_llm.py which imports
+# litellm at module load time and pulls in another ~30 transitive deps.
+# 2.0.0a3 only imports openai_gpt for its LLM backend, which is the only
+# path the production retriever uses.
+RUN uv pip install --system --no-cache --no-deps "hipporag==2.0.0a3" && \
     uv pip install --system --no-cache --no-deps "gritlm>=1.0.2" && \
     uv pip install --system --no-cache \
         "openai>=1.58.0" \
