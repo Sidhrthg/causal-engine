@@ -34,6 +34,7 @@ RUN pip install --no-cache-dir uv && \
 RUN uv pip install --system --no-cache --no-deps "hipporag>=2.0.0a2" && \
     uv pip install --system --no-cache --no-deps "gritlm>=1.0.2" && \
     uv pip install --system --no-cache \
+        "openai>=1.58.0" \
         "python_igraph>=0.11.8" \
         "tiktoken>=0.7.0" \
         "tenacity>=8.5.0" \
