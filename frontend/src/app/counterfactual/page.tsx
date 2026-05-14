@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import LineChart from '@/components/LineChart';
 import HowToUse from '@/components/HowToUse';
+import MathPanel from '@/components/MathPanel';
+import OutputGuide from '@/components/OutputGuide';
 import { getScenarios, runCounterfactual } from '@/lib/api';
 import type { ScenarioMeta, CounterfactualResponse, TrajectoryRow } from '@/lib/types';
 
@@ -285,6 +287,68 @@ export default function CounterfactualPage() {
           ]}
           tip="Watch the ATE (Average Treatment Effect) row — it tells you the mean change in price, shortage, and quantities under your intervention. Negative ATE on shortage = your CF would have alleviated it."
         />
+
+        <div className="mb-7 grid grid-cols-1 xl:grid-cols-2 gap-5">
+          <OutputGuide
+            rung="L3"
+            intro="The result shows two trajectories per outcome — factual (what actually happened under the scenario) vs counterfactual (what would have happened under your CF intervention, with the same noise) — plus per-outcome ATE tiles."
+            fields={[
+              { name: 'CF type',
+                meaning: 'which structural mechanism is being counterfactually changed: Substitution (sub_elasticity / sub_cap), Fringe (capacity_share / entry_price), or Trajectory (override the per-year shock signals)',
+                read: 'Substitution → "what if non-dominant suppliers had responded faster?"' },
+              { name: 'factual line (gray) vs counterfactual (indigo)',
+                meaning: 'factual = the scenario as-written, fully simulated; counterfactual = same exogenous noise but with the intervention applied',
+                read: 'If the gray line peaked at 3× and the indigo line peaked at 1.7×, the CF would have halved the spike' },
+              { name: 'ATE per outcome',
+                meaning: 'mean of (counterfactual − factual) over the horizon. Sign indicates direction.',
+                read: 'ATE(shortage) = −0.4 → the CF would have alleviated 0.4 units of shortage on average per year' },
+              { name: 'ATE colors (green/red)',
+                meaning: 'green = the CF improved the outcome (lower price, lower shortage, higher supply); red = worsened it. Direction matters here — read the chart, not just the sign.' },
+              { name: 'description text',
+                meaning: 'human-readable summary of the CF query returned by the backend (e.g. "what if substitution_elasticity had been 0.8?")' },
+            ]}
+            takeaway="L3's value: it answers retroactive policy questions like 'would building this stockpile have helped in 2023?' — anchored to the specific realised history, not a hypothetical average."
+          />
+          <MathPanel
+            rung="L3"
+            title="What L3 (Counterfactual) computes"
+            formal="P(Y_x | X′ = x′, Y′ = y′)   —   given factual (x′, y′), what would Y have been under do(X = x)?"
+            equations={[
+              {
+                label: "Three-step recipe (Pearl 2009, Causality §7)",
+                code:
+`1. ABDUCTION   :  recover the latent noise / exogenous trajectory u
+                  from the factual run, so that  M(u, x′) = y′
+                  (in this codebase: store every per-year shock and
+                   integrator state from the factual simulation)
+
+2. ACTION      :  modify the SCM by applying do(X = x)
+                  → mutilated model M_x
+
+3. PREDICTION  :  re-run M_x forward using the SAME recovered u
+                  → counterfactual trajectory Y_x | (x′, y′)`,
+              },
+              {
+                label: "Twin-network coupling (what makes this NOT just L2)",
+                code:
+`Factual run        :  M  (u)  =  (X′, Y′)    [observed past, fully fixed]
+Counterfactual run :  M_x (u) =  Y_x          [same noise u, different mechanism]
+
+L2 would re-sample noise → 'a fresh forward simulation'.
+L3 conditions on the actual realised noise → 'what would HAVE been
+in THIS world, had the mechanism been different'.`,
+              },
+              {
+                label: "Average Treatment Effect on the treated trajectory",
+                code:
+`ATE_t (Y)   =  Y_t^(counterfactual)  −  Y_t^(factual)
+mean ATE(Y) =  (1/T) · Σ_t ATE_t (Y)              [reported per outcome]`,
+              },
+            ]}
+            caveat="L3 answers a strictly stronger question than L2: not 'what happens on average if we do(X)' but 'what would have happened in this exact realised history if we had done(X) instead'. Requires the SCM to be invertible to recover u — for this ODE that means storing the factual {K, I, P} per year and the per-year shock signals."
+            source="src/minerals/pearl_layers.py — counterfactual_substitution(), counterfactual_fringe(), counterfactual_trajectory()"
+          />
+        </div>
 
         {/* Config card */}
         <form onSubmit={handleSubmit} className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-6 mb-6 shadow-sm space-y-5">

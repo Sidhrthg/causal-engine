@@ -257,6 +257,52 @@ export async function getForecastCommodities(): Promise<{
   return res.json();
 }
 
+// Pearl L1 — observational association (no causal claim).
+// Wraps POST /api/pearl/l1/association.
+export interface L1AssociationResponse {
+  scenario: string;
+  layer: string;
+  warning: string;
+  substitution_association: Record<string, unknown>[] | { error: string };
+  fringe_association: Record<string, unknown>[] | { error: string };
+}
+
+export async function runL1Association(scenarioName: string): Promise<L1AssociationResponse> {
+  return post<L1AssociationResponse>('/api/pearl/l1/association', {
+    scenario_name: scenarioName,
+  });
+}
+
+// Pearl L2 — canonical do-calculus intervention.
+// Wraps POST /api/pearl/l2/do with explicit graph surgery on structural params.
+export type L2Param =
+  | 'substitution_elasticity' | 'substitution_cap'
+  | 'fringe_capacity_share'   | 'fringe_entry_price'
+  | 'eta_D' | 'alpha_P' | 'tau_K' | 'eta_K';
+
+export interface L2TrajectoryRow {
+  year: number;
+  [k: string]: number;
+}
+
+export interface L2InterventionResponse {
+  scenario: string;
+  intervention: Record<string, number>;
+  layer: string;
+  outcomes: string[];
+  trajectory: L2TrajectoryRow[];
+  ate_mean: Record<string, number>;
+  description: string;
+}
+
+export async function runL2Intervention(params: {
+  scenario_name: string;
+  parameter_overrides: Partial<Record<L2Param, number>>;
+  outcomes?: string[];
+}): Promise<L2InterventionResponse> {
+  return post<L2InterventionResponse>('/api/pearl/l2/do', params);
+}
+
 export async function getYearSnapshot(params: {
   commodity: string;
   year: number;

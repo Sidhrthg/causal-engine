@@ -37,14 +37,24 @@ const links = [
     desc: 'Ask the knowledge base',
   },
   {
+    href: '/l1-association',
+    label: 'L1 — Association',
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 19h16M4 19v-9a2 2 0 012-2h12a2 2 0 012 2v9M9 14h6m-6-4h6" />
+      </svg>
+    ),
+    desc: 'Seeing — P(Y|X), observational',
+  },
+  {
     href: '/counterfactual',
-    label: 'Counterfactual',
+    label: 'L3 — Counterfactual',
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
       </svg>
     ),
-    desc: 'Pearl L3 — what would have been',
+    desc: 'Imagining — abduction → action → prediction',
   },
   {
     href: '/knowledge-graph',
@@ -67,14 +77,24 @@ const links = [
     desc: 'Year-by-year KG snapshots',
   },
   {
+    href: '/l2-intervention',
+    label: 'L2 — Intervention',
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14-4l4 4-4 4M5 7l-4 4 4 4" />
+      </svg>
+    ),
+    desc: 'Doing — do(param), graph surgery + ATE',
+  },
+  {
     href: '/forecast',
-    label: 'Forecast',
+    label: 'L2 — Forecast',
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 17l6-6 4 4 8-8M21 7h-5m5 0v5" />
       </svg>
     ),
-    desc: '10-year price projection',
+    desc: 'Doing — do(shock), 10-year projection',
   },
   {
     href: '/scenario-builder',

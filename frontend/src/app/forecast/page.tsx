@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import HowToUse from '@/components/HowToUse';
 import LineChart from '@/components/LineChart';
+import MathPanel from '@/components/MathPanel';
+import OutputGuide from '@/components/OutputGuide';
 import {
   getForecastCommodities,
   runForecast,
@@ -219,6 +221,71 @@ export default function ForecastPage() {
 
         {/* Result panel */}
         <div className="flex-1 overflow-auto p-6">
+          <div className="mb-5 grid grid-cols-1 xl:grid-cols-2 gap-5">
+            <OutputGuide
+              rung="L2"
+              intro="The forecast result has 5 stat chips, a baseline-vs-scenario price chart, optional ±1σ confidence band, and a calibration-accuracy panel."
+              fields={[
+                { name: 'Direction',
+                  meaning: '↑/↓/flat at the peak of the scenario relative to baseline (price ratio > 1.05 / < 0.95 / between)',
+                  read: '↑ Up → scenario peak rose at least 5% above the no-shock counterfactual at that year' },
+                { name: 'Peak vs baseline',
+                  meaning: 'max_t [ P_scenario(t) / P_baseline(t) ] in the post-shock horizon. The cleanest single number for "how big was the shock impact".',
+                  read: '1.68× means scenario price was at most 68% above the no-shock baseline at the peak year' },
+                { name: 'Peak year',
+                  meaning: 'the year where peak-vs-baseline was reached',
+                  read: 'Restriction starts 2025; peak year 2026 means price peaks one year into the restriction' },
+                { name: 'Normalises',
+                  meaning: 'the first year after the restriction ends from which scenario stays within ±10% of baseline for the rest of the horizon. "Never" means the model does not return to baseline within the simulated window.',
+                  read: '2030 (+3yr post-end) → 3 years after restriction end, prices return to within ±10% of where they would have been without the shock' },
+                { name: 'Restriction',
+                  meaning: 'the do(·) value and active years for the export-restriction shock',
+                  read: '30% · 2025–2027 → export_restriction pinned to 0.30 from 2025 through 2027 inclusive' },
+                { name: 'CI band (gray fan)',
+                  meaning: '1σ confidence band from 24 parameter perturbations (±10% on α_P, η_D, τ_K). Wide band = forecast sensitive to calibration uncertainty.',
+                  read: 'If the band crosses the baseline line, the shock direction is not robust to parameter uncertainty' },
+                { name: 'in_sample_DA / oos_DA',
+                  meaning: 'historical directional accuracy of this commodity\'s calibration. 1.0 = perfect sign-of-change calls, 0.5 = chance.',
+                  read: 'graphite: in_sample 1.0, oos 0.467 → fits its own period perfectly but the regime shift makes cross-period transfer hard' },
+              ]}
+              takeaway="A high Peak vs baseline + late or 'Never' normalisation = severe scar from the shock. Use the CI band to gauge whether the headline direction is solid or marginal."
+            />
+            <MathPanel
+              rung="L2"
+              title="What this page computes (thin L2 — supply-shock interventions only)"
+              formal="P(Y | do(export_restriction = m  for years [t_a, t_b]))   —   restrict export supply, integrate ODE forward"
+              equations={[
+                {
+                  label: "Demand-side equation (price elasticity η_D enters here)",
+                  code:
+`D_t  =  D_0 · g^t · (P_t / P_ref)^η_D
+          · (1 − policy.substitution) · (1 − policy.efficiency)
+          · (1 + demand_surge_t) · demand_destruction_mult_t`,
+                },
+                {
+                  label: "Supply-side equation (α_P, τ_K, capacity utilisation)",
+                  code:
+`u_t   =  clamp( u_0 + β_u · log(P_t / P_ref),  u_min,  u_max )
+Q_t   =  K_t · u_t
+Q_eff,t = Q_t · (1 − shock.export_restriction_t)
+          · policy_supply_mult_t · capacity_supply_mult_t
+
+dK/dt =  (K_target(P_t) − K_t) / τ_K          [capacity adjusts at rate 1/τ_K]
+dP/dt =  α_P · (shortage_t − λ_cover · inventory_gap_t) + σ_P · dW_t`,
+                },
+                {
+                  label: "Calibrated parameters {α_P, η_D, τ_K, g} per episode",
+                  code:
+`Per-mineral values are fitted by differential evolution to maximise
+DA + Spearman ρ vs. CEPII BACI bilateral unit values
+(see src/minerals/predictability.py lines 71–89).`,
+                },
+              ]}
+              caveat="This page is a convenience L2 interface for supply-shock interventions. For the canonical do-calculus surface — intervening on any structural parameter (η_D, τ_K, substitution_elasticity, fringe_capacity_share, …) via explicit graph surgery — use the L2 — Intervention page."
+              source="src/minerals/model.py — step(); calibration in src/minerals/predictability.py"
+            />
+          </div>
+
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-800 text-sm rounded-lg p-3 mb-4">
               <p className="font-semibold mb-1">Forecast failed</p>
@@ -350,11 +417,15 @@ function ForecastView({ r }: { r: ForecastResponse }) {
       </div>
 
       <p className="text-[10px] text-zinc-400 leading-relaxed">
-        Method: Pearl Layer 2 do-calculus.
-        <span className="font-mono ml-1">do(export_restriction = {r.restriction_magnitude.toFixed(2)})</span>{' '}
+        Method: Pearl Layer 2 (Intervention) — equivalent to{' '}
+        <span className="font-mono">do(export_restriction = {r.restriction_magnitude.toFixed(2)})</span>{' '}
         applied for {r.restriction_end - r.restriction_start + 1} year(s) starting {r.restriction_start},
-        ODE integrated over the {r.horizon_years}-year horizon. Normalisation = first
-        post-restriction year where |scenario − baseline| &lt; 10% of baseline.
+        ODE integrated over the {r.horizon_years}-year horizon. This page uses{' '}
+        <span className="font-mono">run_scenario()</span> with the shock injected as a forcing
+        term — mathematically the same intervention. For the canonical do-calculus
+        interface that performs explicit graph surgery (mutilated DAG +
+        identifiability check), see <span className="font-mono">POST /api/pearl/l2/do</span>.
+        Normalisation = first post-restriction year where |scenario − baseline| &lt; 10% of baseline.
       </p>
     </div>
   );

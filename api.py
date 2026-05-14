@@ -9,10 +9,25 @@ Run with:
 import math
 import re
 import shutil
+import sys as _sys
 import tempfile
 import time
 from pathlib import Path
 from typing import Optional
+
+# Ensure the project root is on sys.path before any lazy imports of `scripts.*`.
+# Without this, `from scripts.run_knowledge_graph import ...` resolves to the
+# site-packages `scripts` package shipped by `gguf` and fails.
+_PROJECT_ROOT = str(Path(__file__).resolve().parent)
+if _PROJECT_ROOT not in _sys.path:
+    _sys.path.insert(0, _PROJECT_ROOT)
+# If a wrong `scripts` package was cached during interpreter startup, drop it
+# so a subsequent import re-resolves against the project root.
+_cached_scripts = _sys.modules.get("scripts")
+if _cached_scripts is not None:
+    _cached_file = getattr(_cached_scripts, "__file__", "") or ""
+    if "site-packages" in _cached_file:
+        del _sys.modules["scripts"]
 
 import numpy as np
 
@@ -2131,13 +2146,27 @@ def pearl_l1_association(req: ScenarioRequest):
 
     df, _ = _run(cfg)
 
+    def _clean_nan(rows):
+        # Spearman ρ is NaN when a bin has zero variance; replace with None so
+        # the response stays JSON-compliant (Starlette's default encoder rejects NaN).
+        out = []
+        for row in rows:
+            cleaned = {}
+            for k, v in row.items():
+                if isinstance(v, float) and not math.isfinite(v):
+                    cleaned[k] = None
+                else:
+                    cleaned[k] = v
+            out.append(cleaned)
+        return out
+
     try:
-        sub_summary = observe_substitution_association(df).to_dict(orient="records")
+        sub_summary = _clean_nan(observe_substitution_association(df).to_dict(orient="records"))
     except Exception as exc:
         sub_summary = {"error": str(exc)}
 
     try:
-        fringe_summary = observe_fringe_association(df).to_dict(orient="records")
+        fringe_summary = _clean_nan(observe_fringe_association(df).to_dict(orient="records"))
     except Exception as exc:
         fringe_summary = {"error": str(exc)}
 
